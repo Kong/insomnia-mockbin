@@ -7,8 +7,13 @@ var compression     = require('compression');
 var morgan          = require('morgan');
 var multer          = require('multer');
 
+var tv4             = require('tv4');
 var YAML            = require('yamljs');
 var XML             = require('jsontoxml');
+var redis           = require('redis');
+var uuid            = require('node-uuid');
+
+var schema          = require('./schema.json');
 
 var app = express();
 
@@ -107,6 +112,7 @@ app.use(function (req, res, next) {
 params.extend(app);
 app.param('status_code', Number);
 app.param('status_message', /^[\w\t ]+$/);
+app.param('uuid', /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i);
 
 // routes
 
@@ -158,18 +164,103 @@ app.all('/request', function (req, res, next) {
 app.all('/gzip', function (req, res, next) {
   // force compression
   req.headers['accept-encoding'] = 'gzip';
-  res.status(200).body = res.har;
+  res.body = res.har;
 
   next();
 });
 
+app.post('/create', function (req, res, next) {
+  var id = uuid.v4();
+  var client = redis.createClient();
+  var result = tv4.validateResult(req.body, schema);
+
+  if (!result.valid) {
+    res.status(400).body = {
+      error: {
+        code: result.error.code,
+        message: result.error.message,
+        params: result.error.params,
+        dataPath: result.error.dataPath,
+        schemaPath: result.error.schemaPath
+      }
+    };
+
+    return next();
+  }
+
+  client.on('error', function (err) {
+    console.log('redis error:', err);
+  });
+
+  // send back the newly created id
+  res.body = id;
+
+  client.set(id, JSON.stringify(req.body));
+  client.quit();
+
+  next();
+});
+
+app.all('/:uuid', function (req, res, next) {
+  var client = redis.createClient();
+
+  client.on('error', function (err) {
+    console.log('redis error:', err);
+  });
+
+  client.get(req.params.uuid, function (err, value) {
+    if (err) throw(err);
+
+    if (value) {
+      // log interaction
+      client.rpush(req.params.uuid + '-requests', JSON.stringify(res.har));
+      client.ltrim(req.params.uuid + '-requests', 0, 100);
+
+      // return the original content
+      // TODO must manupilate response based on stored HAR
+      res.body = JSON.parse(value);
+    } else {
+      res.status(404);
+    }
+
+    client.quit();
+
+    next();
+  });
+});
+
+app.all('/:uuid/requests', function (req, res, next) {
+  var client = redis.createClient();
+
+  client.on('error', function (err) {
+    console.log('redis error:', err);
+  });
+
+  client.lrange(req.params.uuid + '-requests', 0, -1, function (err, requests) {
+    if (err) throw(err);
+
+    if (requests.length) {
+      res.body = requests.map(function (request) {
+        return JSON.parse(request);
+      });
+    } else {
+      res.status(404);
+    }
+
+    client.quit();
+
+    next();
+  });
+});
+
+//  content negotiation
 app.use(function (req, res, next) {
   res.format({
-    html: function(){
+    html: function () {
       res.send(res.body);
     },
 
-    json: function(){
+    json: function () {
       res.json(res.body);
     },
 

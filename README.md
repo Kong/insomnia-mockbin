@@ -3,7 +3,7 @@
 - uses HAR format
 - supports JSON, YAML, XML, HTML output
 - plays nice with proxies (uses the X-Forwarded-* headers for IP resolution)
-- allows for HTTP Method Override using one of the headers (`X-HTTP-Method`, `X-HTTP-Method-Override`, `X-Method-Override`) or through query string parameter: `_method`
+- allows for HTTP Method Override using the header `X-HTTP-Method-Override` or through query string parameter: `_method`
 
 ## Endpoints
 
@@ -25,7 +25,7 @@
 > ```http
 > HTTP/1.1 200 OK
 > X-Powered-By: httpconsole.com
-> Vary: X-HTTP-Method, X-HTTP-Method-Override, X-Method-Override, Accept, Accept-Encoding
+> Vary: X-HTTP-Method-Override, Accept, Accept-Encoding
 > Content-Type: application/json; charset=utf-8
 > Content-Length: 12
 > Date: Wed, 21 Jan 2015 06:56:11 GMT
@@ -54,7 +54,7 @@
 > ```http
 > HTTP/1.1 200 OK
 > X-Powered-By: httpconsole.com
-> Vary: X-HTTP-Method, X-HTTP-Method-Override, X-Method-Override, Accept, Accept-Encoding
+> Vary: X-HTTP-Method-Override, Accept, Accept-Encoding
 > Content-Type: application/json; charset=utf-8
 > Content-Length: 42
 > Date: Wed, 21 Jan 2015 06:56:11 GMT
@@ -84,7 +84,7 @@
 > ```http
 > HTTP/1.1 200 OK
 > X-Powered-By: httpconsole.com
-> Vary: X-HTTP-Method, X-HTTP-Method-Override, X-Method-Override, Accept, Accept-Encoding
+> Vary: X-HTTP-Method-Override, Accept, Accept-Encoding
 > Content-Type: application/json; charset=utf-8
 > Content-Length: 13
 > Date: Wed, 21 Jan 2015 06:56:11 GMT
@@ -112,7 +112,7 @@
 > ```http
 > HTTP/1.1 20 Hello
 > X-Powered-By: httpconsole.com
-> Vary: X-HTTP-Method, X-HTTP-Method-Override, X-Method-Override, Accept, Accept-Encoding
+> Vary: X-HTTP-Method-Override, Accept, Accept-Encoding
 > Content-Type: text/html; charset=utf-8
 > Content-Length: 38
 > Date: Thu, 22 Jan 2015 03:46:45 GMT
@@ -145,7 +145,7 @@
 > ```http
 > HTTP/1.1 200 OK
 > X-Powered-By: httpconsole.com
-> Vary: X-HTTP-Method, X-HTTP-Method-Override, X-Method-Override, Accept, Accept-Encoding
+> Vary: X-HTTP-Method-Override, Accept, Accept-Encoding
 > Content-Type: application/json; charset=utf-8
 > Content-Length: 306
 > Date: Thu, 22 Jan 2015 03:49:12 GMT
@@ -199,7 +199,7 @@
 
 > ```http
 > HTTP/1.1 200 OK
-> Vary: X-HTTP-Method, X-HTTP-Method-Override, X-Method-Override, Accept, Accept-Encoding
+> Vary: X-HTTP-Method-Override, Accept, Accept-Encoding
 > X-Powered-By: httpconsole.com
 > Content-Type: application/json; charset=utf-8
 > Content-Length: 1330
@@ -305,7 +305,7 @@
 
 > ```http
 > HTTP/1.1 200 OK
-> Vary: X-HTTP-Method, X-HTTP-Method-Override, X-Method-Override, Accept, Accept-Encoding
+> Vary: X-HTTP-Method-Override, Accept, Accept-Encoding
 > X-Powered-By: httpconsole.com
 > Content-Type: application/json; charset=utf-8
 > Content-Encoding: gzip
@@ -394,7 +394,7 @@
 
 > ```http
 > HTTP/1.1 200 OK
-> Vary: X-HTTP-Method, X-HTTP-Method-Override, X-Method-Override, Accept, Accept-Encoding
+> Vary: X-HTTP-Method-Override, Accept, Accept-Encoding
 > X-Powered-By: httpconsole.com
 > Location: http://httpconsole.com/b8b21988-64d4-4eb3-94c1-2055c3374b53
 > Content-Type: application/json; charset=utf-8
@@ -425,7 +425,7 @@
 
 > ```http
 > [response.httpVersion] [response.status] [response.statusText]
-> Vary: X-HTTP-Method, X-HTTP-Method-Override, X-Method-Override, Accept, Accept-Encoding
+> Vary: X-HTTP-Method-Override, Accept, Accept-Encoding
 > X-Powered-By: httpconsole.com
 > Content-Type: [response.content.mimeType]
 > Connection: keep-alive

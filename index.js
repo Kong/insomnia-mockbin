@@ -36,9 +36,7 @@ app.set('json spaces', 2);
 app.use(morgan('dev'));
 
 // override with different headers + query string; last one takes precedence
-app.use(methodOverride('X-HTTP-Method'));
 app.use(methodOverride('X-HTTP-Method-Override'));
-app.use(methodOverride('X-Method-Override'));
 app.use(methodOverride('_method'));
 
 // parse cookies

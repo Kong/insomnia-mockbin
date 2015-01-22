@@ -314,7 +314,7 @@
 > Connection: keep-alive
 > Transfer-Encoding: chunked
 >
-> [gzipped data]
+> [gzipped-data]
 > ```
 
 ----
@@ -411,6 +411,8 @@
 ### `/bin/:id`
 
 > The [HAR Response Object](http://www.softwareishard.com/blog/har-12-spec/#response) sent at time of [creation](-/bin/create) will determine what the response status, headers, content will be.
+
+> If you wish to inspect this **Bin** in a browser window, be sure to add `?__inspect` to the url, otherwise, there's a chance you'll see the HAR Response content instead *(varies on your browser's `Accept` header)*
 
 ###### Request
 

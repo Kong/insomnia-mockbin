@@ -18,6 +18,7 @@ var schema          = require('./schema.json');
 
 var app = express();
 
+
 // TV4
 tv4.addSchema(schema);
 
@@ -25,12 +26,11 @@ tv4.addSchema(schema);
 app.listen(3000);
 
 // proxy ip resolution
+app.set('json spaces', 2);
+app.set('view engine', 'jade');
 app.enable('trust proxy');
 app.disable('x-powered-by');
 app.disable('etag');
-
-// pretty print json
-app.set('json spaces', 2);
 
 // enable logging
 app.use(morgan('dev'));
@@ -132,7 +132,9 @@ app.use(function (req, res, next) {
     // json
     switch (req.contentType) {
       case 'application/json':
-        req.jsonBody = JSON.parse(req.body);
+        try {
+          req.jsonBody = JSON.parse(req.body);
+        } catch (exception) {}
 
         next();
         break;
@@ -221,29 +223,33 @@ app.param('uuid', /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[
 
 app.get('/', function (req, res) {
   // TODO
-  res.send('Hello World!');
+  res.view = 'index';
+  res.body = 'Hello World!';
 });
 
 app.all('/ip', function (req, res, next) {
+  res.view = 'response';
   res.body = req.ip;
 
   next();
 });
 
 app.all('/ips', function (req, res, next) {
+  res.view = 'response';
   res.body = req.ips;
 
   next();
 });
 
 app.all('/agent', function (req, res, next) {
+  res.view = 'response';
   res.body = req.headers['user-agent'];
 
   next();
 });
 
 app.all('/status/:status_code/:status_message?', function (req, res, next) {
-  console.log(req.params.status_message[0]);
+  res.view = 'status';
 
   res.statusCode = req.params.status_code || 200;
   res.statusMessage = req.params.status_message[0] || 'OK';
@@ -257,6 +263,8 @@ app.all('/status/:status_code/:status_message?', function (req, res, next) {
 });
 
 app.all('/headers', function (req, res, next) {
+  res.view = 'response';
+
   res.body = {
     headers: req.har.request.headers,
     headersSize: req.har.request.headersSize
@@ -266,15 +274,25 @@ app.all('/headers', function (req, res, next) {
 });
 
 app.all('/request', function (req, res, next) {
+  res.view = 'response';
   res.body = req.har;
 
   next();
 });
 
 app.all('/gzip', function (req, res, next) {
+  res.view = 'response';
+
   // force compression
   req.headers['accept-encoding'] = 'gzip';
   res.body = req.har;
+
+  next();
+});
+
+// TODO display web form
+app.get('/bin/create', function (req, res, next) {
+  res.view = 'bin/create';
 
   next();
 });
@@ -346,6 +364,13 @@ app.all('/bin/:uuid', function (req, res, next) {
       res.statusCode = har.status || 200;
       res.statusMessage = har.statusText || 'OK';
 
+      var type = typer.parse(har.content.mimeType).subtype;
+
+      // only set the view template when its not an HTML response, or through manual override
+      if (req.query.__inspect !== undefined || !~['html', 'xhtml'].indexOf(type)) {
+        res.view = 'bin/view';
+      }
+
       res.body = har.content.text ? har.content.text : null;
     } else {
       res.status(404);
@@ -363,6 +388,8 @@ app.get('/bin/:uuid/requests', function (req, res, next) {
   client.on('error', function (err) {
     console.log('redis error:', err);
   });
+
+  res.view = 'bin/requests';
 
   client.lrange(req.params.uuid + '-requests', 0, -1, function (err, requests) {
     if (err) throw(err);
@@ -385,7 +412,13 @@ app.get('/bin/:uuid/requests', function (req, res, next) {
 app.use(function (req, res, next) {
   res.format({
     html: function () {
-      res.send(res.body);
+      if (res.view) {
+        return res.render(res.view, {
+          data: res.body
+        });
+      }
+
+      res.send(YAML.stringify(res.body, 2));
     },
 
     json: function () {

@@ -16,6 +16,7 @@
     "express": "^4.11.0",
     "express-params": "0.0.3",
     "hiredis": "^0.1.17",
+    "jade": "^1.9.1",
     "jsontoxml": "0.0.11",
     "media-typer": "^0.3.0",
     "method-override": "^2.3.1",

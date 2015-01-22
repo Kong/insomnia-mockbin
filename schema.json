@@ -34,6 +34,7 @@
     },
 
     "page": {
+      "type": "object",
       "optional": true,
       "required": ["startedDateTime", "id", "title", "pageTimings"],
       "properties": {
@@ -50,6 +51,7 @@
     },
 
     "pageTimings": {
+      "type": "object",
       "properties": {
         "onContentLoad":  { "type": "number", "min": -1 },
         "onLoad":         { "type": "number", "min": -1 },
@@ -58,6 +60,7 @@
     },
 
     "entry": {
+      "type": "object",
       "optional": true,
       "required": ["startedDateTime", "time", "request", "response", "cache", "timings"],
       "properties": {
@@ -79,6 +82,7 @@
     },
 
     "request": {
+      "type": "object",
       "required": ["method", "url", "httpVersion", "cookies", "headers", "queryString", "headersSize", "bodySize"],
       "properties": {
         "method":       { "type": "string" },
@@ -105,6 +109,7 @@
     },
 
     "record": {
+      "type": "object",
       "required": ["name", "value"],
       "properties": {
         "name":     { "type": "string" },
@@ -114,6 +119,7 @@
     },
 
     "response": {
+      "type": "object",
       "required": ["status", "statusText", "httpVersion", "cookies", "headers", "content", "redirectURL", "headersSize", "bodySize"],
       "properties": {
         "status":       { "type": "number" },
@@ -136,6 +142,7 @@
     },
 
     "cookie": {
+      "type": "object",
       "required": ["name", "value"],
       "properties": {
         "name":     { "type": "string" },
@@ -150,6 +157,7 @@
     },
 
     "postData": {
+      "type": "object",
       "optional": true,
       "required": ["mimeType"],
       "properties": {
@@ -171,6 +179,7 @@
     },
 
     "content": {
+      "type": "object",
       "required": ["size", "mimeType"],
       "properties": {
         "size":         { "type": "number" },

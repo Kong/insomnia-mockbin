@@ -2,20 +2,24 @@ var express         = require('express');
 var params          = require('express-params');
 var methodOverride  = require('method-override');
 var cookieParser    = require('cookie-parser');
-var bodyParser      = require('body-parser');
 var compression     = require('compression');
 var morgan          = require('morgan');
-var multer          = require('multer');
-
+var dicer           = require('dicer');
+var qs              = require('qs');
 var tv4             = require('tv4');
 var YAML            = require('yamljs');
 var XML             = require('jsontoxml');
+var util            = require('util');
 var redis           = require('redis');
 var uuid            = require('node-uuid');
+var typer           = require('media-typer');
 
 var schema          = require('./schema.json');
 
 var app = express();
+
+// TV4
+tv4.addSchema(schema);
 
 // fancy port
 app.listen(3000);
@@ -40,39 +44,31 @@ app.use(methodOverride('_method'));
 // parse cookies
 app.use(cookieParser());
 
-// parse all body types
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-
-// handle multipart/form-data
-app.use(multer());
-
 // gzipping when needed
 app.use(compression({
   threshold: 1
 }));
 
-// construct HAR Object
-app.use(function (req, res, next) {
-  var objectToArray = function (obj) {
-    if (!obj || typeof obj !== 'object') {
-      return [];
-    }
+var objectToArray = function (obj) {
+  if (!obj || typeof obj !== 'object') {
+    return [];
+  }
 
-    var name;
-    var results = [];
-    var names = Object.keys(obj);
+  var name;
+  var results = [];
+  var names = Object.keys(obj);
 
-    while (name = names.pop()) {
-      results.push({
-        name: name,
-        value: obj[name]
-      });
-    }
+  while (name = names.pop()) {
+    results.push({
+      name: name,
+      value: obj[name]
+    });
+  }
 
-    return results;
-  };
+  return results;
+};
 
+var createHar = function (req) {
   var getReqHeaderSize = function () {
     var keys = Object.keys(req.headers);
 
@@ -88,23 +84,132 @@ app.use(function (req, res, next) {
     return new Buffer(headers).length + (keys.length * 2) + 12 + 2;
   };
 
-  res.har = {
+  return {
     request: {
       method: req.method,
       url: req.protocol + '://' + req.hostname + req.originalUrl,
-      httpVersion: "HTTP/1.1",
-      // TODO
-      cookies: req.cookies,
+      httpVersion: 'HTTP/1.1',
+      // TODO, add cookie details
+      cookies: objectToArray(req.cookies),
       headers: objectToArray(req.headers),
       queryString: objectToArray(req.query),
-      postData: req.body,
+      // TODO
+      postData: {
+        mimeType: req.contentType ? req.contentType : 'application/octet-stream',
+        text: req.body,
+        params: []
+      },
       headersSize: getReqHeaderSize(),
-      bodySize: 0
+      bodySize: req.rawBody.length
     }
   };
+}
 
+// construct body
+app.use(function (req, res, next) {
+  req.bodyChunks = [];
+
+  req.on('data', function (chunk) {
+    req.bodyChunks.push(chunk);
+  });
+
+  req.on('end', function () {
+    req.rawBody = Buffer.concat(req.bodyChunks);
+    req.body = req.rawBody.toString('utf8');
+    req.bodySize = req.rawBody.length;
+    req.jsonBody = null;
+    req.formBody = null;
+    req.contentType = null;
+
+    // parse Content-Type
+    var type = req.headers['content-type'] ? typer.parse(req) : null;
+
+    if (type) {
+      req.contentType = [[type.type, type.subtype].join('/'), type.suffix].join('+').replace(/\+$/, '');
+    }
+
+    // create HAR Object
+    req.har = createHar(req);
+
+    // json
+    switch (req.contentType) {
+      case 'application/json':
+        req.jsonBody = JSON.parse(req.body);
+
+        next();
+        break;
+
+      case 'application/x-www-form-urlencoded':
+        req.formBody = qs.parse(req.body);
+
+        // update HAR object
+        req.har.request.postData.params = objectToArray(req.formBody);
+
+        next();
+        break;
+
+      case 'multipart/form-data':
+        var stream = require('stream');
+        var liner = new stream.Transform()
+
+        req.multiPartData = [];
+        req.multiPartParams = [];
+
+        // parse a file upload
+        var dice = new dicer({ boundary: type.parameters.boundary });
+
+        dice.on('part', function (part) {
+          part.on('data', function (data) {
+            req.multiPartData.push(data.toString('utf8'));
+          });
+
+          part.on('header', function (headers) {
+            var param = {};
+
+            if (headers['content-disposition']) {
+              var disposition = typer.parse(headers['content-disposition'][0].replace('form-data', 'form-data/text'));
+
+              param.name = disposition.parameters.name;
+
+              if (disposition.parameters.filename) {
+                param.fileName = disposition.parameters.filename;
+              }
+            }
+
+            if (headers['content-type']) {
+              var type = typer.parse(headers['content-type'][0]);
+
+              param.contentType = [[type.type, type.subtype].join('/'), type.suffix].join('+').replace(/\+$/, '');
+            }
+
+            req.multiPartParams.push(param);
+          });
+        });
+
+        dice.on('finish', function () {
+          req.multiPart = req.multiPartParams.map(function (param, index) {
+            param.value = req.multiPartData[index];
+            return param;
+          });
+
+          // update HAR object
+          req.har.request.postData.params = req.multiPart ? req.multiPart : []
+
+          next();
+        });
+
+        liner.pipe(dice);
+        liner.push(req.body);
+        break;
+
+        default:
+          next();
+    }
+  });
+});
+
+app.use(function (req, res, next) {
   res.set('X-Powered-By', 'httpconsole.com');
-
   next();
 });
 
@@ -133,30 +238,37 @@ app.all('/ips', function (req, res, next) {
   next();
 });
 
-app.all('/user-agent', function (req, res, next) {
+app.all('/agent', function (req, res, next) {
   res.body = req.headers['user-agent'];
 
   next();
 });
 
 app.all('/status/:status_code/:status_message?', function (req, res, next) {
+  console.log(req.params.status_message[0]);
+
   res.statusCode = req.params.status_code || 200;
-  res.statusMessage = req.params.status_message || 'OK';
+  res.statusMessage = req.params.status_message[0] || 'OK';
+
+  res.body = {
+    code: res.statusCode,
+    message: res.statusMessage
+  }
 
   next();
 });
 
 app.all('/headers', function (req, res, next) {
   res.body = {
-    headers: res.har.request.headers,
-    headersSize: res.har.request.headersSize
+    headers: req.har.request.headers,
+    headersSize: req.har.request.headersSize
   };
 
   next();
 });
 
 app.all('/request', function (req, res, next) {
-  res.body = res.har;
+  res.body = req.har;
 
   next();
 });
@@ -164,15 +276,16 @@ app.all('/request', function (req, res, next) {
 app.all('/gzip', function (req, res, next) {
   // force compression
   req.headers['accept-encoding'] = 'gzip';
-  res.body = res.har;
+  res.body = req.har;
 
   next();
 });
 
-app.post('/create', function (req, res, next) {
+app.post('/bin/create', function (req, res, next) {
   var id = uuid.v4();
   var client = redis.createClient();
-  var result = tv4.validateResult(req.body, schema);
+
+  var result = tv4.validateResult(req.jsonBody, schema.definitions.response);
 
   if (!result.valid) {
     res.status(400).body = {
@@ -192,16 +305,18 @@ app.post('/create', function (req, res, next) {
     console.log('redis error:', err);
   });
 
-  // send back the newly created id
-  res.body = id;
 
-  client.set(id, JSON.stringify(req.body));
+  client.set(id, JSON.stringify(req.jsonBody));
   client.quit();
+
+  // send back the newly created id
+  res.body = 'http://httpconsole.com/bin/' + id;
+  res.location(res.body);
 
   next();
 });
 
-app.all('/:uuid', function (req, res, next) {
+app.all('/bin/:uuid', function (req, res, next) {
   var client = redis.createClient();
 
   client.on('error', function (err) {
@@ -213,12 +328,27 @@ app.all('/:uuid', function (req, res, next) {
 
     if (value) {
       // log interaction
-      client.rpush(req.params.uuid + '-requests', JSON.stringify(res.har));
+      client.rpush(req.params.uuid + '-requests', JSON.stringify(req.har));
       client.ltrim(req.params.uuid + '-requests', 0, 100);
 
-      // return the original content
-      // TODO must manupilate response based on stored HAR
-      res.body = JSON.parse(value);
+      var har = JSON.parse(value);
+
+      // headers
+      har.headers.map(function (header) {
+        res.set(header.name, header.value);
+      })
+
+      // cookies
+      har.cookies.map(function (cookie) {
+        res.cookie(cookie.name, cookie.value);
+      })
+
+      // status
+      res.httpVersion = har.httpVersion.split('/')[1];
+      res.statusCode = har.status || 200;
+      res.statusMessage = har.statusText || 'OK';
+
+      res.body = har.content.text ? har.content.text : null;
     } else {
       res.status(404);
     }
@@ -229,7 +359,7 @@ app.all('/:uuid', function (req, res, next) {
   });
 });
 
-app.all('/:uuid/requests', function (req, res, next) {
+app.get('/bin/:uuid/requests', function (req, res, next) {
   var client = redis.createClient();
 
   client.on('error', function (err) {

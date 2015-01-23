@@ -24,7 +24,7 @@ var app = express();
 tv4.addSchema(schema);
 
 // fancy port
-app.listen(process.env.npm_package_config_port);
+app.listen(process.env.PORT || process.env.npm_package_config_port);
 
 // proxy ip resolution
 app.set('json spaces', 2);

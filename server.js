@@ -13,11 +13,23 @@ var redis           = require('redis');
 var schema          = require('./schema.json');
 var tv4             = require('tv4');
 var typer           = require('media-typer');
+var url             = require('url');
 var util            = require('util');
 var uuid            = require('node-uuid');
 var XML             = require('jsontoxml');
 var YAML            = require('yamljs');
 
+// connect to redis
+var dsn = url.parse(process.env.REDISCLOUD_URL || process.env.npm_package_config_redis);
+var client = redis.createClient(dsn.port, dsn.hostname, {
+  auth_pass: dsn.auth
+});
+
+client.on('error', function (err) {
+  console.log('redis error:', err);
+});
+
+// start express
 var app = express();
 
 // TV4
@@ -327,7 +339,6 @@ app.get('/bin/create', function (req, res, next) {
 
 app.post('/bin/create', function (req, res, next) {
   var id = uuid.v4();
-  var client = redis.createClient();
 
   var result = tv4.validateResult(req.jsonBody, schema.definitions.response);
 
@@ -345,13 +356,7 @@ app.post('/bin/create', function (req, res, next) {
     return next();
   }
 
-  client.on('error', function (err) {
-    console.log('redis error:', err);
-  });
-
-
   client.set(id, JSON.stringify(req.jsonBody));
-  client.quit();
 
   // send back the newly created id
   res.body = util.format('http://%s:%s/bin/%s', req.hostname, process.env.npm_package_config_port, id);
@@ -361,12 +366,6 @@ app.post('/bin/create', function (req, res, next) {
 });
 
 app.all('/bin/:uuid', function (req, res, next) {
-  var client = redis.createClient();
-
-  client.on('error', function (err) {
-    console.log('redis error:', err);
-  });
-
   client.get(req.params.uuid, function (err, value) {
     if (err) throw(err);
 
@@ -414,19 +413,11 @@ app.all('/bin/:uuid', function (req, res, next) {
       res.status(404);
     }
 
-    client.quit();
-
     next();
   });
 });
 
 app.get('/bin/:uuid/requests', function (req, res, next) {
-  var client = redis.createClient();
-
-  client.on('error', function (err) {
-    console.log('redis error:', err);
-  });
-
   res.view = 'bin/requests';
 
   client.lrange(req.params.uuid + '-requests', 0, -1, function (err, requests) {
@@ -448,8 +439,6 @@ app.get('/bin/:uuid/requests', function (req, res, next) {
         return JSON.parse(request);
       });
     }
-
-    client.quit();
 
     next();
   });

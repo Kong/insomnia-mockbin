@@ -1,0 +1,48 @@
+{
+  "status": 200,
+  "statusText": "OK",
+  "httpVersion": "HTTP/1.1",
+  "headers": [
+    {
+      "name": "Date",
+      "value": "Wed, 21 Jan 2015 23:36:35 GMT"
+    },
+    {
+      "name": "Server",
+      "value": "Apache"
+    },
+    {
+      "name": "Transfer-Encoding",
+      "value": "chunked"
+    },
+    {
+      "name": "Content-Type",
+      "value": "text/html; charset=UTF-8"
+    },
+    {
+      "name": "Cache-Control",
+      "value": "max-age=7200"
+    },
+    {
+      "name": "Connection",
+      "value": "Keep-Alive"
+    },
+    {
+      "name": "Keep-Alive",
+      "value": "timeout=5, max=50"
+    },
+    {
+      "name": "Expires",
+      "value": "Thu, 22 Jan 2015 01:36:35 GMT"
+    }
+  ],
+  "cookies": [],
+  "content": {
+    "size": 70972,
+    "mimeType": "text/html",
+    "compression": -21
+  },
+  "redirectURL": "",
+  "headersSize": 323,
+  "bodySize": 70993
+}

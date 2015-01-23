@@ -47,7 +47,8 @@
     "yamljs": "^0.2.1"
   },
   "config": {
-    "port": 8080
+    "port": 8080,
+    "redis": "redis://127.0.0.1:6379"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

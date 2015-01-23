@@ -8,7 +8,8 @@
   "bin": "./index.js",
   "license": "MIT",
   "engines": {
-    "node": ">=0.10.35"
+    "node": "0.10.x",
+    "npm": "0.4.x"
   },
   "repository": {
     "type": "git",

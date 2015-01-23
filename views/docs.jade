@@ -1,0 +1,83 @@
+extends layout.jade
+
+block content
+  h1 API Documentation
+
+  div.row.documentation
+    div.col-md-3
+      div.affix-container(data-spy='affix',  data-offset-top='150')
+        h4 Endpoints
+
+        ul.nav.nav-pills.nav-stacked.sidenav
+          li(role='presentation'): a(href='#-ip-') /ip
+          li(role='presentation'): a(href='#-ips-') /ips
+          li(role='presentation'): a(href='#-agent-') /agent
+          li(role='presentation'): a(href='#-status-code-reason-') /status/:code/:reason
+          li(role='presentation'): a(href='#-headers-') /headers
+          li(role='presentation'): a(href='#-request-') /request
+          li(role='presentation'): a(href='#-gzip-') /gzip
+          li(role='presentation'): a(href='#-bin-create-') /bin/create
+          li(role='presentation'): a(href='#-bin-id-') /bin/:id
+
+    div.col-md-9
+      div.markdown
+        include:markdown ../docs/api.md
+
+  form(method='GET', action='', enctype='text/plain')
+
+  script#template(type='text/template').
+    <div class="btn-group pull-right @-">
+      <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+        Try <span class="caret"></span>
+      </button>
+
+      <ul class="dropdown-menu" role="menu">
+        <li><a class="get" href="#">GET</a></li>
+        <li><a class="post" href="#">POST</a></li>
+        <li><a class="any" href="#">ANY</a></li>
+      </ul>
+    </div>
+
+
+  script(type='text/javascript').
+    var template = $('#template').text();
+
+    // attach listener
+    $('.markdown').on('click', '.dropdown-menu a', function (event) {
+      self = $(this);
+
+      var method = self.text();
+
+      if (method !== 'GET') {
+        event.preventDefault();
+
+        var enctypes = {
+          ANY: 'multipart/form-data',
+          POST: 'application/x-www-form-urlencoded'
+        };
+
+        $('form').attr({
+          'method': method,
+          'action': self.attr('href'),
+          'enctype': enctypes[method]
+        }).submit();
+      }
+    });
+
+    $('h2').each(function () {
+      var endpoint = $(this);
+      var href = endpoint.find('code').text()
+        .replace(':id', 'xxx')
+        .replace(':code', '418')
+        .replace(':reason', 'I\'m%20a%20teapot')
+
+      var className = href.replace(/\//g, '-');
+
+      var html = $(
+        template
+          .replace(/#/g, href)
+          .replace(/@/g, className)
+      );
+
+      $(html).prependTo(endpoint)
+    });

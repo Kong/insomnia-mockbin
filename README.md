@@ -1,3 +1,19 @@
+# HTTP Console [![Build Status][travis-image]][travis-url] [![version][npm-version]][npm-url]
+
+[![License][npm-license]][license-url]
+[![Downloads][npm-downloads]][npm-url]
+[![Dependencies][david-image]][david-url]
+[![Gitter][gitter-image]][gitter-url]
+
+## Table of contents
+[Features](#features) 
+[Installation](#installation) 
+[Documentation](#documentation) 
+[Bugs and feature requests](#bugs-and-feature-requests)
+[Contributing](#contributing)
+[Versioning](#versioning)
+[License](#license)
+
 ## Features
 
 - uses HAR format
@@ -6,510 +22,74 @@
 - allows for HTTP Method Override using the header `X-HTTP-Method-Override` or through query string parameter: `_method`
 - create custom bins for experimenting log collection
 
-## Endpoints
+## Installation
 
-### `/ip`
-
-> Returns Origin IP.
-
-###### Request
-
-> ```http
-> GET /ip HTTP/1.1
-> Host: httpconsole.com
-> Accept: application/json
->
-> ```
-
-###### Response
-
-> ```http
-> HTTP/1.1 200 OK
-> X-Powered-By: httpconsole.com
-> Vary: X-HTTP-Method-Override, Accept, Accept-Encoding
-> Content-Type: application/json; charset=utf-8
-> Content-Length: 12
-> Date: Wed, 21 Jan 2015 06:56:11 GMT
-> Connection: keep-alive
->
-> "10.10.10.1"
-> ```
-
-----
-
-### `/ips`
-
-> Parses the "X-Forwarded-For" ip address list and return an array. Otherwise, an empty array is returned.
-
-###### Request
-
-> ```http
-> GET /ips HTTP/1.1
-> Host: httpconsole.com
-> Accept: application/json
->
-> ```
-
-###### Response
-
-> ```http
-> HTTP/1.1 200 OK
-> X-Powered-By: httpconsole.com
-> Vary: X-HTTP-Method-Override, Accept, Accept-Encoding
-> Content-Type: application/json; charset=utf-8
-> Content-Length: 42
-> Date: Wed, 21 Jan 2015 06:56:11 GMT
-> Connection: keep-alive
->
-> ["10.10.10.1", "10.10.10.2", "10.10.10.3"]
-> ```
-
-----
-
-### `/agent`
-
-> Returns user-agent.
-
-###### Request
-
-> ```http
-> GET /agent HTTP/1.1
-> User-Agent: curl/7.35.0
-> Host: httpconsole.com
-> Accept: application/json
->
-> ```
-
-###### Response
-
-> ```http
-> HTTP/1.1 200 OK
-> X-Powered-By: httpconsole.com
-> Vary: X-HTTP-Method-Override, Accept, Accept-Encoding
-> Content-Type: application/json; charset=utf-8
-> Content-Length: 13
-> Date: Wed, 21 Jan 2015 06:56:11 GMT
-> Connection: keep-alive
->
-> "curl/7.35.0"
-> ```
-
-----
-
-### `/status/:code/:reason`
-
-> Returns a response with the given HTTP Status code and message in status line and body.
-
-###### Request
-
-> ```http
-> GET /status/20/Hello HTTP/1.1
-> Host: httpconsole.com
->
-> ```
-
-###### Response
-
-> ```http
-> HTTP/1.1 20 Hello
-> X-Powered-By: httpconsole.com
-> Vary: X-HTTP-Method-Override, Accept, Accept-Encoding
-> Content-Type: text/html; charset=utf-8
-> Content-Length: 38
-> Date: Thu, 22 Jan 2015 03:46:45 GMT
-> Connection: keep-alive
->
-> {
->   "code": 20,
->   "message": "Hello"
-> }
-> ```
-
-----
-
-### `/headers`
-
-> Returns list of all headers used in request as well as total number of bytes from the start of the HTTP request message until (and including) the double CRLF before the body.
-
-###### Request
-
-> ```http
-> GET /headers HTTP/1.1
-> Host: httpconsole.com
-> User-Agent: curl/7.35.0
-> X-Custom-Header: Foo
->
-> ```
-
-###### Response
-
-> ```http
-> HTTP/1.1 200 OK
-> X-Powered-By: httpconsole.com
-> Vary: X-HTTP-Method-Override, Accept, Accept-Encoding
-> Content-Type: application/json; charset=utf-8
-> Content-Length: 306
-> Date: Thu, 22 Jan 2015 03:49:12 GMT
-> Connection: keep-alive
->
-> {
->   "headers": [
->     {
->       "name": "x-custom-header",
->       "value": "Foo"
->     },
->     {
->       "name": "accept",
->       "value": "*/*"
->     },
->     {
->       "name": "host",
->       "value": "httpconsole.com"
->     },
->     {
->       "name": "user-agent",
->       "value": "curl/7.35.0"
->     }
->   ],
->   "headersSize": 124
-> }
-> ```
-
-----
-
-### `/request`
-
-> Returns back all the info sent through your request in HAR request format
-
-###### Request
-
-> ```http
-> POST /request?foo=bar&foo=baz&key=value HTTP/1.1
-> Host: httpconsole.com
-> User-Agent: curl/7.35.0
-> Cookie: Greet=Hello;World=Universe
-> X-Custom-Header: Foo
-> Accept: application/json
-> Content-Length: 7
-> Content-Type: application/x-www-form-urlencoded
->
-> foo=bar
-> ```
-
-###### Response
-
-> ```http
-> HTTP/1.1 200 OK
-> Vary: X-HTTP-Method-Override, Accept, Accept-Encoding
-> X-Powered-By: httpconsole.com
-> Content-Type: application/json; charset=utf-8
-> Content-Length: 1330
-> Date: Thu, 22 Jan 2015 04:02:43 GMT
-> Connection: keep-alive
->
-> {
->   "request": {
->     "method": "POST",
->     "url": "http://localhost/request?foo=bar&foo=baz&key=value",
->     "httpVersion": "HTTP/1.1",
->     "cookies": [
->       {
->         "name": "World",
->         "value": "Universe"
->       },
->       {
->         "name": "Greet",
->         "value": "Hello"
->       }
->     ],
->     "headers": [
->       {
->         "name": "content-type",
->         "value": "application/x-www-form-urlencoded"
->       },
->       {
->         "name": "content-length",
->         "value": "7"
->       },
->       {
->         "name": "accept",
->         "value": "application/json"
->       },
->       {
->         "name": "x-custom-header",
->         "value": "Foo"
->       },
->       {
->         "name": "cookie",
->         "value": "Greet=Hello;World=Universe"
->       },
->       {
->         "name": "host",
->         "value": "localhost:3000"
->       },
->       {
->         "name": "user-agent",
->         "value": "curl/7.35.0"
->       }
->     ],
->     "queryString": [
->       {
->         "name": "key",
->         "value": "value"
->       },
->       {
->         "name": "foo",
->         "value": [
->           "bar",
->           "baz"
->         ]
->       }
->     ],
->     "postData": {
->       "mimeType": "application/x-www-form-urlencoded",
->       "text": "foo=bar",
->       "params": [
->         {
->           "name": "foo",
->           "value": "bar"
->         }
->       ]
->     },
->     "headersSize": 267,
->     "bodySize": 7
->   }
-> }
-> ```
-
-----
-
-### `/gzip`
-
-> Just like [`/request`](-request) but with forced compression on response body *(returns back all the info sent through your request in HAR request format)*
-
-###### Request
-
-> ```http
-> POST /gzip?foo=bar&foo=baz&key=value HTTP/1.1
-> Host: httpconsole.com
-> User-Agent: curl/7.35.0
-> Cookie: Greet=Hello;World=Universe
-> X-Custom-Header: Foo
-> Accept: application/json
-> Content-Length: 7
-> Content-Type: application/x-www-form-urlencoded
->
-> foo=bar
-> ```
-
-###### Response
-
-> ```http
-> HTTP/1.1 200 OK
-> Vary: X-HTTP-Method-Override, Accept, Accept-Encoding
-> X-Powered-By: httpconsole.com
-> Content-Type: application/json; charset=utf-8
-> Content-Encoding: gzip
-> Date: Thu, 22 Jan 2015 04:08:04 GMT
-> Connection: keep-alive
-> Transfer-Encoding: chunked
->
-> [gzipped-data]
-> ```
-
-----
-
-### `POST /bin/create`
-
-> Creates a new **Bin** with a mocked aHTTP response as described by a [HAR Response Object](http://www.softwareishard.com/blog/har-12-spec/#response) body.
-
-> Responds with a `Location` header with the newly created **Bin**, e.g. `Location: http://httpconsole.com/b8b21988-64d4-4eb3-94c1-2055c3374b53` *(also repeated in the body)*
-
-- The [HAR Response Object](http://www.softwareishard.com/blog/har-12-spec/#response) sent at time of creation will determine what the response status, headers, content will be.
-- Newly created **Bin** will collect requests made to it and allow later inspection.
-- You can query the new **Bin** with any HTTP Method, Headers, Content you desire, everything will be logged for later access.
-- You can use this to see what your HTTP client is sending or to inspect and debug webhook requests.
-- Each **Bin** will log a maximum of 100 requests.
-
-###### Request
-
-> ```http
-> POST /create HTTP/1.1
-> User-Agent: curl/7.35.0
-> Host: httpconsole.com
-> Content-Type: application/json
-> Accept: application/json
-> Content-Length: 819
->
-> {
->   "status": 200,
->   "statusText": "OK",
->   "httpVersion": "HTTP/1.1",
->   "headers": [
->     {
->       "name": "Date",
->       "value": "Wed, 21 Jan 2015 23:36:35 GMT"
->     },
->     {
->       "name": "Server",
->       "value": "Apache"
->     },
->     {
->       "name": "Transfer-Encoding",
->       "value": "chunked"
->     },
->     {
->       "name": "Content-Type",
->       "value": "text/html; charset=UTF-8"
->     },
->     {
->       "name": "Cache-Control",
->       "value": "max-age=7200"
->     },
->     {
->       "name": "Connection",
->       "value": "Keep-Alive"
->     },
->     {
->       "name": "Keep-Alive",
->       "value": "timeout=5, max=50"
->     },
->     {
->       "name": "Expires",
->       "value": "Thu, 22 Jan 2015 01:36:35 GMT"
->     }
->   ],
->   "cookies": [],
->   "content": {
->     "size": 70972,
->     "mimeType": "text/html",
->     "compression": -21
->   },
->   "redirectURL": "",
->   "headersSize": 323,
->   "bodySize": 70993
-> }
-> ```
-
-###### Response
-
-> ```http
-> HTTP/1.1 200 OK
-> Vary: X-HTTP-Method-Override, Accept, Accept-Encoding
-> X-Powered-By: httpconsole.com
-> Location: http://httpconsole.com/b8b21988-64d4-4eb3-94c1-2055c3374b53
-> Content-Type: application/json; charset=utf-8
-> Content-Length: 38
-> Date: Thu, 22 Jan 2015 04:19:11 GMT
-> Connection: keep-alive
->
-> "b8b21988-64d4-4eb3-94c1-2055c3374b53"
-> ```
-
-----
-
-### `/bin/:id`
-
-> The [HAR Response Object](http://www.softwareishard.com/blog/har-12-spec/#response) sent at time of [creation](-/bin/create) will determine what the response status, headers, content will be.
-
-> If you wish to inspect this **Bin** in a browser window, be sure to add `?__inspect` to the url, otherwise, there's a chance you'll see the HAR Response content instead *(varies on your browser's `Accept` header)*
-
-###### Request
-
-> ```http
-> GET /bin/:id HTTP/1.1
-> Host: httpconsole.com
->
-> ```
-
-###### Response
-
-*see [HAR Response Object](http://www.softwareishard.com/blog/har-12-spec/#response) for more details.*
-
-> ```http
-> [response.httpVersion] [response.status] [response.statusText]
-> Vary: X-HTTP-Method-Override, Accept, Accept-Encoding
-> X-Powered-By: httpconsole.com
-> Content-Type: [response.content.mimeType]
-> Connection: keep-alive
-> [response.headers]
->
-> [response.content.text]
-> ```
-
-###### Example:
-
-The following HAR Response Object:
-
-```json
-{
-  "status": 700,
-  "statusText": "HELLO",
-  "httpVersion": "HTTP/1.1",
-  "headers": [
-    {
-      "name": "Date",
-      "value": "Wed, 21 Jan 2015 23:36:35 GMT"
-    },
-    {
-      "name": "Server",
-      "value": "Apache"
-    },
-    {
-      "name": "Transfer-Encoding",
-      "value": "chunked"
-    },
-    {
-      "name": "Content-Type",
-      "value": "text/html; charset=UTF-8"
-    },
-    {
-      "name": "Cache-Control",
-      "value": "max-age=7200"
-    },
-    {
-      "name": "Connection",
-      "value": "Keep-Alive"
-    },
-    {
-      "name": "Keep-Alive",
-      "value": "timeout=5, max=50"
-    },
-    {
-      "name": "Expires",
-      "value": "Thu, 22 Jan 2015 01:36:35 GMT"
-    }
-  ],
-  "cookies": [],
-  "content": {
-    "size": 37,
-    "mimeType": "text/html",
-    "text": "<html><body>Hello World</body></html>"
-  },
-  "redirectURL": "",
-  "headersSize": 323,
-  "bodySize": 37
-}
+```shell
+npm install httpconsole
 ```
 
-will generate the following HTTP response
+After installing the `npm` package you can now start the server like so:
 
-```http
-HTTP/1.1 700 HELLO
-X-Powered-By: httpconsole.com
-Date: Wed, 21 Jan 2015 23:36:35 GMT
-Server: Apache
-Transfer-Encoding: chunked
-Content-Type: text/html; charset=utf-8
-Cache-Control: max-age=7200
-Connection: Keep-Alive
-Keep-Alive: timeout=5, max=50
-Expires: Thu, 22 Jan 2015 01:36:35 GMT
-Vary: Accept, Accept-Encoding
-Content-Length: 37
-
-<html><body>Hello World</body></html>
+```shell
+npm start -- --port=80
 ```
+
+## Documentation
+
+Read the API documentation [here](docs/api.md).
+
+## Bugs and feature requests
+
+Have a bug or a feature request? Please first read the [issue guidelines](CONTRIBUTING.md#using-the-issue-tracker) and search for existing and closed issues. If your problem or idea is not addressed yet, [please open a new issue](/issues).
+
+## Contributing
+
+Please read through our [contributing guidelines](CONTRIBUTING.md). Included are directions for opening issues, coding standards, and notes on development.
+
+More over, if your pull request contains JavaScript patches or features, you must include relevant unit tests.
+
+Editor preferences are available in the [editor config](.editorconfig) for easy use in common text editors. Read more and download plugins at <http://editorconfig.org>.
+
+## Versioning
+
+For transparency into our release cycle and in striving to maintain backward compatibility, this project is maintained under the Semantic Versioning guidelines. Sometimes we screw up, but we'll adhere to these rules whenever possible.
+
+Releases will be numbered with the following format:
+
+`<major>.<minor>.<patch>`
+
+And constructed with the following guidelines:
+
+- Breaking backward compatibility **bumps the major** while resetting minor and patch
+- New additions without breaking backward compatibility **bumps the minor** while resetting the patch
+- Bug fixes and misc changes **bumps only the patch**
+
+For more information on SemVer, please visit <http://semver.org/>.
+
+## License
+
+Licensed under [The MIT License](LICENSE).
 
 ----
 
+Made with &#9829; at [Mashape](https://www.mashape.com/)
+
+[license-url]: https://github.com/ahmadnassri/httpconsole/blob/master/LICENSE
+
+[gitter-url]: https://gitter.im/ahmadnassri/httpconsole
+[gitter-image]: https://img.shields.io/badge/Gitter-Join%20Chat-blue.svg?style=flat
+
+[travis-url]: https://travis-ci.org/ahmadnassri/httpconsole
+[travis-image]: https://img.shields.io/travis/ahmadnassri/httpconsole.svg?style=flat
+
+[npm-url]: https://www.npmjs.com/package/httpconsole
+[npm-license]: https://img.shields.io/npm/l/httpconsole.svg?style=flat
+[npm-version]: https://badge.fury.io/js/httpconsole.svg
+[npm-downloads]: https://img.shields.io/npm/dm/httpconsole.svg?style=flat
+
+[codeclimate-url]: https://codeclimate.com/github/ahmadnassri/httpconsole
+[codeclimate-quality]: https://img.shields.io/codeclimate/github/ahmadnassri/httpconsole.svg?style=flat
+[codeclimate-coverage]: https://img.shields.io/codeclimate/coverage/github/ahmadnassri/httpconsole.svg?style=flat
+
+[david-url]: https://david-dm.org/ahmadnassri/httpconsole
+[david-image]: https://img.shields.io/david/ahmadnassri/httpconsole.svg?style=flat

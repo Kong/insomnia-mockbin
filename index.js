@@ -1,23 +1,24 @@
-var express         = require('express');
-var params          = require('express-params');
-var methodOverride  = require('method-override');
-var cookieParser    = require('cookie-parser');
 var compression     = require('compression');
-var morgan          = require('morgan');
+var cookieParser    = require('cookie-parser');
 var dicer           = require('dicer');
+var express         = require('express');
+var fs              = require('fs');
+var marked          = require('marked');
+var methodOverride  = require('method-override');
+var morgan          = require('morgan');
+var package         = require('./package.json');
+var params          = require('express-params');
 var qs              = require('qs');
-var tv4             = require('tv4');
-var YAML            = require('yamljs');
-var XML             = require('jsontoxml');
-var util            = require('util');
 var redis           = require('redis');
-var uuid            = require('node-uuid');
-var typer           = require('media-typer');
-
 var schema          = require('./schema.json');
+var tv4             = require('tv4');
+var typer           = require('media-typer');
+var util            = require('util');
+var uuid            = require('node-uuid');
+var XML             = require('jsontoxml');
+var YAML            = require('yamljs');
 
 var app = express();
-
 
 // TV4
 tv4.addSchema(schema);
@@ -32,12 +33,19 @@ app.enable('trust proxy');
 app.disable('x-powered-by');
 app.disable('etag');
 
+// jade locals
+app.locals.YAML = YAML;
+app.locals.XML = XML;
+
 // enable logging
 app.use(morgan('dev'));
 
 // override with different headers + query string; last one takes precedence
 app.use(methodOverride('X-HTTP-Method-Override'));
 app.use(methodOverride('_method'));
+
+// static files
+app.use('/static', express.static(__dirname + '/static'));
 
 // parse cookies
 app.use(cookieParser());
@@ -83,24 +91,35 @@ var createHar = function (req) {
   };
 
   return {
-    request: {
-      method: req.method,
-      url: req.protocol + '://' + req.hostname + req.originalUrl,
-      httpVersion: 'HTTP/1.1',
-      // TODO, add cookie details
-      cookies: objectToArray(req.cookies),
-      headers: objectToArray(req.headers),
-      queryString: objectToArray(req.query),
-      // TODO
-      postData: {
-        mimeType: req.contentType ? req.contentType : 'application/octet-stream',
-        text: req.body,
-        params: []
+    log: {
+      version: '1.2',
+      creator: {
+        name: 'httpconsole.com',
+        version: package.version
       },
-      headersSize: getReqHeaderSize(),
-      bodySize: req.rawBody.length
+      entries: [{
+        startedDateTime: new Date().toISOString(),
+        clientIPAddress: req.ip,
+        request: {
+          method: req.method,
+          url: req.protocol + '://' + req.hostname + req.originalUrl,
+          httpVersion: 'HTTP/1.1',
+          // TODO, add cookie details
+          cookies: objectToArray(req.cookies),
+          headers: objectToArray(req.headers),
+          queryString: objectToArray(req.query),
+          // TODO
+          postData: {
+            mimeType: req.contentType ? req.contentType : 'application/octet-stream',
+            text: req.body,
+            params: []
+          },
+          headersSize: getReqHeaderSize(),
+          bodySize: req.rawBody.length
+        }
+      }]
     }
-  };
+  }
 }
 
 // construct body
@@ -143,7 +162,7 @@ app.use(function (req, res, next) {
         req.formBody = qs.parse(req.body);
 
         // update HAR object
-        req.har.request.postData.params = objectToArray(req.formBody);
+        req.har.log.entries[0].request.postData.params = objectToArray(req.formBody);
 
         next();
         break;
@@ -193,7 +212,7 @@ app.use(function (req, res, next) {
           });
 
           // update HAR object
-          req.har.request.postData.params = req.multiPart ? req.multiPart : []
+          req.har.log.entries[0].request.postData.params = req.multiPart ? req.multiPart : []
 
           next();
         });
@@ -209,50 +228,56 @@ app.use(function (req, res, next) {
 });
 
 app.use(function (req, res, next) {
+  res.locals.path = req.path;
+  res.locals.hostname = req.hostname;
   res.set('X-Powered-By', 'httpconsole.com');
   next();
 });
 
+var status_message = /^[\w\t '\+]+$/;
+
 // setup custom params
 params.extend(app);
 app.param('status_code', Number);
-app.param('status_message', /^[\w\t ]+$/);
+app.param('status_message', status_message);
 app.param('uuid', /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i);
 
 // routes
 
-app.get('/', function (req, res) {
+app.get('/', function (req, res, next) {
   // TODO
   res.view = 'index';
   res.body = 'Hello World!';
+
+  next();
 });
 
 app.all('/ip', function (req, res, next) {
-  res.view = 'response';
+  res.view = 'default';
   res.body = req.ip;
 
   next();
 });
 
 app.all('/ips', function (req, res, next) {
-  res.view = 'response';
+  res.view = 'default';
   res.body = req.ips;
 
   next();
 });
 
 app.all('/agent', function (req, res, next) {
-  res.view = 'response';
+  res.view = 'default';
   res.body = req.headers['user-agent'];
 
   next();
 });
 
 app.all('/status/:status_code/:status_message?', function (req, res, next) {
-  res.view = 'status';
+  res.view = 'default';
 
   res.statusCode = req.params.status_code || 200;
-  res.statusMessage = req.params.status_message[0] || 'OK';
+  res.statusMessage = (req.params.status_message[0] || 'OK').replace(/\+/g, ' ');
 
   res.body = {
     code: res.statusCode,
@@ -263,25 +288,28 @@ app.all('/status/:status_code/:status_message?', function (req, res, next) {
 });
 
 app.all('/headers', function (req, res, next) {
-  res.view = 'response';
+  res.view = 'default';
 
   res.body = {
-    headers: req.har.request.headers,
-    headersSize: req.har.request.headersSize
+    headers: req.har.log.entries[0].request.headers,
+    headersSize: req.har.log.entries[0].request.headersSize
   };
 
   next();
 });
 
 app.all('/request', function (req, res, next) {
-  res.view = 'response';
+  res.view = 'default';
+  res.locals.yamlInline = 6;
+
   res.body = req.har;
 
   next();
 });
 
 app.all('/gzip', function (req, res, next) {
-  res.view = 'response';
+  res.view = 'default';
+  res.locals.yamlInline = 6;
 
   // force compression
   req.headers['accept-encoding'] = 'gzip';
@@ -343,33 +371,43 @@ app.all('/bin/:uuid', function (req, res, next) {
     if (err) throw(err);
 
     if (value) {
-      // log interaction
-      client.rpush(req.params.uuid + '-requests', JSON.stringify(req.har));
-      client.ltrim(req.params.uuid + '-requests', 0, 100);
-
       var har = JSON.parse(value);
 
-      // headers
-      har.headers.map(function (header) {
-        res.set(header.name, header.value);
-      })
+      // log interaction & send the appropriate response based on HAR
+      if (req.query.__inspect === undefined) {
+        client.rpush(req.params.uuid + '-requests', JSON.stringify(req.har.log.entries[0]));
+        client.ltrim(req.params.uuid + '-requests', 0, 100);
 
-      // cookies
-      har.cookies.map(function (cookie) {
-        res.cookie(cookie.name, cookie.value);
-      })
+        // headers
+        har.headers.map(function (header) {
+          res.set(header.name, header.value);
+        })
 
-      // status
-      res.httpVersion = har.httpVersion.split('/')[1];
-      res.statusCode = har.status || 200;
-      res.statusMessage = har.statusText || 'OK';
+        // cookies
+        har.cookies.map(function (cookie) {
+          res.cookie(cookie.name, cookie.value);
+        })
 
+        // status
+        res.httpVersion = har.httpVersion.split('/')[1];
+        res.statusCode = har.status || 200;
+        res.statusMessage = har.statusText || 'OK';
+
+        // special condition
+        if (har.redirectURL !== '') {
+          res.location(har.redirectURL);
+        }
+      }
+
+      // this is not even my final form!
       var type = typer.parse(har.content.mimeType).subtype;
 
       // only set the view template when its not an HTML response, or through manual override
       if (req.query.__inspect !== undefined || !~['html', 'xhtml'].indexOf(type)) {
         res.view = 'bin/view';
       }
+
+      res.locals.har = har;
 
       res.body = har.content.text ? har.content.text : null;
     } else {
@@ -394,12 +432,21 @@ app.get('/bin/:uuid/requests', function (req, res, next) {
   client.lrange(req.params.uuid + '-requests', 0, -1, function (err, requests) {
     if (err) throw(err);
 
+    res.body = {
+      log: {
+        version: '1.2',
+        creator: {
+          name: 'httpconsole.com',
+          version: package.version
+        }
+      },
+      entries: []
+    };
+
     if (requests.length) {
-      res.body = requests.map(function (request) {
+      res.body.log.entries = requests.map(function (request) {
         return JSON.parse(request);
       });
-    } else {
-      res.status(404);
     }
 
     client.quit();
@@ -408,8 +455,22 @@ app.get('/bin/:uuid/requests', function (req, res, next) {
   });
 });
 
+app.get('/docs', function (req, res, next) {
+  res.view = 'docs';
+
+  next();
+});
+
 //  content negotiation
 app.use(function (req, res, next) {
+  if (typeof res.body !== 'object') {
+    res.bodyXmlObj = {
+      result: res.body
+    }
+
+    res.locals.bodyXmlObj = res.bodyXmlObj;
+  };
+
   res.format({
     html: function () {
       if (res.view) {
@@ -418,7 +479,7 @@ app.use(function (req, res, next) {
         });
       }
 
-      res.send(YAML.stringify(res.body, 2));
+      res.send(YAML.stringify(res.body, 3, 2));
     },
 
     json: function () {
@@ -426,14 +487,14 @@ app.use(function (req, res, next) {
     },
 
     xml: function () {
-      res.send(XML(res.body, {
+      res.send(XML(res.bodyXmlObj || res.body, {
         prettyPrint: true,
         indent: '  '
-      }));
+      }).trim());
     },
 
     default: function () {
-      res.send(YAML.stringify(res.body, 2));
+      res.send(YAML.stringify(res.body, 3, 2));
     }
   });
 

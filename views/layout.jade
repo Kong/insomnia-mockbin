@@ -1,0 +1,120 @@
+- var title = 'HTTP Console';
+- var description = 'HTTP testing and moking Service';
+- var author = 'Ahmad Nassri';
+
+doctype html
+html(lang='en', itemscope, itemtype='http://schema.org/Article')
+  head(prefix='og: http://ogp.me/ns# article: http://ogp.me/ns/article# profile: http://ogp.me/ns/profile#')
+    title= title
+
+    meta(charset='utf-8')
+    meta(http-equiv='X-UA-Compatible', content='IE=edge,chrome=1')
+    meta(name='robots', content='index,follow')
+    meta(name='viewport', content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no')
+    meta(name='HandheldFriendly', content='True')
+    meta(name='MobileOptimized', content='320')
+    meta(name='author', content= author)
+    meta(name='description', content= description)
+
+    meta(itemprop='name', content='')
+    meta(itemprop='description', content= description)
+    meta(property='og:site_name', content= title)
+    meta(property='og:title', content= title)
+    meta(property='og:description', content= description)
+    meta(property='og:locale', content='en_US')
+    meta(property='og:url', content='http://httpconsole.com/')
+    meta(property='fb:admins', content='227304446')
+
+    meta(name='twitter:card', content='summary')
+    meta(name='twitter:site', content='@ahmadnassri')
+    meta(name='twitter:title', content= title)
+    meta(name='twitter:description', content= description)
+    meta(name='twitter:creator', content='@ahmadnassri')
+    meta(name='twitter:url', content='http://httpconsole.com')
+    meta(name='twitter:domain', content='httpconsole.com')
+
+    meta(name='google-site-verification', content='x0iiy6ABIM_ye0NrxlrXyD0xrLXuxuBIYFgnDcY_3Rk')
+    meta(name='msvalidate.01', content='1531230360BB8F364EDBA26FCF41604D')
+
+    link(rel='icon', type='image/png', href='/static/favicon.png')
+    link(rel='shortcut icon', href='/static/images/favicon.ico')
+    link(rel='canonical', href='http://httpconsole.com/')
+    link(rel='author', href='https://www.ahmadnassri.com/about')
+
+    link(rel='stylesheet', type='text/css', href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/css/bootstrap.min.css', media='all')
+    link(rel='stylesheet', type='text/css', href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic,700italic|Source+Code+Pro:400,500,600,700', media='all')
+    link(rel='stylesheet', type='text/css', href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css', media='all')
+    link(rel='stylesheet', type='text/css', href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/tomorrow.min.css', media='all')
+    link(rel='stylesheet', type='text/css', href='/static/style.css', media='all')
+
+    script(type='text/javascript', src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js')
+    script(type='text/javascript', src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/js/bootstrap.min.js')
+    script(type='text/javascript', src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js')
+
+  body(data-spy='scroll', data-target='.affix-container', data-offset='60')
+    nav.navbar.navbar-default.navbar-fixed-top
+      div.container
+        div.navbar-header
+          button.navbar-toggle.collapsed(type='button', data-toggle='collapse', data-target='#navbar')
+            span.sr-only Toggle navigation
+            span.icon-bar
+            span.icon-bar
+            span.icon-bar
+          a.navbar-brand(href='/')
+            strong.logo HTTP
+            span  Console
+
+        div.navbar-text.navbar-right
+          a.twitter-share-button(href='https://twitter.com/share', data-url='http://httpconsole.com', data-via='AhmadNassri', data-related='Mashape', data-hashtags='httpconsoleapi', data-dnt='true') Tweet
+          a.github-button(href='https://github.com/ahmadnassri/httpconsole', data-icon='octicon-star', data-count-href='/ahmadnassri/httpconsole/stargazers', data-count-api='/repos/ahmadnassri/httpconsole#stargazers_count') Star
+
+        div#navbar.collapse.navbar-collapse
+          ul.nav.navbar-nav
+            for link, name in [{name: 'Home', href: '/'}, {name: 'Docs', href: '/docs'}, {name: 'Create Endpoint', href: '/bin/create'}]
+              li(class={active: path === link.href}): a(href= link.href)= link.name
+
+    div.container
+      block content
+
+    footer
+      nav.navbar.navbar-default.navbar-fixed-bottom
+        div.container
+          ul.nav.navbar-nav
+            li: a(href='https://github.com/ahmadnassri/httpconsole/issues', data-icon='octicon-issue-opened', data-count-api='/repos/ahmadnassri/httpconsole#open_issues_count') Issues
+            li: a(href='https://github.com/ahmadnassri/httpconsole', data-icon='octicon-eye', data-count-href='/ahmadnassri/httpconsole/watchers', data-count-api='/repos/ahmadnassri/httpconsole#subscribers_count') Watch
+            li: a(href='https://github.com/ahmadnassri/httpconsole', data-icon='octicon-star', data-count-href='/ahmadnassri/httpconsole/stargazers', data-count-api='/repos/ahmadnassri/httpconsole#stargazers_count') Star
+            li: a(href='https://github.com/ahmadnassri/httpconsole', data-icon='octicon-git-branch', data-count-href='/ahmadnassri/httpconsole/network', data-count-api='/repos/ahmadnassri/httpconsole#forks_count') Fork
+
+          ul.nav.navbar-nav.navbar-right
+            li
+              a(href='https://www.mashape.com/') Made with
+                span.text-danger  &hearts;
+                |  at
+                span.mashape  Mashape
+
+      script(type='text/javascript', async, defer, id='twitter-wjs', src='https://platform.twitter.com/widgets.js')
+      script(type='text/javascript', async, defer, id='github-bjs', src='https://buttons.github.io/buttons.js')
+
+      script(type='text/javascript').
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        ga('create', 'UA-xxxxxx-xx', 'httpconsole.com');
+        ga('require', 'displayfeatures');
+        ga('require', 'linkid', 'linkid.js');
+        ga('send', 'pageview');
+
+        $('.affix-container').on('affix.bs.affix', function () {
+          var self = $(this);
+          self.data('original-width', self.width());
+        });
+
+        $('.affix-container').on('affixed.bs.affix', function () {
+          var self = $(this);
+          self.css('min-width', self.data('original-width'));
+        });
+
+        // highlight.js
+        $(document).ready(function() {
+          $('pre code').each(function(i, block) {
+            hljs.highlightBlock(block);
+          });
+        });

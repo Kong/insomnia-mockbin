@@ -1,0 +1,4 @@
+extends ../layout.jade
+
+block content
+  pre: code= YAML.stringify(data, yamlInline || 3, 2)

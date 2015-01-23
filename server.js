@@ -24,7 +24,7 @@ var dsn = url.parse(process.env.REDISCLOUD_URL || process.env.npm_package_config
 
 // connect to redis
 var client = redis.createClient(dsn.port, dsn.hostname, {
-  auth_pass: dsn.auth.split(':')[1]
+  auth_pass: dsn.auth ? dsn.auth.split(':')[1] : false
 });
 
 client.on('error', function (err) {

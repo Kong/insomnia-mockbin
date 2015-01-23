@@ -19,10 +19,12 @@ var uuid            = require('node-uuid');
 var XML             = require('jsontoxml');
 var YAML            = require('yamljs');
 
-// connect to redis
+// parse redis dsn
 var dsn = url.parse(process.env.REDISCLOUD_URL || process.env.npm_package_config_redis);
+
+// connect to redis
 var client = redis.createClient(dsn.port, dsn.hostname, {
-  auth_pass: dsn.auth
+  auth_pass: dsn.auth.split(':')[1]
 });
 
 client.on('error', function (err) {

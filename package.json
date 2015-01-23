@@ -9,7 +9,7 @@
   "license": "MIT",
   "engines": {
     "node": ">=0.10.35",
-    "npm": ">=1.4"
+    "npm": ">=1.4.28"
   },
   "repository": {
     "type": "git",

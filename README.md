@@ -6,13 +6,13 @@
 [![Gitter][gitter-image]][gitter-url]
 
 ## Table of contents
-[Features](#features) 
-[Installation](#installation) 
-[Documentation](#documentation) 
-[Bugs and feature requests](#bugs-and-feature-requests)
-[Contributing](#contributing)
-[Versioning](#versioning)
-[License](#license)
+- [Features](#features) 
+- [Installation](#installation) 
+- [Documentation](#documentation) 
+- [Bugs and feature requests](#bugs-and-feature-requests)
+- [Contributing](#contributing)
+- [Versioning](#versioning)
+- [License](#license)
 
 ## Features
 
@@ -31,7 +31,12 @@ npm install httpconsole
 After installing the `npm` package you can now start the server like so:
 
 ```shell
-npm start -- --port=80
+npm start
+```
+By Default the server will run on port `8080`, you can customize the port like so: 
+
+```shell
+npm config set httpconsole:port 8001
 ```
 
 ## Documentation

@@ -24,7 +24,7 @@ var app = express();
 tv4.addSchema(schema);
 
 // fancy port
-app.listen(3000);
+app.listen(process.env.npm_package_config_port);
 
 // proxy ip resolution
 app.set('json spaces', 2);
@@ -354,7 +354,7 @@ app.post('/bin/create', function (req, res, next) {
   client.quit();
 
   // send back the newly created id
-  res.body = 'http://httpconsole.com/bin/' + id;
+  res.body = util.format('http://%s:%s/bin/%s', req.hostname, process.env.npm_package_config_port, id);
   res.location(res.body);
 
   next();

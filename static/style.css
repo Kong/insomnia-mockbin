@@ -1,0 +1,173 @@
+body {
+  position: relative;
+
+  color: #626B73;
+  font-size: 15px;
+  padding: 70px 0;
+  font-family: 'Source Sans Pro', sans-serif;
+}
+
+h1 {
+  color: #113652;
+  font-weight: 600;
+  margin-bottom: 30px;
+}
+
+h2 {
+  padding-top: 60px;
+  margin-top: -60px;
+}
+
+h4 {
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+code, kbd, pre, samp {
+  font-family: 'Source Code Pro', Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+p code {
+  margin: 0 2px;
+  color: #4d4d4c;
+  border: 1px solid #F0F1F2;
+  background-color: #FCFCFC;
+}
+
+pre {
+  border-color: #F0F1F2;
+  background-color: #FCFCFC;
+}
+
+.hljs {
+  background-color: #FCFCFC;
+}
+
+.mashape {
+  color: #66b745;
+}
+
+.logo {
+  color: #FF9900;
+}
+
+.sidenav > li > a {
+  color: #626B73;
+  padding: 5px 10px;
+}
+
+.nav-stacked > li + li {
+  margin-top: 5px;
+}
+
+.sidenav > li > a:focus,
+.sidenav > li > a:hover {
+  color: #41484C;
+  background-color: #F2FAFF;
+}
+
+.nav-pills > li.active > a,
+.nav-pills > li.active > a:focus,
+.nav-pills > li.active > a:hover {
+  color: #41484C;
+  font-weight: 600;
+  border: 1px solid #E6EDF2;
+  background-color: #F2FAFF;
+}
+
+.navbar-default {
+  border-color: #EEEEEE;
+  background-color: #FFFFFF;
+}
+
+.navbar-default .navbar-brand {
+  color: #263D4D;
+  position: relative;
+}
+
+.navbar-default .navbar-brand::after {
+  content: '';
+  display: block;
+  position: absolute;
+  z-index: 1040;
+  top: 12.5px;
+  right: 0;
+  width: 2px;
+  height: 25px;
+  margin-left: 15px;
+  background-color: #EEEEEE;
+}
+
+.navbar-default .navbar-nav > li > a {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.navbar-default .navbar-nav > .active > a,
+.navbar-default .navbar-nav > .active > a:focus,
+.navbar-default .navbar-nav > .active > a:hover {
+  color: #1A5580;
+  background-color: #FFFFFF;
+}
+
+.navbar-default .navbar-nav > li > a:hover {
+  color: #1A5580;
+}
+
+.affix-container {
+  top: 60px;
+}
+
+.markdown h6 {
+  margin: 20px 0;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.markdown h2:not(:first-of-type) {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.markdown h2 code {
+  font-size: 100%;
+  font-weight: 600;
+  font-family: 'Source Sans Pro', sans-serif;
+  color: #1A5580;
+  background-color: transparent;
+  border-radius: 0;
+
+  display: block;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #E9F0F5;
+}
+
+.markdown p {
+  padding: 15px 0;
+  border-bottom: 1px solid #E9F0F5;
+}
+
+.markdown p + p {
+  padding: 0;
+  border-bottom: 0;
+}
+
+.markdown p + li {
+  border-bottom: 0;
+}
+
+.markdown blockquote {
+  padding: 0;
+  margin: 0;
+  border: 0;
+}
+
+.markdown hr {
+  display: none;
+}
+
+.documentation .-bin-create- .get,
+.documentation .-bin-create- .any {
+  display: none;
+}

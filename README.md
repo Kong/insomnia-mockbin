@@ -1,5 +1,7 @@
 # HTTP Console [![Build Status][travis-image]][travis-url] [![version][npm-version]][npm-url]
 
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/ahmadnassri/HTTPConsole?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 [![License][npm-license]][license-url]
 [![Downloads][npm-downloads]][npm-url]
 [![Dependencies][david-image]][david-url]

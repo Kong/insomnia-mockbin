@@ -361,7 +361,7 @@ app.post('/bin/create', function (req, res, next) {
   client.set(id, JSON.stringify(req.jsonBody));
 
   // send back the newly created id
-  res.body = util.format('http://%s:%s/bin/%s', req.hostname, process.env.npm_package_config_port, id);
+  res.body = util.format('http://%s:%s/bin/%s', req.hostname, process.env.npm_package_config_port_mask || process.env.npm_package_config_port, id);
   res.location(res.body);
 
   next();

@@ -39,6 +39,12 @@ By Default the server will run on port `8080`, you can customize the port like s
 npm config set httpconsole:port 8001
 ```
 
+**note**: in environments such as Heroku, the port which the server is running on, is forwarded to another, by default the application will use the port defined above in all responses (e.g. redirects), if you wish to use a masked port, set the following config:
+
+```shell
+npm config set httpconsole:port_mask 80
+```
+
 ## Documentation
 
 Read the API documentation [here](docs/api.md).

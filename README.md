@@ -1,10 +1,9 @@
-# HTTP Console [![version][npm-version]][npm-url]
+# HTTP Console [![version][npm-version]][npm-url] [![Deploy][docker-image]][docker-url]
 
 [![Build Status][travis-image]][travis-url]
 [![Downloads][npm-downloads]][npm-url]
 [![Dependencies][david-image]][david-url]
 [![Gitter][gitter-image]][gitter-url]
-[![Deploy][docker-image]][docker-url]
 [![License][npm-license]][license-url]
 
 
@@ -33,6 +32,7 @@ install from source or through [npm](https://www.npmjs.com/):
 ```shell
 npm install httpconsole
 ```
+
 
 *read more on [Installation](docs/install.md)*.
 
@@ -123,7 +123,7 @@ Made with &#9829; at [Mashape](https://www.mashape.com/)
 [gitter-url]: https://gitter.im/ahmadnassri/httpconsole
 [gitter-image]: https://img.shields.io/badge/Gitter-Join%20Chat-blue.svg?style=flat
 
-[travis-url]: https://travis-ci.org/ahmadnassri/httpconsole
+[travis-url]: https://travis-ci.org/ahmadnassri/HTTPConsole
 [travis-image]: https://img.shields.io/travis/ahmadnassri/httpconsole.svg?style=flat
 
 [npm-url]: https://www.npmjs.com/package/httpconsole

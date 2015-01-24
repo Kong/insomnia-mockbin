@@ -52,7 +52,7 @@ describe('Simple Endpoints', function () {
     req.headers('Accept', 'text/plain');
 
     req.end(function (res) {
-      res.body.should.equal('::ffff:127.0.0.1');
+      res.body.should.match(/127\.0\.0\.1/);
       done();
     });
   });

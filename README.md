@@ -124,7 +124,7 @@ Made with &#9829; at [Mashape](https://www.mashape.com/)
 [gitter-image]: https://img.shields.io/badge/Gitter-Join%20Chat-blue.svg?style=flat
 
 [travis-url]: https://travis-ci.org/ahmadnassri/HTTPConsole
-[travis-image]: https://img.shields.io/travis/ahmadnassri/httpconsole.svg?style=flat
+[travis-image]: https://img.shields.io/travis/ahmadnassri/HTTPConsole.svg?style=flat
 
 [npm-url]: https://www.npmjs.com/package/httpconsole
 [npm-license]: https://img.shields.io/npm/l/httpconsole.svg?style=flat

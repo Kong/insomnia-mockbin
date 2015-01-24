@@ -332,6 +332,34 @@ app.all('/gzip', function (req, res, next) {
   next();
 });
 
+app.all('/stream/:chunks', function (req, res, next) {
+
+  res.view = 'default';
+
+  res.writeHead(200, {
+    'Content-Type': 'text/plain; charset=utf-8',
+    'Transfer-Encoding': 'chunked'
+  })
+
+  // set default chunks to 10
+  var chunks = req.params.chunks || 10;
+
+  // max out chunks at 100
+  if (chunks > 100) chunks = 100;
+
+  var count = 1
+
+  while (count <= chunks) {
+    res.write(JSON.stringify({
+      type: "stream",
+      chunk: count++
+    })+'\n');
+  };
+
+  res.end();
+
+});
+
 // TODO display web form
 app.get('/bin/create', function (req, res, next) {
   res.view = 'bin/create';

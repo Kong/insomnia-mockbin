@@ -311,6 +311,35 @@ Just like [`/request`](-request) but with forced compression on response body *(
 
 ----
 
+## `/stream/:chunks`
+
+Streams a chunked response, defaults to 10 chunks with an upper limit of 100
+
+###### Request
+
+> ```http
+> GET /stream/4 HTTP/1.1
+> Host: httpconsole.com
+> ```
+
+###### Response
+
+> ```http
+> HTTP/1.1 200 OK
+> X-Powered-By: httpconsole.com
+> Vary: X-HTTP-Method-Override, Accept, Accept-Encoding
+> Content-Type: text/plain
+> Transfer-Encoding: chunked
+> Date: Wed, 24 Jan 2015 12:29:58 GMT
+> Connection: keep-alive
+>
+> {"type":"stream","chunk":1}
+> {"type":"stream","chunk":2}
+> {"type":"stream","chunk":3}
+> ```
+
+----
+
 ## `/bin/create`
 
 

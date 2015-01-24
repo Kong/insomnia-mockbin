@@ -1,12 +1,13 @@
+'use strict';
+
 var compression     = require('compression');
 var cookieParser    = require('cookie-parser');
 var dicer           = require('dicer');
+var dotenv          = require('dotenv');
 var express         = require('express');
-var fs              = require('fs');
-var marked          = require('marked');
 var methodOverride  = require('method-override');
 var morgan          = require('morgan');
-var package         = require('./package.json');
+var pkg             = require('./package.json');
 var params          = require('express-params');
 var qs              = require('qs');
 var redis           = require('redis');
@@ -19,12 +20,15 @@ var uuid            = require('node-uuid');
 var XML             = require('jsontoxml');
 var YAML            = require('yamljs');
 
+// load .env
+dotenv.load();
+
 // parse redis dsn
-var dsn = url.parse(process.env.REDISCLOUD_URL || process.env.npm_package_config_redis);
+var dsn = url.parse(process.env.REDIS || process.env.REDISCLOUD_URL || process.env.npm_package_config_redis);
 
 // connect to redis
 var client = redis.createClient(dsn.port, dsn.hostname, {
-  auth_pass: dsn.auth ? dsn.auth.split(':')[1] : false
+  auth_pass: dsn.auth ? dsn.auth.split(':').pop() : false
 });
 
 client.on('error', function (err) {
@@ -109,7 +113,7 @@ var createHar = function (req) {
       version: '1.2',
       creator: {
         name: 'httpconsole.com',
-        version: package.version
+        version: pkg.version
       },
       entries: [{
         startedDateTime: new Date().toISOString(),
@@ -133,8 +137,8 @@ var createHar = function (req) {
         }
       }]
     }
-  }
-}
+  };
+};
 
 // construct body
 app.use(function (req, res, next) {
@@ -183,13 +187,15 @@ app.use(function (req, res, next) {
 
       case 'multipart/form-data':
         var stream = require('stream');
-        var liner = new stream.Transform()
+        var liner = new stream.Transform();
 
         req.multiPartData = [];
         req.multiPartParams = [];
 
         // parse a file upload
-        var dice = new dicer({ boundary: type.parameters.boundary });
+        var dice = new dicer({
+          boundary: type.parameters.boundary
+        });
 
         dice.on('part', function (part) {
           part.on('data', function (data) {
@@ -226,7 +232,7 @@ app.use(function (req, res, next) {
           });
 
           // update HAR object
-          req.har.log.entries[0].request.postData.params = req.multiPart ? req.multiPart : []
+          req.har.log.entries[0].request.postData.params = req.multiPart ? req.multiPart : [];
 
           next();
         });
@@ -235,8 +241,8 @@ app.use(function (req, res, next) {
         liner.push(req.body);
         break;
 
-        default:
-          next();
+      default:
+        next();
     }
   });
 });
@@ -296,7 +302,7 @@ app.all('/status/:status_code/:status_message?', function (req, res, next) {
   res.body = {
     code: res.statusCode,
     message: res.statusMessage
-  }
+  };
 
   next();
 });
@@ -369,7 +375,9 @@ app.post('/bin/create', function (req, res, next) {
 
 app.all('/bin/:uuid', function (req, res, next) {
   client.get(req.params.uuid, function (err, value) {
-    if (err) throw(err);
+    if (err) {
+      throw(err);
+    }
 
     if (value) {
       var har = JSON.parse(value);
@@ -382,12 +390,12 @@ app.all('/bin/:uuid', function (req, res, next) {
         // headers
         har.headers.map(function (header) {
           res.set(header.name, header.value);
-        })
+        });
 
         // cookies
         har.cookies.map(function (cookie) {
           res.cookie(cookie.name, cookie.value);
-        })
+        });
 
         // status
         res.httpVersion = har.httpVersion.split('/')[1];
@@ -423,14 +431,16 @@ app.get('/bin/:uuid/requests', function (req, res, next) {
   res.view = 'bin/requests';
 
   client.lrange(req.params.uuid + '-requests', 0, -1, function (err, requests) {
-    if (err) throw(err);
+    if (err) {
+      throw(err);
+    }
 
     res.body = {
       log: {
         version: '1.2',
         creator: {
           name: 'httpconsole.com',
-          version: package.version
+          version: pkg.version
         }
       },
       entries: []
@@ -457,10 +467,10 @@ app.use(function (req, res, next) {
   if (typeof res.body !== 'object') {
     res.bodyXmlObj = {
       result: res.body
-    }
+    };
 
     res.locals.bodyXmlObj = res.bodyXmlObj;
-  };
+  }
 
   res.format({
     html: function () {

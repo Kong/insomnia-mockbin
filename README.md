@@ -1,13 +1,17 @@
-# HTTP Console [![Build Status][travis-image]][travis-url] [![version][npm-version]][npm-url]
+# HTTP Console [![version][npm-version]][npm-url]
 
-[![License][npm-license]][license-url]
+[![Build Status][travis-image]][travis-url]
 [![Downloads][npm-downloads]][npm-url]
 [![Dependencies][david-image]][david-url]
 [![Gitter][gitter-image]][gitter-url]
+[![Deploy][docker-image]][docker-url]
+[![License][npm-license]][license-url]
+
 
 ## Table of contents
 - [Features](#features) 
 - [Installation](#installation) 
+- [Usage](#usage) 
 - [Documentation](#documentation) 
 - [Bugs and feature requests](#bugs-and-feature-requests)
 - [Contributing](#contributing)
@@ -24,15 +28,28 @@
 
 ## Installation
 
+install from source or through [npm](https://www.npmjs.com/):
+
 ```shell
 npm install httpconsole
 ```
 
-After installing the `npm` package you can now start the server like so:
+*read more on [Installation](docs/install.md)*.
+
+### Requirements
+
+other than the dependencies listed in [package.json](package.json) The following are required:
+
+- [Redis](http://redis.io/)
+
+### Configuration
+
+you will need to tell HTTP Console where Redis is:
 
 ```shell
-npm start
+npm config set httpconsole:redis redis://127.0.0.1:6379
 ```
+
 By Default the server will run on port `8080`, you can customize the port like so: 
 
 ```shell
@@ -45,9 +62,25 @@ npm config set httpconsole:port 8001
 npm config set httpconsole:port_mask 80
 ```
 
+*read more on [Configuration](docs/config.md)*.
+
+### Running
+
+After installing the `npm` package you can now start the server like so:
+
+```shell
+npm start
+```
+
+## Usage
+
+Once installed, visit [http://localhost:8080/](http://localhost:8080/) to display the web view. *(8080 is [default port](/docs/config.md#port))*
+
+*read more on [Usage](docs/usage.md)*.
+
 ## Documentation
 
-Read the API documentation [here](docs/api.md).
+Read the full API documentation [here](docs/api.md).
 
 ## Bugs and feature requests
 
@@ -104,3 +137,6 @@ Made with &#9829; at [Mashape](https://www.mashape.com/)
 
 [david-url]: https://david-dm.org/ahmadnassri/httpconsole
 [david-image]: https://img.shields.io/david/ahmadnassri/httpconsole.svg?style=flat
+
+[docker-image]: https://www.herokucdn.com/deploy/button.svg
+[docker-url]: https://heroku.com/deploy?template=https://github.com/ahmadnassri/httpconsole

@@ -1,0 +1,18 @@
+{
+  "name": "httpconsole",
+  "description": "Mock, Test & Track HTTP calls!",
+  "repository": "https://github.com/ahmadnassri/httpconsole",
+  "website": "http://httpconsole.com/",
+  "success_url": "/",
+  "addons": [
+    "openredis"
+  ],
+  "keywords": [
+    "HAR",
+    "HTTP",
+    "API",
+    "Test",
+    "Testing",
+    "Console"
+  ]
+}

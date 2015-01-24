@@ -10,5 +10,14 @@
   "quotmark": "single",
   "strict": false,
   "undef": true,
-  "unused": "vars"
+  "unused": "vars",
+  "globals"   : {
+    /* MOCHA */
+    "describe"   : false,
+    "it"         : false,
+    "before"     : false,
+    "beforeEach" : false,
+    "after"      : false,
+    "afterEach"  : false
+  }
 }

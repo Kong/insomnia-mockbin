@@ -1,0 +1,14 @@
+{
+  "boss": true,
+  "eqeqeq": true,
+  "eqnull": true,
+  "latedef": true,
+  "laxbreak": true,
+  "newcap": false,
+  "noarg": true,
+  "node": true,
+  "quotmark": "single",
+  "strict": false,
+  "undef": true,
+  "unused": "vars"
+}

@@ -1,4 +1,4 @@
-# HTTP Console [![version][npm-version]][npm-url] [![Deploy][docker-image]][docker-url] [![License][npm-license]][license-url]
+# HTTP Console [![version][npm-version]][npm-url] [![License][npm-license]][license-url]
 
 [![Build Status][travis-image]][travis-url]
 [![Downloads][npm-downloads]][npm-url]
@@ -34,8 +34,12 @@ install from source or through [npm](https://www.npmjs.com/):
 npm install httpconsole
 ```
 
+### Heroku
+
+[![Deploy][docker-image]][docker-url]
 
 *read more on [Installation](docs/install.md)*.
+
 
 ### Requirements
 
@@ -122,22 +126,22 @@ Made with &#9829; at [Mashape](https://www.mashape.com/)
 [license-url]: https://github.com/ahmadnassri/HTTPConsole/blob/master/LICENSE
 
 [gitter-url]: https://gitter.im/ahmadnassri/HTTPConsole
-[gitter-image]: https://img.shields.io/badge/Gitter-Join%20Chat-blue.svg?style=flat
+[gitter-image]: https://img.shields.io/badge/Gitter-Join%20Chat-blue.svg?style=flat-square
 
 [travis-url]: https://travis-ci.org/ahmadnassri/HTTPConsole
-[travis-image]: https://img.shields.io/travis/ahmadnassri/HTTPConsole.svg?style=flat
+[travis-image]: https://img.shields.io/travis/ahmadnassri/HTTPConsole.svg?style=flat-square
 
 [npm-url]: https://www.npmjs.com/package/httpconsole
-[npm-license]: https://img.shields.io/npm/l/httpconsole.svg?style=flat
+[npm-license]: https://img.shields.io/npm/l/httpconsole.svg?style=flat-square
 [npm-version]: https://badge.fury.io/js/httpconsole.svg
-[npm-downloads]: https://img.shields.io/npm/dm/httpconsole.svg?style=flat
+[npm-downloads]: https://img.shields.io/npm/dm/httpconsole.svg?style=flat-square
 
 [codeclimate-url]: https://codeclimate.com/github/ahmadnassri/HTTPConsole
-[codeclimate-quality]: https://img.shields.io/codeclimate/github/ahmadnassri/HTTPConsole.svg?style=flat
-[codeclimate-coverage]: https://img.shields.io/codeclimate/coverage/github/ahmadnassri/HTTPConsole.svg?style=flat
+[codeclimate-quality]: https://img.shields.io/codeclimate/github/ahmadnassri/HTTPConsole.svg?style=flat-square
+[codeclimate-coverage]: https://img.shields.io/codeclimate/coverage/github/ahmadnassri/HTTPConsole.svg?style=flat-square
 
 [david-url]: https://david-dm.org/ahmadnassri/HTTPConsole
-[david-image]: https://img.shields.io/david/ahmadnassri/HTTPConsole.svg?style=flat
+[david-image]: https://img.shields.io/david/ahmadnassri/HTTPConsole.svg?style=flat-square
 
 [docker-image]: https://www.herokucdn.com/deploy/button.svg
 [docker-url]: https://heroku.com/deploy?template=https://github.com/ahmadnassri/HTTPConsole

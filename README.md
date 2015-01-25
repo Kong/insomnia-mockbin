@@ -119,25 +119,25 @@ Licensed under [The MIT License](LICENSE).
 
 Made with &#9829; at [Mashape](https://www.mashape.com/)
 
-[license-url]: https://github.com/ahmadnassri/httpconsole/blob/master/LICENSE
+[license-url]: https://github.com/ahmadnassri/HTTPConsole/blob/master/LICENSE
 
-[gitter-url]: https://gitter.im/ahmadnassri/httpconsole
+[gitter-url]: https://gitter.im/ahmadnassri/HTTPConsole
 [gitter-image]: https://img.shields.io/badge/Gitter-Join%20Chat-blue.svg?style=flat
 
 [travis-url]: https://travis-ci.org/ahmadnassri/HTTPConsole
 [travis-image]: https://img.shields.io/travis/ahmadnassri/HTTPConsole.svg?style=flat
 
-[npm-url]: https://www.npmjs.com/package/httpconsole
-[npm-license]: https://img.shields.io/npm/l/httpconsole.svg?style=flat
-[npm-version]: https://badge.fury.io/js/httpconsole.svg
-[npm-downloads]: https://img.shields.io/npm/dm/httpconsole.svg?style=flat
+[npm-url]: https://www.npmjs.com/package/HTTPConsole
+[npm-license]: https://img.shields.io/npm/l/HTTPConsole.svg?style=flat
+[npm-version]: https://badge.fury.io/js/HTTPConsole.svg
+[npm-downloads]: https://img.shields.io/npm/dm/HTTPConsole.svg?style=flat
 
-[codeclimate-url]: https://codeclimate.com/github/ahmadnassri/httpconsole
-[codeclimate-quality]: https://img.shields.io/codeclimate/github/ahmadnassri/httpconsole.svg?style=flat
-[codeclimate-coverage]: https://img.shields.io/codeclimate/coverage/github/ahmadnassri/httpconsole.svg?style=flat
+[codeclimate-url]: https://codeclimate.com/github/ahmadnassri/HTTPConsole
+[codeclimate-quality]: https://img.shields.io/codeclimate/github/ahmadnassri/HTTPConsole.svg?style=flat
+[codeclimate-coverage]: https://img.shields.io/codeclimate/coverage/github/ahmadnassri/HTTPConsole.svg?style=flat
 
-[david-url]: https://david-dm.org/ahmadnassri/httpconsole
-[david-image]: https://img.shields.io/david/ahmadnassri/httpconsole.svg?style=flat
+[david-url]: https://david-dm.org/ahmadnassri/HTTPConsole
+[david-image]: https://img.shields.io/david/ahmadnassri/HTTPConsole.svg?style=flat
 
 [docker-image]: https://www.herokucdn.com/deploy/button.svg
-[docker-url]: https://heroku.com/deploy?template=https://github.com/ahmadnassri/httpconsole
+[docker-url]: https://heroku.com/deploy?template=https://github.com/ahmadnassri/HTTPConsole

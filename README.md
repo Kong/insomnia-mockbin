@@ -133,7 +133,7 @@ Made with &#9829; at [Mashape](https://www.mashape.com/)
 
 [npm-url]: https://www.npmjs.com/package/httpconsole
 [npm-license]: https://img.shields.io/npm/l/httpconsole.svg?style=flat-square
-[npm-version]: https://badge.fury.io/js/httpconsole.svg
+[npm-version]: https://img.shields.io/npm/v/httpconsole.svg?style=flat-square
 [npm-downloads]: https://img.shields.io/npm/dm/httpconsole.svg?style=flat-square
 
 [codeclimate-url]: https://codeclimate.com/github/ahmadnassri/HTTPConsole

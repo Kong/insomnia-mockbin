@@ -1,10 +1,11 @@
-# HTTP Console [![version][npm-version]][npm-url] [![Deploy][docker-image]][docker-url]
+# HTTP Console [![version][npm-version]][npm-url] [![Deploy][docker-image]][docker-url] [![License][npm-license]][license-url]
 
 [![Build Status][travis-image]][travis-url]
 [![Downloads][npm-downloads]][npm-url]
+[![Code Climate][codeclimate-quality]][codeclimate-url]
+[![Coverage Status][codeclimate-coverage]][codeclimate-url]
 [![Dependencies][david-image]][david-url]
 [![Gitter][gitter-image]][gitter-url]
-[![License][npm-license]][license-url]
 
 
 ## Table of contents

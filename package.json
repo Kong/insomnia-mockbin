@@ -64,6 +64,7 @@
   },
   "devDependencies": {
     "blanket": "^1.1.6",
+    "codeclimate-test-reporter": "0.0.4",
     "mocha": "^2.1.0",
     "mocha-lcov-reporter": "0.0.1",
     "should": "^4.6.1",

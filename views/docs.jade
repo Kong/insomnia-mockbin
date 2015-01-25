@@ -6,41 +6,52 @@ block content
   div.row.documentation
     div.col-md-3
       div.affix-container(data-spy='affix',  data-offset-top='150')
-        h4 Endpoints
-
+        h4 Overview
         ul.nav.nav-pills.nav-stacked.sidenav
-          li(role='presentation'): a(href='#-ip-') /ip
-          li(role='presentation'): a(href='#-ips-') /ips
-          li(role='presentation'): a(href='#-agent-') /agent
-          li(role='presentation'): a(href='#-status-code-reason-') /status/:code/:reason
-          li(role='presentation'): a(href='#-headers-') /headers
-          li(role='presentation'): a(href='#-request-') /request
-          li(role='presentation'): a(href='#-gzip-') /gzip
-          li(role='presentation'): a(href='#-bin-create-') /bin/create
-          li(role='presentation'): a(href='#-bin-id-') /bin/:id
+          li(role='presentation'): a(href='#http-methods') HTTP Methods
+          li(role='presentation'): a(href='#content-negotiation') Content Negotiation
+          li(role='presentation'): a(href='#jsonp-callbacks') JSONP Callbacks
+
+
+        h4 Endpoints
+        ul.nav.nav-pills.nav-stacked.sidenav.endpoints
 
     div.col-md-9
       div.markdown
-        include:markdown ../docs/api.md
+        div.overview-container
+          include:markdown ../docs/index.md
+
+        div.endpoints-container
+          include:markdown ../docs/api.md
 
   form(method='GET', action='', enctype='text/plain')
 
-  script#template(type='text/template').
-    <div class="btn-group pull-right @-">
-      <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-        Try <span class="caret"></span>
-      </button>
+  script#nav-template(type='text/template')
+    li(role='presentation'): a(href='#@-') %
 
-      <ul class="dropdown-menu" role="menu">
-        <li><a class="get" href="#">GET</a></li>
-        <li><a class="post" href="#">POST</a></li>
-        <li><a class="any" href="#">ANY</a></li>
-      </ul>
-    </div>
+  script#action-template(type='text/template')
+    div.btn-group.pull-right(class='@-')
+      button.btn.btn-default.dropdown-toggle(type='button', data-toggle='dropdown', aria-expanded='false') Try &nbsp;
+        span.caret
+
+      ul.dropdown-menu(role='menu')
+        li(a.get, href='#') GET
+        li(a.post, href='#') POST
+        li(a.any, href='#') ANY
 
 
   script(type='text/javascript').
-    var template = $('#template').text();
+    var sidenav = $('.nav.nav-pills.nav-stacked.sidenav.endpoints');
+
+    var template = {
+      nav: $('#nav-template').text(),
+      action: $('#action-template').text()
+    };
+
+    // style tables
+    $('table').each(function () {
+      $(this).addClass('table table-condensed table-bordered table-striped table-hover')
+    });
 
     // attach listener
     $('.markdown').on('click', '.dropdown-menu a', function (event) {
@@ -64,19 +75,31 @@ block content
       }
     });
 
-    $('h2').each(function () {
+    // generate some dom elements
+    $('.endpoints-container h3').each(function () {
       var endpoint = $(this);
-      var href = endpoint.find('code').text()
+      var text = endpoint.find('code').text();
+      var identifier = text.replace(/:/g, '').replace(/=|\?|\//g, '-').replace(/--/g, '-');
+
+      // create nav item
+      var item = $(
+        template.nav
+          .replace(/%/g, text)
+          .replace(/@/g, identifier)
+      );
+
+      $(item).appendTo(sidenav);
+
+      // create action button
+      var href = text
         .replace(':id', 'xxx')
         .replace(':code', '418')
         .replace(':reason', 'I\'m%20a%20teapot')
 
-      var className = href.replace(/\//g, '-');
-
       var html = $(
-        template
+        template.action
           .replace(/#/g, href)
-          .replace(/@/g, className)
+          .replace(/@/g, identifier)
       );
 
       $(html).prependTo(endpoint)

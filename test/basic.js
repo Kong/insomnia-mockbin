@@ -1,3 +1,5 @@
+'use strict';
+
 var HTTPConsole = require('../lib');
 var unirest = require('unirest');
 

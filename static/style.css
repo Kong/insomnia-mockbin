@@ -13,14 +13,8 @@ h1 {
   margin-bottom: 30px;
 }
 
-h2 {
-  padding-top: 60px;
-  margin-top: -60px;
-}
-
 h4 {
   font-weight: 700;
-  text-transform: uppercase;
 }
 
 code, kbd, pre, samp {
@@ -119,28 +113,44 @@ pre {
   top: 60px;
 }
 
-.markdown h6 {
-  margin: 20px 0;
-  font-weight: 600;
-  text-transform: uppercase;
+
+.markdown h2 {
+  color: #1A5580;
+  margin-bottom: 20px;
+  font-weight: 700;
 }
 
-.markdown h2:not(:first-of-type) {
+.markdown h3:not(:first-of-type) {
   margin-top: 0;
   margin-bottom: 0;
 }
 
-.markdown h2 code {
-  font-size: 100%;
+.markdown h3 {
   font-weight: 600;
+  padding-top: 65px;
+  margin-top: -65px;
+}
+
+.markdown h3 code {
+  font-size: 100%;
   font-family: 'Source Sans Pro', sans-serif;
-  color: #1A5580;
   background-color: transparent;
   border-radius: 0;
 
   display: block;
   padding-bottom: 15px;
   border-bottom: 2px solid #E9F0F5;
+}
+
+.markdown h4 code {
+  display: inline-block;
+  margin-top: 10px;
+}
+
+.markdown h6 {
+  margin: 20px 0;
+  font-weight: 600;
+  text-transform: uppercase;
 }
 
 .markdown p {

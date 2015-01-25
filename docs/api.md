@@ -1,6 +1,6 @@
-Unless otherwise indicated, all Endpoints will accept *any* HTTP request with *any* header, using *any* HTTP Method.
+## Endpoints 
 
-## `/ip`
+### `/ip`
 
 Returns Origin IP.
 
@@ -17,19 +17,15 @@ Returns Origin IP.
 
 > ```http
 > HTTP/1.1 200 OK
-> X-Powered-By: httpconsole.com
-> Vary: X-HTTP-Method-Override, Accept, Accept-Encoding
 > Content-Type: application/json; charset=utf-8
 > Content-Length: 12
-> Date: Wed, 21 Jan 2015 06:56:11 GMT
-> Connection: keep-alive
 >
 > "10.10.10.1"
 > ```
 
 ----
 
-## `/ips`
+### `/ips`
 
 Parses the "X-Forwarded-For" ip address list and return an array. Otherwise, an empty array is returned.
 
@@ -46,19 +42,15 @@ Parses the "X-Forwarded-For" ip address list and return an array. Otherwise, an 
 
 > ```http
 > HTTP/1.1 200 OK
-> X-Powered-By: httpconsole.com
-> Vary: X-HTTP-Method-Override, Accept, Accept-Encoding
 > Content-Type: application/json; charset=utf-8
 > Content-Length: 42
-> Date: Wed, 21 Jan 2015 06:56:11 GMT
-> Connection: keep-alive
 >
 > ["10.10.10.1", "10.10.10.2", "10.10.10.3"]
 > ```
 
 ----
 
-## `/agent`
+### `/agent`
 
 Returns user-agent.
 
@@ -76,19 +68,42 @@ Returns user-agent.
 
 > ```http
 > HTTP/1.1 200 OK
-> X-Powered-By: httpconsole.com
-> Vary: X-HTTP-Method-Override, Accept, Accept-Encoding
 > Content-Type: application/json; charset=utf-8
 > Content-Length: 13
-> Date: Wed, 21 Jan 2015 06:56:11 GMT
-> Connection: keep-alive
 >
 > "curl/7.35.0"
 > ```
 
 ----
 
-## `/status/:code/:reason`
+### `/status/:code`
+
+Returns a response with the given HTTP Status in status line.
+
+###### Request
+
+> ```http
+> GET /status/30 HTTP/1.1
+> Host: httpconsole.com
+>
+> ```
+
+###### Response
+
+> ```http
+> HTTP/1.1 30 OK
+> Content-Type: text/html; charset=utf-8
+> Content-Length: 38
+>
+> {
+>   "code": 30,
+>   "message": "OK"
+> }
+> ```
+
+----
+
+### `/status/:code/:reason`
 
 Returns a response with the given HTTP Status code and message in status line and body.
 
@@ -104,12 +119,8 @@ Returns a response with the given HTTP Status code and message in status line an
 
 > ```http
 > HTTP/1.1 20 Hello
-> X-Powered-By: httpconsole.com
-> Vary: X-HTTP-Method-Override, Accept, Accept-Encoding
 > Content-Type: text/html; charset=utf-8
 > Content-Length: 38
-> Date: Thu, 22 Jan 2015 03:46:45 GMT
-> Connection: keep-alive
 >
 > {
 >   "code": 20,
@@ -119,7 +130,7 @@ Returns a response with the given HTTP Status code and message in status line an
 
 ----
 
-## `/headers`
+### `/headers`
 
 Returns list of all headers used in request as well as total number of bytes from the start of the HTTP request message until (and including) the double CRLF before the body.
 
@@ -137,12 +148,8 @@ Returns list of all headers used in request as well as total number of bytes fro
 
 > ```http
 > HTTP/1.1 200 OK
-> X-Powered-By: httpconsole.com
-> Vary: X-HTTP-Method-Override, Accept, Accept-Encoding
 > Content-Type: application/json; charset=utf-8
 > Content-Length: 306
-> Date: Thu, 22 Jan 2015 03:49:12 GMT
-> Connection: keep-alive
 >
 > {
 >   "headers": [
@@ -161,7 +168,7 @@ Returns list of all headers used in request as well as total number of bytes fro
 >     {
 >       "name": "user-agent",
 >       "value": "curl/7.35.0"
->     }
+>     }:name
 >   ],
 >   "headersSize": 124
 > }
@@ -169,7 +176,203 @@ Returns list of all headers used in request as well as total number of bytes fro
 
 ----
 
-## `/request`
+### `/header/:name`
+
+Returns the value of header with the name `:name`
+
+###### Request
+
+> ```http
+> GET /header/x-custom-header HTTP/1.1
+> Host: httpconsole.com
+> User-Agent: curl/7.35.0
+> X-Custom-Header: Foo
+>
+> ```
+
+###### Response
+
+> ```http
+> HTTP/1.1 200 OK
+> Content-Type: application/json; charset=utf-8
+> Content-Length: 5
+>
+> "Foo"
+> ```
+
+----
+
+### `/cookies`
+
+Returns list of all cookies sent by the client
+
+###### Request
+
+> ```http
+> GET /cookies HTTP/1.1
+> Host: httpconsole.com
+> User-Agent: curl/7.35.0
+> Cookie: my-cookie=ALL YOUR BASE ARE BELONG TO US; foo=bar
+>
+> ```
+
+###### Response
+
+> ```http
+> HTTP/1.1 200 OK
+> Content-Type: application/json; charset=utf-8
+> Content-Length: 129
+>
+> [
+>   {
+>     "name": "my-cookie",
+>     "value": "ALL YOUR BASE ARE BELONG TO US"
+>   },
+>   {
+>     "name": "foo",
+>     "value": "bar"
+>   }
+> ]
+> ```
+
+----
+
+### `/cookie/:name`
+
+Returns the value of the cookie with the name `:name`
+
+###### Request
+
+> ```http
+> GET /header/my-cookie HTTP/1.1
+> Host: httpconsole.com
+> User-Agent: curl/7.35.0
+> Cookie: my-cookie=ALL YOUR BASE ARE BELONG TO US; foo=bar
+>
+> ```
+
+###### Response
+
+> ```http
+> HTTP/1.1 200 OK
+> Content-Type: application/json; charset=utf-8
+> Content-Length: 32
+>
+> "ALL YOUR BASE ARE BELONG TO US"
+> ```
+
+----
+
+### `/redirect/:status/:count/?to=:url`
+
+Start a redirects loop using the redirect custom status code: `status`, looping through the url pattern: `/redirect/:status/[:count -1]` eventually landing on `:url` *(or `/redirect/:status/0` if no `url` was provided)*
+
+###### Parameters
+
+| Parameter | Type   | Required | Default | Note                                                                                                         |
+| --------- | ------ | -------- | ------- | ------------------------------------------------------------------------------------------------------------ |
+| `:status` | Number | `no`     | `302`   | must be a valid [3xx redirection](http://www.iana.org/assignments/http-status-codes/http-status-codes.xhtml) |
+| `?to`     | String | `no`     |`null`  | URL or Path to redirect to |
+| `?to`     | String | `no`     |`null`  | URL or Path to redirect to |
+
+
+#### `/redirect/:status`
+
+###### Request
+
+> ```http
+> GET /redirect/308 HTTP/1.1
+> Host: httpconsole.com
+>
+> ```
+
+###### Response
+
+> ```http
+> HTTP/1.1 308 Permanent Redirect
+> Location: http://localhost:80/redirect/0
+> Content-Type: text/plain; charset=utf-8
+> Content-Length: 65
+> 
+
+> Permanent Redirect. Redirecting to http://localhost:80/redirect/0
+> ```
+
+#### `/redirect/:status?to=:url`
+
+###### Request
+
+> ```http
+> GET /redirect/308?to=https://www.mashape.com/ HTTP/1.1
+> Host: httpconsole.com
+>
+> ```
+
+###### Response
+
+> ```http
+> HTTP/1.1 308 Permanent Redirect
+> Location: https://www.mashape.com/
+> Content-Type: text/plain; charset=utf-8
+> Content-Length: 59
+> 
+
+> Permanent Redirect. Redirecting to https://www.mashape.com/
+> ```
+
+#### `/redirect/:status/:count`
+
+###### Request
+
+> ```http
+> GET /redirect/308/3 HTTP/1.1
+> Host: httpconsole.com
+>
+> ```
+
+###### Response
+
+> ```http
+> HTTP/1.1 308 Permanent Redirect
+> Location: http://localhost:80/redirect/2
+> Content-Type: text/plain; charset=utf-8
+> Content-Length: 65
+> 
+
+> Permanent Redirect. Redirecting to http://localhost:80/redirect/3
+> ```
+
+> ```http
+> HTTP/1.1 308 Permanent Redirect
+> Location: http://localhost:80/redirect/1
+> Content-Type: text/plain; charset=utf-8
+> Content-Length: 65
+> 
+
+> Permanent Redirect. Redirecting to http://localhost:80/redirect/1
+> ```
+
+> ```http
+> HTTP/1.1 308 Permanent Redirect
+> Location: http://localhost:80/redirect/0
+> Content-Type: text/plain; charset=utf-8
+> Content-Length: 65
+> 
+
+> Permanent Redirect. Redirecting to http://localhost:80/redirect/0
+> ```
+
+> ```http
+> HTTP/1.1 200 OK
+> Content-Type: text/plain; charset=utf-8
+> Content-Length: 17
+> 
+> redirect finished 
+> ```
+
+----
+
+### `/request`
 
 Returns back all the info sent through your request in HAR format
 
@@ -192,12 +395,8 @@ Returns back all the info sent through your request in HAR format
 
 > ```http
 > HTTP/1.1 200 OK
-> Vary: X-HTTP-Method-Override, Accept, Accept-Encoding
-> X-Powered-By: httpconsole.com
 > Content-Type: application/json; charset=utf-8
 > Content-Length: 1330
-> Date: Thu, 22 Jan 2015 04:02:43 GMT
-> Connection: keep-alive
 >
 > {
 >   "request": {
@@ -275,9 +474,9 @@ Returns back all the info sent through your request in HAR format
 
 ----
 
-## `/gzip`
+### `/gzip`
 
-Just like [`/request`](-request) but with forced compression on response body *(returns back all the info sent through your request in HAR format)*
+Identical to [`/request`](-request) but with forced compression on response body *(returns back all the info sent through your request in HAR format)*
 
 ###### Request
 
@@ -298,12 +497,8 @@ Just like [`/request`](-request) but with forced compression on response body *(
 
 > ```http
 > HTTP/1.1 200 OK
-> Vary: X-HTTP-Method-Override, Accept, Accept-Encoding
-> X-Powered-By: httpconsole.com
 > Content-Type: application/json; charset=utf-8
 > Content-Encoding: gzip
-> Date: Thu, 22 Jan 2015 04:08:04 GMT
-> Connection: keep-alive
 > Transfer-Encoding: chunked
 >
 > [gzipped-data]
@@ -311,12 +506,15 @@ Just like [`/request`](-request) but with forced compression on response body *(
 
 ----
 
-## `/bin/create`
+### `/bin/create`
 
+#### HTTP Method: **GET**
+
+Displays the web view for creating a new **Bin**.
+
+#### HTTP Method: **POST**
 
 Creates a new **Bin** with a mocked aHTTP response as described by a [HAR Response Object](http://www.softwareishard.com/blog/har-12-spec/#response) body.
-
-Accepts **POST** Method only!
 
 Responds with a `Location` header with the newly created **Bin**, e.g. `Location: http://httpconsole.com/b8b21988-64d4-4eb3-94c1-2055c3374b53` *(also repeated in the body)*
 
@@ -390,20 +588,16 @@ Responds with a `Location` header with the newly created **Bin**, e.g. `Location
 
 > ```http
 > HTTP/1.1 200 OK
-> Vary: X-HTTP-Method-Override, Accept, Accept-Encoding
-> X-Powered-By: httpconsole.com
 > Location: http://httpconsole.com/b8b21988-64d4-4eb3-94c1-2055c3374b53
 > Content-Type: application/json; charset=utf-8
 > Content-Length: 38
-> Date: Thu, 22 Jan 2015 04:19:11 GMT
-> Connection: keep-alive
 >
 > "b8b21988-64d4-4eb3-94c1-2055c3374b53"
 > ```
 
 ----
 
-## `/bin/:id`
+### `/bin/:id`
 
 The [HAR Response Object](http://www.softwareishard.com/blog/har-12-spec/#response) sent at time of [creation](-/bin/create) will determine what the response status, headers, content will be.
 
@@ -423,10 +617,7 @@ If you wish to inspect this **Bin** in a browser window, be sure to add `?__insp
 
 > ```http
 > [response.httpVersion] [response.status] [response.statusText]
-> Vary: X-HTTP-Method-Override, Accept, Accept-Encoding
-> X-Powered-By: httpconsole.com
 > Content-Type: [response.content.mimeType]
-> Connection: keep-alive
 > [response.headers]
 >
 > [response.content.text]

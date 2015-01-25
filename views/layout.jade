@@ -92,6 +92,8 @@ html(lang='en', itemscope, itemtype='http://schema.org/Article')
                 |  at
                 span.mashape  Mashape
 
+      block scripts
+
       script(type='text/javascript', async, defer, id='twitter-wjs', src='https://platform.twitter.com/widgets.js')
       script(type='text/javascript', async, defer, id='github-bjs', src='https://buttons.github.io/buttons.js')
 
@@ -110,11 +112,4 @@ html(lang='en', itemscope, itemtype='http://schema.org/Article')
         $('.affix-container').on('affixed.bs.affix', function () {
           var self = $(this);
           self.css('min-width', self.data('original-width'));
-        });
-
-        // highlight.js
-        $(document).ready(function() {
-          $('pre code').each(function(i, block) {
-            hljs.highlightBlock(block);
-          });
         });

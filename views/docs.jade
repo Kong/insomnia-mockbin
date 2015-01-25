@@ -35,12 +35,17 @@ block content
         span.caret
 
       ul.dropdown-menu(role='menu')
-        li(a.get, href='#') GET
-        li(a.post, href='#') POST
-        li(a.any, href='#') ANY
+        li: a.get(href='#') GET
+        li: a.post(href='#') POST
+        li: a.any(href='#') ANY
 
-
+block scripts
   script(type='text/javascript').
+    // highlight.js
+    $('pre code').each(function (i, block) {
+      hljs.highlightBlock(block);
+    });
+
     var sidenav = $('.nav.nav-pills.nav-stacked.sidenav.endpoints');
 
     var template = {
@@ -95,6 +100,9 @@ block content
         .replace(':id', 'xxx')
         .replace(':code', '418')
         .replace(':reason', 'I\'m%20a%20teapot')
+        .replace(':status', '308')
+        .replace(':count', '3')
+        .replace(':url', 'http://httpconsole.com/docs')
 
       var html = $(
         template.action

@@ -167,6 +167,11 @@ pre {
   border-bottom: 0;
 }
 
+.markdown table {
+  font-family: 'Source Code Pro', Menlo, Monaco, Consolas, 'Courier New', monospace;
+  font-size: 90%;
+}
+
 .markdown blockquote {
   padding: 0;
   margin: 0;

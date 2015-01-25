@@ -76,36 +76,14 @@ Returns user-agent.
 
 ----
 
-### `/status/:code`
-
-Returns a response with the given HTTP Status in status line.
-
-###### Request
-
-> ```http
-> GET /status/30 HTTP/1.1
-> Host: httpconsole.com
->
-> ```
-
-###### Response
-
-> ```http
-> HTTP/1.1 30 OK
-> Content-Type: text/html; charset=utf-8
-> Content-Length: 38
->
-> {
->   "code": 30,
->   "message": "OK"
-> }
-> ```
-
-----
-
 ### `/status/:code/:reason`
 
 Returns a response with the given HTTP Status code and message in status line and body.
+
+| Parameter | Type   | Required | Default |
+| --------- | ------ | -------- | ------- |
+| `:code`   | Number | yes      | `200`   |
+| `:reason` | String | no       | `OK`    |
 
 ###### Request
 
@@ -271,9 +249,9 @@ Start a redirects loop using the redirect custom status code: `status`, looping 
 
 | Parameter | Type   | Required | Default | Note                                                                                                         |
 | --------- | ------ | -------- | ------- | ------------------------------------------------------------------------------------------------------------ |
-| `:status` | Number | `no`     | `302`   | must be a valid [3xx redirection](http://www.iana.org/assignments/http-status-codes/http-status-codes.xhtml) |
-| `?to`     | String | `no`     |`null`  | URL or Path to redirect to |
-| `?to`     | String | `no`     |`null`  | URL or Path to redirect to |
+| `:status` | Number | no       | `302`   | must be a valid [3xx redirection](http://www.iana.org/assignments/http-status-codes/http-status-codes.xhtml) |
+| `:count`  | Number | no       | `0`     | amount of redirect loops to go through                                                                       |
+| `?to`     | String | no       | `null`  | URL or Path to redirect to                                                                                   |
 
 
 #### `/redirect/:status`

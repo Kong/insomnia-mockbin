@@ -4,7 +4,7 @@
 
 var pkg = require('../package.json');
 var commander = require('commander');
-var HTTPConsole = require('../lib');
+var HTTPConsole = require('../src');
 
 commander
   .version(pkg.version)

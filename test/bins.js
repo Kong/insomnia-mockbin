@@ -1,6 +1,6 @@
 'use strict';
 
-var HTTPConsole = require('../lib');
+var HTTPConsole = require('../src');
 var unirest = require('unirest');
 
 var should = require('should');

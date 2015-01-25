@@ -1,3 +1,3 @@
 'use strict';
 
-require('./lib')().createServer().start();
+require('./src')().createServer().start();

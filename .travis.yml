@@ -2,3 +2,7 @@ language: node_js
 node_js: 0.10
 
 script: npm test
+
+after_script:
+  - npm run coverage
+  - npm run codeclimate

@@ -127,10 +127,10 @@ Made with &#9829; at [Mashape](https://www.mashape.com/)
 [travis-url]: https://travis-ci.org/ahmadnassri/HTTPConsole
 [travis-image]: https://img.shields.io/travis/ahmadnassri/HTTPConsole.svg?style=flat
 
-[npm-url]: https://www.npmjs.com/package/HTTPConsole
-[npm-license]: https://img.shields.io/npm/l/HTTPConsole.svg?style=flat
-[npm-version]: https://badge.fury.io/js/HTTPConsole.svg
-[npm-downloads]: https://img.shields.io/npm/dm/HTTPConsole.svg?style=flat
+[npm-url]: https://www.npmjs.com/package/httpconsole
+[npm-license]: https://img.shields.io/npm/l/httpconsole.svg?style=flat
+[npm-version]: https://badge.fury.io/js/httpconsole.svg
+[npm-downloads]: https://img.shields.io/npm/dm/httpconsole.svg?style=flat
 
 [codeclimate-url]: https://codeclimate.com/github/ahmadnassri/HTTPConsole
 [codeclimate-quality]: https://img.shields.io/codeclimate/github/ahmadnassri/HTTPConsole.svg?style=flat

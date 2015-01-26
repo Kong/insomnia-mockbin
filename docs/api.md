@@ -88,6 +88,37 @@ Returns user-agent.
 
 ----
 
+## `/delay/:ms`
+
+Returns a response after a delay in milliseconds, default is 200ms
+
+###### Request
+
+> ```http
+> GET /delay/500 HTTP/1.1
+> Host: httpconsole.com
+> Accept: application/json
+>
+> ```
+
+###### Response
+
+> ```http
+> HTTP/1.1 200 OK
+> X-Powered-By: httpconsole.com
+> Vary: Accept, Accept-Encoding
+> Content-Type: application/json; charset=utf-8
+> Content-Length: 21
+> Date: Wed, 21 Jan 2015 06:56:11 GMT
+> Connection: keep-alive
+>
+> {
+>   "delay": "5000"
+> }
+> ```
+
+----
+
 ## `/status/:code/:reason`
 
 Returns a response with the given HTTP Status code and message in status line and body.

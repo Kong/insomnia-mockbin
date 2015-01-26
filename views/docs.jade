@@ -12,6 +12,7 @@ block content
           li(role='presentation'): a(href='#-ip-') /ip
           li(role='presentation'): a(href='#-ips-') /ips
           li(role='presentation'): a(href='#-agent-') /agent
+          li(role='presentation'): a(href='#-delay-ms-') /delay/:ms
           li(role='presentation'): a(href='#-status-code-reason-') /status/:code/:reason
           li(role='presentation'): a(href='#-headers-') /headers
           li(role='presentation'): a(href='#-request-') /request
@@ -71,6 +72,7 @@ block content
         .replace(':id', 'xxx')
         .replace(':code', '418')
         .replace(':reason', 'I\'m%20a%20teapot')
+        .replace(':ms', '5000')
 
       var className = href.replace(/\//g, '-');
 

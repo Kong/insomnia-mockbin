@@ -272,6 +272,20 @@ app.get('/', function (req, res, next) {
   next();
 });
 
+app.all('/delay/:ms?', function (req, res, next) {
+  res.view = 'default';
+  var delay =  req.params.ms || 200;
+  if (delay > 10000) delay = 10000;
+
+  setTimeout(function(){
+    res.body = {
+      delay: delay,
+    };
+
+    next();
+  }, delay);
+});
+
 app.all('/ip', function (req, res, next) {
   res.view = 'default';
   res.body = req.ip;
@@ -338,7 +352,7 @@ app.all('/gzip', function (req, res, next) {
   next();
 });
 
-app.all('/stream/:chunks', function (req, res, next) {
+app.all('/stream/:chunks?', function (req, res, next) {
 
   res.view = 'default';
 

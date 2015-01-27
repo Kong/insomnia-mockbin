@@ -29,14 +29,14 @@ curl -X MY-METHOD httpconsole.com/echo
 
 ### Content Negotiation
 
-HTTP Console is able to response in a number of formats: YAML, JSON, XML, HTML. The response varies based on `Accept` header:
+HTTP Console is able to response in a number of formats: JSON, YAML, XML, HTML. The response varies based on `Accept` header:
 
 ```shell
-# Response in YAML (default)
-curl httpconsole.com/echo -H "Accept: application/yaml" 
-
-# Response in JSON
+# Response in JSON (default)
 curl httpconsole.com/echo -H "Accept: application/json" 
+
+# Response in YAML
+curl httpconsole.com/echo -H "Accept: application/yaml" 
 
 # Response in XML
 curl httpconsole.com/echo -H "Accept: application/xml" 

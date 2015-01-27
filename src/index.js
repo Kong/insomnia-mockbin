@@ -287,14 +287,6 @@ HTTPConsole.prototype.negotiateContent = function (req, res, next) {
   }
 
   res.format({
-    text: function () {
-      if (typeof res.body === 'string') {
-        return res.send(res.body);
-      }
-
-      res.send(YAML.stringify(res.body, 6, 2));
-    },
-
     json: function () {
       res.jsonp(res.body);
     },
@@ -314,6 +306,14 @@ HTTPConsole.prototype.negotiateContent = function (req, res, next) {
       }
 
       res.send(YAML.stringify(res.body, 3, 2));
+    },
+
+    default: function () {
+      if (typeof res.body === 'string') {
+        return res.send(res.body);
+      }
+
+      res.send(YAML.stringify(res.body, 6, 2));
     }
   });
 

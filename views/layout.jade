@@ -41,9 +41,9 @@ html(lang='en', itemscope, itemtype='http://schema.org/Article')
     link(rel='canonical', href='http://httpconsole.com/')
     link(rel='author', href='https://www.ahmadnassri.com/about')
 
-    link(rel='stylesheet', type='text/css', href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/css/bootstrap.min.css', media='all')
     link(rel='stylesheet', type='text/css', href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic,700italic|Source+Code+Pro:400,500,600,700', media='all')
-    link(rel='stylesheet', type='text/css', href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css', media='all')
+    link(rel='stylesheet', type='text/css', href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/css/bootstrap.min.css', media='all')
+    link(rel='stylesheet', type='text/css', href='https://cdnjs.cloudflare.com/ajax/libs/devicons/1.7.0/css/devicons.min.css', media='all')
     link(rel='stylesheet', type='text/css', href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/tomorrow.min.css', media='all')
     link(rel='stylesheet', type='text/css', href='/static/style.css', media='all')
 
@@ -70,7 +70,7 @@ html(lang='en', itemscope, itemtype='http://schema.org/Article')
 
         div#navbar.collapse.navbar-collapse
           ul.nav.navbar-nav
-            for link, name in [{name: 'Home', href: '/'}, {name: 'Docs', href: '/docs'}, {name: 'Create Endpoint', href: '/bin/create'}]
+            for link, name in [{name: 'Home', href: '/'}, {name: 'Docs', href: '/docs'}, {name: 'Create Endpoint', href: '/bucket/create'}]
               li(class={active: path === link.href}): a(href= link.href)= link.name
 
     div.container

@@ -1,4 +1,4 @@
-## Endpoints 
+## API Endpoints 
 
 ### `/ip`
 
@@ -350,14 +350,14 @@ Start a redirects loop using the redirect custom status code: `status`, looping 
 
 ----
 
-### `/request`
+### `/echo`
 
 Returns back all the info sent through your request in HAR format
 
 ###### Request
 
 > ```http
-> POST /request?foo=bar&foo=baz&key=value HTTP/1.1
+> POST /echo?foo=bar&foo=baz&key=value HTTP/1.1
 > Host: httpconsole.com
 > User-Agent: curl/7.35.0
 > Cookie: Greet=Hello;World=Universe
@@ -379,7 +379,7 @@ Returns back all the info sent through your request in HAR format
 > {
 >   "request": {
 >     "method": "POST",
->     "url": "http://localhost/request?foo=bar&foo=baz&key=value",
+>     "url": "http://localhost/echo?foo=bar&foo=baz&key=value",
 >     "httpVersion": "HTTP/1.1",
 >     "cookies": [
 >       {
@@ -454,7 +454,7 @@ Returns back all the info sent through your request in HAR format
 
 ### `/gzip`
 
-Identical to [`/request`](-request) but with forced compression on response body *(returns back all the info sent through your request in HAR format)*
+Identical to [`/echo`](#-echo-) but with forced compression on response body *(returns back all the info sent through your request in HAR format)*
 
 ###### Request
 
@@ -484,23 +484,23 @@ Identical to [`/request`](-request) but with forced compression on response body
 
 ----
 
-### `/bin/create`
+### `/bucket/create`
 
 #### HTTP Method: **GET**
 
-Displays the web view for creating a new **Bin**.
+Displays the web view for creating a new **Bucket**.
 
 #### HTTP Method: **POST**
 
-Creates a new **Bin** with a mocked aHTTP response as described by a [HAR Response Object](http://www.softwareishard.com/blog/har-12-spec/#response) body.
+Creates a new **Bucket** with a mocked aHTTP response as described by a [HAR Response Object](http://www.softwareishard.com/blog/har-12-spec/#response) body.
 
-Responds with a `Location` header with the newly created **Bin**, e.g. `Location: http://httpconsole.com/b8b21988-64d4-4eb3-94c1-2055c3374b53` *(also repeated in the body)*
+Responds with a `Location` header with the newly created **Bucket**, e.g. `Location: http://httpconsole.com/b8b21988-64d4-4eb3-94c1-2055c3374b53` *(also repeated in the body)*
 
 - The [HAR Response Object](http://www.softwareishard.com/blog/har-12-spec/#response) sent at time of creation will determine what the response status, headers, content will be.
-- Newly created **Bin** will collect requests made to it and allow later inspection.
-- You can query the new **Bin** with any HTTP Method, Headers, Content you desire, everything will be logged for later access.
+- Newly created **Bucket** will collect requests made to it and allow later inspection.
+- You can query the new **Bucket** with any HTTP Method, Headers, Content you desire, everything will be logged for later access.
 - You can use this to see what your HTTP client is sending or to inspect and debug webhook requests.
-- Each **Bin** will log a maximum of 100 requests.
+- Each **Bucket** will log a maximum of 100 requests.
 
 ###### Request
 
@@ -575,16 +575,16 @@ Responds with a `Location` header with the newly created **Bin**, e.g. `Location
 
 ----
 
-### `/bin/:id`
+### `/bucket/:id`
 
-The [HAR Response Object](http://www.softwareishard.com/blog/har-12-spec/#response) sent at time of [creation](-/bin/create) will determine what the response status, headers, content will be.
+The [HAR Response Object](http://www.softwareishard.com/blog/har-12-spec/#response) sent at time of [creation](-/bucket/create) will determine what the response status, headers, content will be.
 
-If you wish to inspect this **Bin** in a browser window, be sure to add `?__inspect` to the url, otherwise, there's a chance you'll see the HAR content instead *(varies on your browser's `Accept` header)*
+If you wish to inspect this **Bucket** in a browser window, be sure to add `?__inspect` to the url, otherwise, there's a chance you'll see the HAR content instead *(varies on your browser's `Accept` header)*
 
 ###### Request
 
 > ```http
-> GET /bin/:id HTTP/1.1
+> GET /bucket/:id HTTP/1.1
 > Host: httpconsole.com
 >
 > ```

@@ -131,6 +131,7 @@ HTTPConsole.prototype.createServer = function () {
   this.express.set('json spaces', 2);
   this.express.set('view engine', 'jade');
   this.express.set('jsonp callback name', '__callback');
+  this.express.enable('view cache');
   this.express.enable('trust proxy');
   this.express.disable('x-powered-by');
   this.express.disable('etag');
@@ -298,7 +299,7 @@ HTTPConsole.prototype.negotiateContent = function (req, res, next) {
         return res.send(res.body);
       }
 
-      res.send(YAML.stringify(res.body, 3, 2));
+      res.send(YAML.stringify(res.body, 6, 2));
     },
 
     json: function () {
@@ -324,7 +325,7 @@ HTTPConsole.prototype.negotiateContent = function (req, res, next) {
 
     default: function () {
       res.set('content-type', 'text/plain');
-      res.send(YAML.stringify(res.body, 3, 2));
+      res.send(YAML.stringify(res.body, 6, 2));
     }
   });
 
@@ -449,7 +450,7 @@ HTTPConsole.prototype.start = function () {
     next();
   });
 
-  this.router.all('/request', function (req, res, next) {
+  this.router.all('/echo', function (req, res, next) {
     res.view = 'default';
     res.locals.yamlInline = 6;
 
@@ -470,13 +471,13 @@ HTTPConsole.prototype.start = function () {
   });
 
   // TODO display web form
-  this.router.get('/bin/create', function (req, res, next) {
-    res.view = 'bin/create';
+  this.router.get('/bucket/create', function (req, res, next) {
+    res.view = 'bucket/create';
 
     next();
   });
 
-  this.router.post('/bin/create', function (req, res, next) {
+  this.router.post('/bucket/create', function (req, res, next) {
     var id = uuid.v4();
 
     var result = tv4.validateResult(req.jsonBody, HARSchema.definitions.response);
@@ -498,13 +499,13 @@ HTTPConsole.prototype.start = function () {
     self.redis.set(id, JSON.stringify(req.jsonBody));
 
     // send back the newly created id
-    res.body = util.format('http://%s:%s/bin/%s', req.hostname, self.config.port_mask || self.config.port, id);
+    res.body = util.format('http://%s:%s/bucket/%s', req.hostname, self.config.port_mask || self.config.port, id);
     res.location(res.body);
 
     next();
   });
 
-  this.router.all('/bin/:uuid', function (req, res, next) {
+  this.router.all('/bucket/:uuid', function (req, res, next) {
     self.redis.get(req.params.uuid, function (err, value) {
       if (err) {
         throw(err);
@@ -515,8 +516,8 @@ HTTPConsole.prototype.start = function () {
 
         // log interaction & send the appropriate response based on HAR
         if (req.query.__inspect === undefined) {
-          self.redis.rpush(req.params.uuid + '-requests', JSON.stringify(req.har.log.entries[0]));
-          self.redis.ltrim(req.params.uuid + '-requests', 0, 100);
+          self.redis.rpush(req.params.uuid + '-log', JSON.stringify(req.har.log.entries[0]));
+          self.redis.ltrim(req.params.uuid + '-log', 0, 100);
 
           // headers
           har.headers.map(function (header) {
@@ -544,7 +545,7 @@ HTTPConsole.prototype.start = function () {
 
         // only set the view template when its not an HTML response, or through manual override
         if (req.query.__inspect !== undefined || !~['html', 'xhtml'].indexOf(type)) {
-          res.view = 'bin/view';
+          res.view = 'bucket/view';
         }
 
         res.locals.har = har;
@@ -558,10 +559,10 @@ HTTPConsole.prototype.start = function () {
     });
   });
 
-  this.router.get('/bin/:uuid/requests', function (req, res, next) {
-    res.view = 'bin/requests';
+  this.router.get('/bucket/:uuid/log', function (req, res, next) {
+    res.view = 'bucket/log';
 
-    self.redis.lrange(req.params.uuid + '-requests', 0, -1, function (err, requests) {
+    self.redis.lrange(req.params.uuid + '-log', 0, -1, function (err, history) {
       if (err) {
         throw(err);
       }
@@ -577,8 +578,8 @@ HTTPConsole.prototype.start = function () {
         entries: []
       };
 
-      if (requests.length) {
-        res.body.log.entries = requests.map(function (request) {
+      if (history.length) {
+        res.body.log.entries = history.map(function (request) {
           return JSON.parse(request);
         });
       }

@@ -5,26 +5,26 @@
 **Unless otherwise indicated** all Endpoints will accept *any* HTTP request with *any* header, using *any* HTTP Method.
 
 ```shell
-# GET /request
-curl -X GET httpconsole.com/request
+# GET /echo
+curl -X GET httpconsole.com/echo
 
-# POST /request
+# POST /echo
 curl -X POST
 
-# DELETE /request
-curl -X DELETE httpconsole.com/request
+# DELETE /echo
+curl -X DELETE httpconsole.com/echo
 
-# PATCH /request
-curl -X PATCH httpconsole.com/request
+# PATCH /echo
+curl -X PATCH httpconsole.com/echo
 
-# FOO /request
-curl -X FOO httpconsole.com/request
+# FOO /echo
+curl -X FOO httpconsole.com/echo
 
-# BAR /request
-curl -X BAR httpconsole.com/request
+# BAR /echo
+curl -X BAR httpconsole.com/echo
 
-# MY-METHOD /request
-curl -X MY-METHOD httpconsole.com/request
+# MY-METHOD /echo
+curl -X MY-METHOD httpconsole.com/echo
 ```
 
 ### Content Negotiation
@@ -33,16 +33,16 @@ HTTP Console is able to response in a number of formats: YAML, JSON, XML, HTML. 
 
 ```shell
 # Response in YAML (default)
-curl httpconsole.com/request -H "Accept: application/yaml" 
+curl httpconsole.com/echo -H "Accept: application/yaml" 
 
 # Response in JSON
-curl httpconsole.com/request -H "Accept: application/json" 
+curl httpconsole.com/echo -H "Accept: application/json" 
 
 # Response in XML
-curl httpconsole.com/request -H "Accept: application/xml" 
+curl httpconsole.com/echo -H "Accept: application/xml" 
 
 # Response in HTML 
-curl httpconsole.com/request -H "Accept: text/html" 
+curl httpconsole.com/echo -H "Accept: text/html" 
 ```
 
 ### JSONP Callbacks
@@ -50,5 +50,5 @@ curl httpconsole.com/request -H "Accept: text/html"
 You can recieve a JSONP response by adding the query string `__callback`:
 
 ```shell
-curl httpconsole.com/request?__callback=myfunc -H "Accept: application/json"
+curl httpconsole.com/echo?__callback=myfunc -H "Accept: application/json"
 ```

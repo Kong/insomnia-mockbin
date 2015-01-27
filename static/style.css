@@ -21,9 +21,10 @@ code, kbd, pre, samp {
   font-family: 'Source Code Pro', Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
-p code {
+p code,
+li code {
   margin: 0 2px;
-  color: #4d4d4c;
+  color: #113652;
   border: 1px solid #F0F1F2;
   background-color: #FCFCFC;
 }
@@ -31,6 +32,16 @@ p code {
 pre {
   border-color: #F0F1F2;
   background-color: #FCFCFC;
+}
+
+.devicons {
+  float: left;
+  font-size: 50px;
+}
+
+.snippets h4 {
+  height: 50px;
+  line-height: 50px;
 }
 
 .hljs {

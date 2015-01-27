@@ -618,9 +618,9 @@ HTTPConsole.prototype.router = function () {
           creator: {
             name: 'httpconsole.com',
             version: pkg.version
-          }
-        },
-        entries: []
+          },
+          entries: []
+        }
       };
 
       if (history.length) {

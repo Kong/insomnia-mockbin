@@ -8,7 +8,6 @@ var express         = require('express');
 var HARSchema       = require('../schema.json');
 var methodOverride  = require('method-override');
 var morgan          = require('morgan');
-var params          = require('express-params');
 var pkg             = require('../package.json');
 var qs              = require('qs');
 var redis           = require('redis');
@@ -129,8 +128,8 @@ HTTPConsole.prototype.createServer = function () {
   // express setup
   this.express = express();
   this.express.set('json spaces', 2);
-  this.express.set('view engine', 'jade');
   this.express.set('jsonp callback name', '__callback');
+  this.express.set('view engine', 'jade');
   this.express.enable('view cache');
   this.express.enable('trust proxy');
   this.express.disable('x-powered-by');
@@ -138,35 +137,29 @@ HTTPConsole.prototype.createServer = function () {
 
   // add 3rd party middlewares
   this.express.use(responseTime());
-
   this.express.use(methodOverride('X-HTTP-Method-Override'));
   this.express.use(methodOverride('_method'));
   this.express.use(cookieParser());
-  this.express.use(compression({
-    threshold: 1
-  }));
+  this.express.use(compression());
 
   if (!this.config.quiet) {
     this.express.use(morgan('dev'));
   }
 
+  // define static files path
   this.express.use('/static', express.static(__dirname + '/../static'));
 
   // add httpconsole middlewares
   this.express.use(this.utilMiddleware);
   this.express.use(this.bodyParser);
 
-  var status_message = /^[\w\t '\+]+$/;
+  this.express.use(this.notFoundHandler);
 
-  // setup custom params
-  params.extend(this.express);
-  this.express.param('status_code', Number);
-  this.express.param('status_message', status_message);
-  this.express.param('uuid', /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i);
+  // setup main routes
+  this.express.use(this.router());
 
-  // setup main route
-  this.router = express.Router();
-  this.express.use(this.router);
+  // error Handling
+  this.express.use(this.errorHandler);
 
   // negotiate content at the end
   this.express.use(this.negotiateContent);
@@ -321,11 +314,6 @@ HTTPConsole.prototype.negotiateContent = function (req, res, next) {
       }
 
       res.send(YAML.stringify(res.body, 3, 2));
-    },
-
-    default: function () {
-      res.set('content-type', 'text/plain');
-      res.send(YAML.stringify(res.body, 6, 2));
     }
   });
 
@@ -335,6 +323,7 @@ HTTPConsole.prototype.negotiateContent = function (req, res, next) {
 HTTPConsole.prototype.utilMiddleware = function (req, res, next) {
   res.locals.path = req.path;
   res.locals.hostname = req.hostname;
+
   res.set('X-Powered-By', 'httpconsole.com');
 
   res.header('Access-Control-Allow-Origin', '*');
@@ -344,43 +333,66 @@ HTTPConsole.prototype.utilMiddleware = function (req, res, next) {
   next();
 };
 
-HTTPConsole.prototype.start = function () {
+HTTPConsole.prototype.notFoundHandler = function (req, res, next) {
+  res.status(404).view = 404;
+
+  next();
+};
+
+HTTPConsole.prototype.errorHandler = function (err, req, res, next) {
+  debug(err);
+
+  res.status(err.status || 500).view = 'error';
+
+  next();
+};
+
+HTTPConsole.prototype.router = function () {
   var self = this;
 
-  this.router.get('/', function (req, res, next) {
-    // TODO
+  var router = express.Router();
+
+  router.get('/', function (req, res, next) {
+    res.status(200);
+
     res.view = 'index';
     res.body = 'Hello World!';
 
     next();
   });
 
-  this.router.all('/ip', function (req, res, next) {
+  router.all('/ip', function (req, res, next) {
+    res.status(200);
+
     res.view = 'default';
     res.body = req.ip;
 
     next();
   });
 
-  this.router.all('/ips', function (req, res, next) {
+  router.all('/ips', function (req, res, next) {
+    res.status(200);
+
     res.view = 'default';
     res.body = req.ips;
 
     next();
   });
 
-  this.router.all('/agent', function (req, res, next) {
+  router.all('/agent', function (req, res, next) {
+    res.status(200);
+
     res.view = 'default';
     res.body = req.headers['user-agent'];
 
     next();
   });
 
-  this.router.all('/status/:status_code/:status_message?', function (req, res, next) {
+  router.all('/status/:code/:reason?', function (req, res, next) {
     res.view = 'default';
 
-    res.statusCode = req.params.status_code || 200;
-    res.statusMessage = (req.params.status_message || 'OK').replace(/\+/g, ' ');
+    res.statusCode = req.params.code || 200;
+    res.statusMessage = (req.params.reason || 'OK').replace(/\+/g, ' ');
 
     res.body = {
       code: res.statusCode,
@@ -390,7 +402,9 @@ HTTPConsole.prototype.start = function () {
     next();
   });
 
-  this.router.all('/headers', function (req, res, next) {
+  router.all('/headers', function (req, res, next) {
+    res.status(200);
+
     res.view = 'default';
 
     res.body = {
@@ -401,14 +415,18 @@ HTTPConsole.prototype.start = function () {
     next();
   });
 
-  this.router.all('/header/:name', function (req, res, next) {
+  router.all('/header/:name', function (req, res, next) {
+    res.status(200);
+
     res.view = 'default';
     res.body = req.headers[req.params.name.toLowerCase()];
 
     next();
   });
 
-  this.router.all('/cookies', function (req, res, next) {
+  router.all('/cookies', function (req, res, next) {
+    res.status(200);
+
     res.view = 'default';
 
     res.body = req.har.log.entries[0].request.cookies;
@@ -416,14 +434,16 @@ HTTPConsole.prototype.start = function () {
     next();
   });
 
-  this.router.all('/cookie/:name', function (req, res, next) {
+  router.all('/cookie/:name', function (req, res, next) {
+    res.status(200);
+
     res.view = 'default';
     res.body = req.cookies[req.params.name.toLowerCase()];
 
     next();
   });
 
-  this.router.all('/redirect/:status_code/:count?', function (req, res, next) {
+  router.all('/redirect/:status_code/:count?', function (req, res, next) {
     var count = req.params.count ? parseInt(req.params.count) : 1;
     var status = parseInt(req.params.status_code) || 302;
     var valid = [300, 301, 302, 303, 307, 308];
@@ -444,13 +464,17 @@ HTTPConsole.prototype.start = function () {
       return res.redirect(status, util.format('http://%s:%s/redirect/%d/%d%s', req.hostname, self.config.port_mask || self.config.port, status, count - 1, req.query.to ? '?to=' + req.query.to : ''));
     }
 
+    res.status(200);
+
     res.view = 'default';
     res.body = 'redirect finished';
 
     next();
   });
 
-  this.router.all('/echo', function (req, res, next) {
+  router.all('/echo', function (req, res, next) {
+    res.status(200);
+
     res.view = 'default';
     res.locals.yamlInline = 6;
 
@@ -459,7 +483,9 @@ HTTPConsole.prototype.start = function () {
     next();
   });
 
-  this.router.all('/gzip', function (req, res, next) {
+  router.all('/gzip', function (req, res, next) {
+    res.status(200);
+
     res.view = 'default';
     res.locals.yamlInline = 6;
 
@@ -471,13 +497,15 @@ HTTPConsole.prototype.start = function () {
   });
 
   // TODO display web form
-  this.router.get('/bucket/create', function (req, res, next) {
+  router.get('/bucket/create', function (req, res, next) {
+    res.status(200);
+
     res.view = 'bucket/create';
 
     next();
   });
 
-  this.router.post('/bucket/create', function (req, res, next) {
+  router.post('/bucket/create', function (req, res, next) {
     var id = uuid.v4();
 
     var result = tv4.validateResult(req.jsonBody, HARSchema.definitions.response);
@@ -498,6 +526,8 @@ HTTPConsole.prototype.start = function () {
 
     self.redis.set(id, JSON.stringify(req.jsonBody));
 
+    res.status(201);
+
     // send back the newly created id
     res.body = util.format('http://%s:%s/bucket/%s', req.hostname, self.config.port_mask || self.config.port, id);
     res.location(res.body);
@@ -505,7 +535,7 @@ HTTPConsole.prototype.start = function () {
     next();
   });
 
-  this.router.all('/bucket/:uuid', function (req, res, next) {
+  router.all('/bucket/:uuid', function (req, res, next) {
     self.redis.get(req.params.uuid, function (err, value) {
       if (err) {
         throw(err);
@@ -548,18 +578,20 @@ HTTPConsole.prototype.start = function () {
           res.view = 'bucket/view';
         }
 
+        res.status(200);
+
         res.locals.har = har;
 
         res.body = har.content.text ? har.content.text : null;
-      } else {
-        res.status(404);
       }
 
       next();
     });
   });
 
-  this.router.get('/bucket/:uuid/log', function (req, res, next) {
+  router.get('/bucket/:uuid/log', function (req, res, next) {
+    res.status(200);
+
     res.view = 'bucket/log';
 
     self.redis.lrange(req.params.uuid + '-log', 0, -1, function (err, history) {
@@ -588,20 +620,18 @@ HTTPConsole.prototype.start = function () {
     });
   });
 
-  this.router.get('/docs', function (req, res, next) {
+  router.get('/docs', function (req, res, next) {
+    res.status(200);
+
     res.view = 'docs';
 
     next();
   });
 
-  // this.router.get('*', function (req, res, next) {
-  //   res.view = '404';
+  return router;
+};
 
-  //   res.statusCode = 404;
-
-  //   next();
-  // });
-
+HTTPConsole.prototype.start = function () {
   // start listening
   this.instance = this.express.listen(this.config.port);
 

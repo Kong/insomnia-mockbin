@@ -1,0 +1,13 @@
+extends ../layout.jade
+
+block content
+  div(role='tabpanel')
+    ul(class='nav nav-tabs', role='tablist')
+      li(role='presentation', class='active'): a(href='#home', aria-controls='json', role='tab' data-toggle='tab') YAML
+      li(role='presentation'): a(href='#json', aria-controls='settings', role='tab', data-toggle='tab') JSON
+      li(role='presentation'): a(href='#xml', aria-controls='settings', role='tab', data-toggle='tab') XML
+
+    div(class='tab-content')
+      div(role='tabpanel', class='tab-pane active', id='home'): pre: code= YAML.stringify(data, 3, 2)
+      div(role='tabpanel', class='tab-pane', id='json'): pre: code= JSON.stringify(data, null, 2)
+      div(role='tabpanel', class='tab-pane', id='xml'): pre: code= XML(data, { prettyPrint: true, indent: '  ' }).trim()

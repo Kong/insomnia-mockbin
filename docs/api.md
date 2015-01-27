@@ -579,8 +579,6 @@ Responds with a `Location` header with the newly created **Bucket**, e.g. `Locat
 
 The [HAR Response Object](http://www.softwareishard.com/blog/har-12-spec/#response) sent at time of [creation](-/bucket/create) will determine what the response status, headers, content will be.
 
-If you wish to inspect this **Bucket** in a browser window, be sure to add `?__inspect` to the url, otherwise, there's a chance you'll see the HAR content instead *(varies on your browser's `Accept` header)*
-
 ###### Request
 
 > ```http

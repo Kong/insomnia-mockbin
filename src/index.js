@@ -334,7 +334,15 @@ HTTPConsole.prototype.utilMiddleware = function (req, res, next) {
 };
 
 HTTPConsole.prototype.notFoundHandler = function (req, res, next) {
-  res.status(404).view = 404;
+  res.status(404);
+
+  res.view = 404;
+  res.body = {
+    error: {
+      code: '404',
+      message: 'Not Found'
+    }
+  };
 
   next();
 };
@@ -535,6 +543,25 @@ HTTPConsole.prototype.router = function () {
     next();
   });
 
+  router.get('/bucket/:uuid/view', function (req, res, next) {
+    self.redis.get(req.params.uuid, function (err, value) {
+      if (err) {
+        throw(err);
+      }
+
+      if (value) {
+        var har = JSON.parse(value);
+
+        res.status(200);
+
+        res.view = 'bucket/view';
+        res.body = har;
+      }
+
+      next();
+    });
+  });
+
   router.all('/bucket/:uuid', function (req, res, next) {
     self.redis.get(req.params.uuid, function (err, value) {
       if (err) {
@@ -545,44 +572,30 @@ HTTPConsole.prototype.router = function () {
         var har = JSON.parse(value);
 
         // log interaction & send the appropriate response based on HAR
-        if (req.query.__inspect === undefined) {
-          self.redis.rpush(req.params.uuid + '-log', JSON.stringify(req.har.log.entries[0]));
-          self.redis.ltrim(req.params.uuid + '-log', 0, 100);
+        self.redis.rpush(req.params.uuid + '-log', JSON.stringify(req.har.log.entries[0]));
+        self.redis.ltrim(req.params.uuid + '-log', 0, 100);
 
-          // headers
-          har.headers.map(function (header) {
-            res.set(header.name, header.value);
-          });
+        // headers
+        har.headers.map(function (header) {
+          res.set(header.name, header.value);
+        });
 
-          // cookies
-          har.cookies.map(function (cookie) {
-            res.cookie(cookie.name, cookie.value);
-          });
+        // cookies
+        har.cookies.map(function (cookie) {
+          res.cookie(cookie.name, cookie.value);
+        });
 
-          // status
-          res.httpVersion = har.httpVersion.split('/')[1];
-          res.statusCode = har.status || 200;
-          res.statusMessage = har.statusText || 'OK';
+        // status
+        res.httpVersion = har.httpVersion.split('/')[1];
+        res.statusCode = har.status || 200;
+        res.statusMessage = har.statusText || 'OK';
 
-          // special condition
-          if (har.redirectURL !== '') {
-            res.location(har.redirectURL);
-          }
+        // special condition
+        if (har.redirectURL !== '') {
+          res.location(har.redirectURL);
         }
 
-        // this is not even my final form!
-        var type = typer.parse(har.content.mimeType).subtype;
-
-        // only set the view template when its not an HTML response, or through manual override
-        if (req.query.__inspect !== undefined || !~['html', 'xhtml'].indexOf(type)) {
-          res.view = 'bucket/view';
-        }
-
-        res.status(200);
-
-        res.locals.har = har;
-
-        res.body = har.content.text ? har.content.text : null;
+        return res.send(har.content.text ? har.content.text : null);
       }
 
       next();
@@ -624,6 +637,12 @@ HTTPConsole.prototype.router = function () {
     res.status(200);
 
     res.view = 'docs';
+    res.body = {
+      error: {
+        code: 406,
+        message: util.format('please visit, http://%s:%s/docs with a web browser', req.hostname, self.config.port_mask || self.config.port)
+      }
+    };
 
     next();
   });

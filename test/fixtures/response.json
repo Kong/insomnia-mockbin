@@ -38,9 +38,10 @@
   ],
   "cookies": [],
   "content": {
-    "size": 70972,
+    "size": 20,
     "mimeType": "text/html",
-    "compression": -21
+    "text": "<h1>Hello World</h1>",
+    "compression": 0
   },
   "redirectURL": "",
   "headersSize": 323,

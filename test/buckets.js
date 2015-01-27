@@ -13,7 +13,7 @@ describe('Simple Endpoints', function () {
 
   app.createServer().start();
 
-  it('bin tests', function (done) {
+  it('bucket tests', function (done) {
     done();
   });
 });

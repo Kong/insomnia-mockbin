@@ -1,7 +1,7 @@
 {
   "version": "0.1.0",
   "name": "httpconsole",
-  "description": "Mock, Test & Track HTTP calls!",
+  "description": "Mock, Test & Track HTTP calls",
   "author": "Ahmad Nassri <ahmad@ahmadnassri.com> (https://www.ahmadnassri.com/)",
   "homepage": "http://httpconsole.com/",
   "license": "MIT",

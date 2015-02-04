@@ -350,6 +350,57 @@ Start a redirects loop using the redirect custom status code: `status`, looping 
 
 ----
 
+### `/stream/:chunks`
+
+Streams a chunked response, defaults to 10 chunks with an upper limit of 100
+
+###### Request
+
+> ```http
+> GET /stream/4 HTTP/1.1
+> Host: httpconsole.com
+> ```
+
+###### Response
+
+> ```http
+> HTTP/1.1 200 OK
+> Content-Type: text/plain
+> Transfer-Encoding: chunked
+> Connection: keep-alive
+>
+> {"type":"stream","chunk":1}
+> {"type":"stream","chunk":2}
+> {"type":"stream","chunk":3}
+> ```
+
+----
+
+## `/delay/:ms`
+
+Returns a response after a delay in milliseconds, default is 200ms
+
+###### Request
+
+> ```http
+> GET /delay/5000 HTTP/1.1
+> Host: httpconsole.com
+>
+> ```
+
+###### Response
+
+> ```http
+> HTTP/1.1 200 OK
+> Content-Length: 21
+>
+> {
+>   "delay": "5000"
+> }
+> ```
+
+----
+
 ### `/echo`
 
 Returns back all the info sent through your request in HAR format

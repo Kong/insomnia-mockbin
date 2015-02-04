@@ -10,4 +10,4 @@ block content
     div(class='tab-content')
       div(role='tabpanel', class='tab-pane active', id='home'): pre: code= YAML.stringify(data, 3, 2)
       div(role='tabpanel', class='tab-pane', id='json'): pre: code= JSON.stringify(data, null, 2)
-      div(role='tabpanel', class='tab-pane', id='xml'): pre: code= XML(data, { prettyPrint: true, indent: '  ' }).trim()
+      div(role='tabpanel', class='tab-pane', id='xml'): pre: code= XML.create(data, { prettyPrint: true, indent: '  ' }).end({pretty: true, indent: '  ', newline: '\n'})

@@ -24,7 +24,7 @@ block content
           pre: code= JSON.stringify(data, null, 2)
 
         div(role='tabpanel', id='xml').tab-pane.fade
-          pre: code= XML(bodyXmlObj || data, { prettyPrint: true, indent: '  ' }).trim()
+          pre: code= XML.create(bodyXmlObj || data, { prettyPrint: true, indent: '  ' }).end({pretty: true, indent: '  ', newline: '\n'})
 
       p for more info, review the&nbsp;
         a(href='/docs#' + path.replace('/', '-') + '-') documentation

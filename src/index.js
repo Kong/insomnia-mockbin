@@ -17,7 +17,7 @@ var typer           = require('media-typer');
 var url             = require('url');
 var util            = require('util');
 var uuid            = require('node-uuid');
-var XML             = require('jsontoxml');
+var XML             = require('xmlbuilder');
 var YAML            = require('yamljs');
 
 // load .env
@@ -127,7 +127,6 @@ var HTTPConsole = function (options) {
 HTTPConsole.prototype.createServer = function () {
   // express setup
   this.express = express();
-  this.express.set('json spaces', 2);
   this.express.set('jsonp callback name', '__callback');
   this.express.set('view engine', 'jade');
   this.express.enable('view cache');
@@ -161,8 +160,11 @@ HTTPConsole.prototype.createServer = function () {
   // error Handling
   this.express.use(this.errorHandler);
 
+  // am I pretty?
+  this.express.use(this.prettyPrinter.bind(this));
+
   // negotiate content at the end
-  this.express.use(this.negotiateContent);
+  this.express.use(this.negotiateContent.bind(this));
 
   // jade locals
   this.express.locals.YAML = YAML;
@@ -277,6 +279,13 @@ HTTPConsole.prototype.bodyParser = function (req, res, next) {
   });
 };
 
+HTTPConsole.prototype.prettyPrinter = function (req, res, next) {
+  var spaces = req.headers['x-pretty-print'] ? parseInt(req.headers['x-pretty-print']) : false;
+
+  this.express.set('json spaces', spaces);
+  next();
+};
+
 HTTPConsole.prototype.negotiateContent = function (req, res, next) {
   if (typeof res.body !== 'object') {
     res.bodyXmlObj = {
@@ -286,35 +295,60 @@ HTTPConsole.prototype.negotiateContent = function (req, res, next) {
     res.locals.bodyXmlObj = res.bodyXmlObj;
   }
 
-  res.format({
-    json: function () {
-      res.jsonp(res.body);
-    },
+  // am I pretty?
+  var spaces = this.express.get('json spaces');
 
-    xml: function () {
-      res.send(XML(res.bodyXmlObj || res.body, {
-        prettyPrint: true,
-        indent: '  '
-      }).trim());
-    },
-
-    html: function () {
-      if (res.view) {
-        return res.render(res.view, {
-          data: res.body
-        });
-      }
-
-      res.send(YAML.stringify(res.body, 3, 2));
-    },
-
-    default: function () {
-      if (typeof res.body === 'string') {
-        return res.send(res.body);
-      }
-
-      res.send(YAML.stringify(res.body, 6, 2));
+  function YAMLResponse () {
+    if (typeof res.body === 'string') {
+      return res.send(res.body);
     }
+
+    res.send(YAML.stringify(res.body, 6, spaces));
+  }
+
+  function JSONResponse () {
+    res.jsonp(res.body);
+  }
+
+  function XMLResponse () {
+    res.send(XML.create(res.bodyXmlObj || res.body).end({
+      pretty: spaces ? true : false,
+      indent: new Array(spaces).join(' '),
+      newline: '\n'
+    }));
+  }
+
+  function HTMLResponse () {
+    res.render(res.view, {
+      data: res.body
+    });
+  }
+
+  res.format({
+    'text/javascript': JSONResponse,
+    'application/javascript': JSONResponse,
+    'application/x-javascript': JSONResponse,
+
+    'text/json': JSONResponse,
+    'text/x-json': JSONResponse,
+    'application/json': JSONResponse,
+    'application/x-json': JSONResponse,
+
+    'text/xml': XMLResponse,
+    'application/xml': XMLResponse,
+    'application/x-xml': XMLResponse,
+
+    'text/html': HTMLResponse,
+    'application/xhtml+xml': HTMLResponse,
+
+    'text/yaml': YAMLResponse,
+    'text/x-yaml': YAMLResponse,
+    'application/yaml': YAMLResponse,
+    'application/x-yaml': YAMLResponse,
+
+    'text/plain': YAMLResponse,
+
+    default: JSONResponse
   });
 
   next();
@@ -324,11 +358,12 @@ HTTPConsole.prototype.utilMiddleware = function (req, res, next) {
   res.locals.path = req.path;
   res.locals.hostname = req.hostname;
 
-  res.set('X-Powered-By', 'httpconsole.com');
-
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', '*');
-  res.header('Access-Control-Allow-Headers', '*');
+  res.set({
+    'X-Powered-By': 'httpconsole.com',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': '*',
+    'Access-Control-Allow-Headers': '*'
+  });
 
   next();
 };
@@ -337,6 +372,7 @@ HTTPConsole.prototype.notFoundHandler = function (req, res, next) {
   res.status(404);
 
   res.view = 404;
+
   res.body = {
     error: {
       code: '404',
@@ -533,6 +569,8 @@ HTTPConsole.prototype.router = function () {
     }
 
     self.redis.set(id, JSON.stringify(req.jsonBody));
+
+    res.view = 'bucket/created';
 
     res.status(201);
 

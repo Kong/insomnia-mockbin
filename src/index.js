@@ -480,7 +480,7 @@ HTTPConsole.prototype.router = function () {
     next();
   });
 
-  router.all('/echo', function (req, res, next) {
+  router.all('/echo*', function (req, res, next) {
     res.status(200);
 
     res.view = 'default';

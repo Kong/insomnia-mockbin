@@ -70,7 +70,7 @@ html(lang='en', itemscope, itemtype='http://schema.org/Article')
 
         div#navbar.collapse.navbar-collapse
           ul.nav.navbar-nav
-            for link, name in [{name: 'Home', href: '/'}, {name: 'Docs', href: '/docs'}, {name: 'Create Endpoint', href: '/bucket/create'}]
+            for link, name in [{name: 'Home', href: '/'}, {name: 'Docs', href: '/docs'}, {name: 'Create Bucket', href: '/bucket/create'}]
               li(class={active: path === link.href}): a(href= link.href)= link.name
 
     div.container

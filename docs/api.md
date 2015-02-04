@@ -556,7 +556,7 @@ Responds with a `Location` header with the newly created **Bucket**, e.g. `Locat
 ###### Request
 
 > ```http
-> POST /create HTTP/1.1
+> POST /bucket/create HTTP/1.1
 > User-Agent: curl/7.35.0
 > Host: httpconsole.com
 > Content-Type: application/json

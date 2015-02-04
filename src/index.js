@@ -492,6 +492,10 @@ HTTPConsole.prototype.router = function () {
     var status = parseInt(req.params.status_code) || 302;
     var valid = [300, 301, 302, 303, 307, 308];
 
+    if (count > 100) {
+      count = 100;
+    }
+
     if (!~valid.indexOf(status)) {
       res.body = {
         error: 'invalid status code, must be one of ' + valid.join()
@@ -514,6 +518,50 @@ HTTPConsole.prototype.router = function () {
     res.body = 'redirect finished';
 
     next();
+  });
+
+  router.all('/delay/:ms?', function (req, res, next) {
+    res.view = 'default';
+
+    var delay =  req.params.ms ? parseInt(req.params.ms) : 200;
+
+    if (delay > 60000) {
+      delay = 60000;
+    }
+
+    setTimeout(function () {
+      res.body = {
+        delay: delay
+      };
+
+      next();
+    }, delay);
+  });
+
+  router.all('/stream/:chunks?', function (req, res, next) {
+    res.set({
+      'Content-Type': 'text/plain; charset=utf-8',
+      'Transfer-Encoding': 'chunked'
+    });
+
+    // set default chunks to 10
+    var chunks = req.params.chunks ? parseInt(req.params.chunks) : 10;
+
+    // max out chunks at 100
+    if (chunks > 100) {
+      chunks = 100;
+    }
+
+    var count = 1;
+
+    while (count <= chunks) {
+      res.write(JSON.stringify({
+        type: 'stream',
+        chunk: count++
+      }) + '\n');
+    }
+
+    res.end();
   });
 
   router.all('/echo*', function (req, res, next) {

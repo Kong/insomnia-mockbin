@@ -40,6 +40,7 @@
     "media-typer": "^0.3.0",
     "method-override": "^2.3.1",
     "morgan": "^1.5.1",
+    "negotiator": "git://github.com/ahmadnassri/negotiator",
     "node-uuid": "^1.4.2",
     "qs": "^2.3.3",
     "redis": "^0.12.1",

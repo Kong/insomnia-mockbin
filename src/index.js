@@ -564,7 +564,16 @@ HTTPConsole.prototype.router = function () {
     res.end();
   });
 
-  router.all('/echo*', function (req, res, next) {
+  router.all('/echo', function (req, res, next) {
+    res.status(200);
+
+    res.view = 'default';
+
+    res.type(req.headers['content-type'] || 'text/plain');
+    res.send(req.body);
+  });
+
+  router.all('/debug*', function (req, res, next) {
     res.status(200);
 
     res.view = 'default';

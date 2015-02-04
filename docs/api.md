@@ -403,12 +403,39 @@ Returns a response after a delay in milliseconds, default is 200ms
 
 ### `/echo`
 
+Returns a response with identical `Body` and `Content-Type` to what's in teh request.
+
+###### Request
+
+> ```http
+> POST /echo HTTP/1.1
+> Host: httpconsole.com
+> Content-Type: application/json
+> Content-Length: 14
+>
+> {"foo": "bar"}
+> ```
+
+----
+
+###### Response
+
+> ```http
+> HTTP/1.1 200 OK
+> Content-Type: application/json; charset=utf-8
+> Content-Length: 14
+>
+> {"foo": "bar"}
+> ```
+
+### `/debug/:path`
+
 Returns back all the info sent through your request in HAR format
 
 ###### Request
 
 > ```http
-> POST /echo?foo=bar&foo=baz&key=value HTTP/1.1
+> POST /debug/any/path?foo=bar&foo=baz&key=value HTTP/1.1
 > Host: httpconsole.com
 > User-Agent: curl/7.35.0
 > Cookie: Greet=Hello;World=Universe

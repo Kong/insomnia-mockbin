@@ -287,7 +287,10 @@ HTTPConsole.prototype.bodyParser = function (req, res, next) {
           });
 
           // update HAR object
-          req.har.log.entries[0].request.postData.params = req.multiPart ? req.multiPart : [];
+          var params = req.multiPart ? req.multiPart : [];
+
+          req.simple.postData.params = params;
+          req.har.log.entries[0].request.postData.params = params;
 
           next();
         });

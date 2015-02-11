@@ -41,23 +41,22 @@ var objectToArray = function (obj) {
 
   return results;
 };
+var getReqHeaderSize = function (req) {
+  var keys = Object.keys(req.headers);
+
+  var values = keys.map(function (key) {
+    return req.headers[key];
+  });
+
+  var headers = req.method + req.url + req.versionMajor + req.versionMinor + keys.join() + values.join();
+
+  // startline: [method] [url] HTTP/1.1\r\n = 12
+  // endline: \r\n = 2
+  // every header + \r\n = * 2
+  return new Buffer(headers).length + (keys.length * 2) + 12 + 2;
+};
 
 var createHar = function (req) {
-  var getReqHeaderSize = function () {
-    var keys = Object.keys(req.headers);
-
-    var values = keys.map(function (key) {
-      return req.headers[key];
-    });
-
-    var headers = req.method + req.url + req.versionMajor + req.versionMinor + keys.join() + values.join();
-
-    // startline: [method] [url] HTTP/1.1\r\n = 12
-    // endline: \r\n = 2
-    // every header + \r\n = * 2
-    return new Buffer(headers).length + (keys.length * 2) + 12 + 2;
-  };
-
   return {
     log: {
       version: '1.2',
@@ -82,10 +81,34 @@ var createHar = function (req) {
             text: req.body,
             params: []
           },
-          headersSize: getReqHeaderSize(),
+          headersSize: getReqHeaderSize(req),
           bodySize: req.rawBody.length
         }
       }]
+    }
+  };
+};
+
+var createSimpleHar = function (req) {
+  return {
+    startedDateTime: new Date().toISOString(),
+    clientIPAddress: req.ip,
+    request: {
+      method: req.method,
+      url: req.protocol + '://' + req.hostname + req.originalUrl,
+      httpVersion: 'HTTP/1.1',
+      // TODO, add cookie details
+      cookies: req.cookies,
+      headers: req.headers,
+      queryString: req.query,
+      // TODO
+      postData: {
+        mimeType: req.contentType ? req.contentType : 'application/octet-stream',
+        text: req.body,
+        params: []
+      },
+      headersSize: getReqHeaderSize(req),
+      bodySize: req.rawBody.length
     }
   };
 };
@@ -197,6 +220,7 @@ HTTPConsole.prototype.bodyParser = function (req, res, next) {
 
     // create HAR Object
     req.har = createHar(req);
+    req.simple = createSimpleHar(req);
 
     // json
     switch (req.contentType) {
@@ -211,7 +235,7 @@ HTTPConsole.prototype.bodyParser = function (req, res, next) {
       case 'application/x-www-form-urlencoded':
         req.formBody = qs.parse(req.body);
 
-        // update HAR object
+        // update HAR objects
         req.har.log.entries[0].request.postData.params = objectToArray(req.formBody);
 
         next();
@@ -580,6 +604,17 @@ HTTPConsole.prototype.router = function () {
     res.locals.yamlInline = 6;
 
     res.body = req.har;
+
+    next();
+  });
+
+  router.all('/request*', function (req, res, next) {
+    res.status(200);
+
+    res.view = 'default';
+    res.locals.yamlInline = 6;
+
+    res.body = req.simple;
 
     next();
   });

@@ -93,23 +93,21 @@ var createSimpleHar = function (req) {
   return {
     startedDateTime: new Date().toISOString(),
     clientIPAddress: req.ip,
-    request: {
-      method: req.method,
-      url: req.protocol + '://' + req.hostname + req.originalUrl,
-      httpVersion: 'HTTP/1.1',
-      // TODO, add cookie details
-      cookies: req.cookies,
-      headers: req.headers,
-      queryString: req.query,
-      // TODO
-      postData: {
-        mimeType: req.contentType ? req.contentType : 'application/octet-stream',
-        text: req.body,
-        params: []
-      },
-      headersSize: getReqHeaderSize(req),
-      bodySize: req.rawBody.length
-    }
+    method: req.method,
+    url: req.protocol + '://' + req.hostname + req.originalUrl,
+    httpVersion: 'HTTP/1.1',
+    // TODO, add cookie details
+    cookies: req.cookies,
+    headers: req.headers,
+    queryString: req.query,
+    // TODO
+    postData: {
+      mimeType: req.contentType ? req.contentType : 'application/octet-stream',
+      text: req.body,
+      params: []
+    },
+    headersSize: getReqHeaderSize(req),
+    bodySize: req.rawBody.length
   };
 };
 

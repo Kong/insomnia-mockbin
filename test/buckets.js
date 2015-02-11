@@ -1,9 +1,8 @@
 'use strict';
 
 var HTTPConsole = require('../src');
-var unirest = require('unirest');
 
-var should = require('should');
+require('should');
 
 describe('Simple Endpoints', function () {
   var app = HTTPConsole({

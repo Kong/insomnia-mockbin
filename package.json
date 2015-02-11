@@ -6,7 +6,7 @@
   "homepage": "http://httpconsole.com/",
   "license": "MIT",
   "main": "./src/index.js",
-  "bin": "./bin/index.js",
+  "bin": "./bin/httpconsole",
   "engines": {
     "node": "0.10.x",
     "npm": "1.4.x"
@@ -27,6 +27,27 @@
     "Testing",
     "Console"
   ],
+  "config": {
+    "port": 8080,
+    "redis": "redis://127.0.0.1:6379"
+  },
+  "scripts": {
+    "test": "mocha -R spec",
+    "coverage": "mocha -r blanket -R mocha-lcov-reporter > test/report/lcov.info",
+    "html-cov": "mocha -r blanket -R html-cov > test/report/coverage.html",
+    "codeclimate": "codeclimate < test/report/lcov.info",
+    "blanket": {
+      "pattern": "src"
+    }
+  },
+  "devDependencies": {
+    "blanket": "^1.1.6",
+    "codeclimate-test-reporter": "0.0.4",
+    "mocha": "^2.1.0",
+    "mocha-lcov-reporter": "0.0.1",
+    "should": "^4.6.1",
+    "unirest": "^0.4.0"
+  },
   "dependencies": {
     "compression": "^1.3.0",
     "cookie-parser": "^1.3.3",
@@ -48,26 +69,5 @@
     "tv4": "^1.1.9",
     "xmlbuilder": "^2.5.0",
     "yamljs": "^0.2.1"
-  },
-  "config": {
-    "port": 8080,
-    "redis": "redis://127.0.0.1:6379"
-  },
-  "scripts": {
-    "test": "mocha -R spec",
-    "coverage": "mocha -r blanket -R mocha-lcov-reporter > test/report/lcov.info",
-    "html-cov": "mocha -r blanket -R html-cov > test/report/coverage.html",
-    "codeclimate": "codeclimate < test/report/lcov.info",
-    "blanket": {
-      "pattern": "src"
-    }
-  },
-  "devDependencies": {
-    "blanket": "^1.1.6",
-    "codeclimate-test-reporter": "0.0.4",
-    "mocha": "^2.1.0",
-    "mocha-lcov-reporter": "0.0.1",
-    "should": "^4.6.1",
-    "unirest": "^0.4.0"
   }
 }

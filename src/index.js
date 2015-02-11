@@ -234,6 +234,7 @@ HTTPConsole.prototype.bodyParser = function (req, res, next) {
         req.formBody = qs.parse(req.body);
 
         // update HAR objects
+        req.simple.postData.params = req.formBody;
         req.har.log.entries[0].request.postData.params = objectToArray(req.formBody);
 
         next();

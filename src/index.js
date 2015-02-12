@@ -208,6 +208,7 @@ HTTPConsole.prototype.bodyParser = function (req, res, next) {
     req.jsonBody = null;
     req.formBody = null;
     req.contentType = null;
+    req.multiPartSimple = {};
 
     // parse Content-Type
     var type = req.headers['content-type'] ? typer.parse(req) : null;
@@ -282,7 +283,11 @@ HTTPConsole.prototype.bodyParser = function (req, res, next) {
 
         dice.on('finish', function () {
           req.multiPart = req.multiPartParams.map(function (param, index) {
+            // append value to pair
             param.value = req.multiPartData[index];
+
+            // createa a new simple object
+            req.multiPartSimple[param.name] = param.value;
             return param;
           });
 

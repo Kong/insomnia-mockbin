@@ -376,7 +376,7 @@ Streams a chunked response, defaults to 10 chunks with an upper limit of 100
 
 ----
 
-## `/delay/:ms`
+### `/delay/:ms`
 
 Returns a response after a delay in milliseconds, default is 200ms
 

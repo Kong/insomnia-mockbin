@@ -29,16 +29,16 @@
   ],
   "config": {
     "port": 8080,
-    "redis": "redis://127.0.0.1:6379"
-  },
-  "scripts": {
-    "test": "mocha -R spec",
-    "coverage": "mocha -r blanket -R mocha-lcov-reporter > test/report/lcov.info",
-    "html-cov": "mocha -r blanket -R html-cov > test/report/coverage.html",
-    "codeclimate": "codeclimate < test/report/lcov.info",
+    "redis": "redis://127.0.0.1:6379",
     "blanket": {
       "pattern": "src"
     }
+  },
+  "scripts": {
+    "test": "mocha --recursive --reporter spec",
+    "coverage": "mocha -r blanket -R mocha-lcov-reporter > test/report/lcov.info",
+    "html-cov": "mocha -r blanket -R html-cov > test/report/coverage.html",
+    "codeclimate": "codeclimate < test/report/lcov.info"
   },
   "devDependencies": {
     "blanket": "^1.1.6",

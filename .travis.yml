@@ -7,5 +7,6 @@ node_js:
 script: npm test
 
 after_script:
+  - mkdir test/report
   - npm run coverage
   - npm run codeclimate

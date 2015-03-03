@@ -48,20 +48,29 @@ pre {
   background-color: #FCFCFC;
 }
 
-.mashape {
-  color: #66b745;
+.navbar-default .navbar-brand a {
+  color: #273D4D; /* TODO: @Jitachi */
 }
 
-.logo {
-  color: #263D4D !important;
-  font-weight: 600;
+.navbar-default .navbar-brand .logo {
+  background-color: #2BA8D2;
+  color: #FFFFFF;
+  padding: 4px;
 }
 
-.logo strong {
-  color: #FF9900;
-  font-weight: 700;
+.navbar-default .navbar-brand a:hover {
+  text-decoration: none;
 }
 
+.navbar-default .navbar-brand strong {
+  font-weight: 600; /* TODO: @Jitachi */
+}
+
+.navbar-default .navbar-brand .text-muted,
+.navbar-default .navbar-brand .text-muted a {
+  font-size: 80%; /* TODO: @Jitachi */
+  color: #A1ABB2; /* TODO: @Jitachi */
+}
 
 .sidenav > li > a {
   color: #626B73;

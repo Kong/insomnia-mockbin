@@ -1,4 +1,24 @@
 extends ../layout.jade
 
 block content
-  pre: code= YAML.stringify(data, yamlInline || 3, 2)
+  form
+    div.form-group
+      label(for='exampleInputEmail1') Email address
+      input.form-control(type='email', placeholder='Enter email')
+
+    div.form-group
+      label(for='exampleInputPassword1') Password
+      input.form-control(type='password', placeholder='Password')
+
+    div.form-group
+      label(for='exampleInputFile') File input
+      input(type='file')
+      p.help-block Example block-level help text here.
+
+    div.checkbox
+      label
+        input(type='checkbox')
+        |  Check me out
+
+    button.btn.btn-default(type='submit') Submit
+

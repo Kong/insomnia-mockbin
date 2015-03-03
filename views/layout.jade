@@ -5,44 +5,51 @@
 doctype html
 html(lang='en', itemscope, itemtype='http://schema.org/Product')
   head(prefix='og: http://ogp.me/ns# website: http://ogp.me/ns/website#')
-    title= title
 
     meta(charset='utf-8')
     meta(http-equiv='X-UA-Compatible', content='IE=edge')
     meta(name='robots', content='index,follow')
+
     meta(name='viewport', content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no')
 
-    meta(name='author', content= author)
-    meta(name='description', content= description)
-
-    meta(itemprop='name', content='')
-    meta(itemprop='description', content= description)
-    meta(property='og:site_name', content= title)
+    title= title
+    meta(itemprop='name', content= title)
     meta(property='og:title', content= title)
+    meta(name='twitter:title', content= title)
+
+    link(rel='author', href='https://www.ahmadnassri.com/about')
+    meta(name='author', content= author)
+    meta(name='twitter:creator', content='@ahmadnassri')
+
+
+    meta(name='description', content= description)
+    meta(itemprop='description', content= description)
     meta(property='og:description', content= description)
-    meta(property='og:locale', content='en_US')
-    meta(property='og:url', content='http://httpconsole.com/')
-    meta(property='fb:admins', content='227304446')
+    meta(name='twitter:description', content= description)
+
+    meta(itemprop='image', content='https://httpconsole.com/share.jpg')
+    meta(property='og:image', content='https://httpconsole.com/share.jpg')
+    meta(name='twitter:image:src', content='https://httpconsole.com/share.jpg')
 
     meta(name='twitter:card', content='summary')
     meta(name='twitter:site', content='@ahmadnassri')
-    meta(name='twitter:title', content= title)
-    meta(name='twitter:description', content= description)
-    meta(name='twitter:creator', content='@ahmadnassri')
-    meta(name='twitter:url', content='http://httpconsole.com')
     meta(name='twitter:domain', content='httpconsole.com')
 
-    meta(name='google-site-verification', content='x0iiy6ABIM_ye0NrxlrXyD0xrLXuxuBIYFgnDcY_3Rk')
-    meta(name='msvalidate.01', content='1531230360BB8F364EDBA26FCF41604D')
+    link(rel='canonical', href='http://httpconsole.com/')
+    meta(name='twitter:url', content='http://httpconsole.com/')
+    meta(property='og:url', content='http://httpconsole.com/')
+
+
+    meta(property='og:type', content='website')
+    meta(property='og:site_name', content= title)
+    meta(property='fb:admins', content='227304446')
 
     link(rel='icon', type='image/png', href='/static/favicon.png')
-    link(rel='shortcut icon', href='/static/images/favicon.ico')
-    link(rel='canonical', href='http://httpconsole.com/')
-    link(rel='author', href='https://www.ahmadnassri.com/about')
+    link(rel='shortcut icon', href='/static/favicon.ico')
 
-    link(rel='stylesheet', type='text/css', href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic,700italic|Source+Code+Pro:400,500,600,700', media='all')
     link(rel='stylesheet', type='text/css', href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/css/bootstrap.min.css', media='all')
-    link(rel='stylesheet', type='text/css', href='https://cdnjs.cloudflare.com/ajax/libs/devicons/1.7.0/css/devicons.min.css', media='all')
+    link(rel='stylesheet', type='text/css', href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic,700italic|Source+Code+Pro:400,500,600,700', media='all')
+    link(rel='stylesheet', type='text/css', href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.css', media='all')
     link(rel='stylesheet', type='text/css', href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/tomorrow.min.css', media='all')
     link(rel='stylesheet', type='text/css', href='/static/style.css', media='all')
 
@@ -51,7 +58,7 @@ html(lang='en', itemscope, itemtype='http://schema.org/Product')
     script(type='text/javascript', src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js')
 
   body(data-spy='scroll', data-target='.affix-container', data-offset='60')
-    nav.navbar.navbar-default.navbar-fixed-top
+    nav.navbar.navbar-default
       div.container
         div.navbar-header
           button.navbar-toggle.collapsed(type='button', data-toggle='collapse', data-target='#navbar')
@@ -59,9 +66,9 @@ html(lang='en', itemscope, itemtype='http://schema.org/Product')
             span.icon-bar
             span.icon-bar
             span.icon-bar
-          a.navbar-brand.logo(href='/')
-            strong HTTP
-            span  Console
+          div.navbar-brand.logo
+            a(href='/')
+              #[span.logo.fa.fa-terminal] #[strong HTTP] Console #[small.text-muted by #[a(href='https://www.mashape.com') Mashape]]
 
         div.navbar-text.navbar-right.hidden-xs
           a.twitter-share-button(href='https://twitter.com/share', data-url='http://httpconsole.com', data-via='AhmadNassri', data-related='Mashape', data-hashtags='httpconsoleapi', data-dnt='true') Tweet

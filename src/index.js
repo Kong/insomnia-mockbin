@@ -150,7 +150,7 @@ HTTPConsole.prototype.createServer = function () {
   this.express = express();
   this.express.set('jsonp callback name', '__callback');
   this.express.set('view engine', 'jade');
-  this.express.enable('view cache');
+  // this.express.enable('view cache');
   this.express.enable('trust proxy');
   this.express.disable('x-powered-by');
   this.express.disable('etag');

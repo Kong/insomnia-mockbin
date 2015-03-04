@@ -2,40 +2,40 @@ extends layout.jade
 
 block content
   if (data)
-    div(role='tabpanel')
-      ul(class='nav nav-pills', role='tablist')
-        li(role='presentation').active: a(href='#yaml', aria-controls='settings', role='tab', data-toggle='tab') YAML
-        li(role='presentation'): a(href='#json', aria-controls='json', role='tab' data-toggle='tab') JSON
-        li(role='presentation'): a(href='#xml', aria-controls='settings', role='tab', data-toggle='tab') XML
+    ul(class='nav nav-pills')
+      li.active: a(href='#yaml', data-toggle='tab') YAML
+      li: a(href='#json', data-toggle='tab') JSON
+      li: a(href='#xml', data-toggle='tab') XML
 
-      hr
+    hr
 
-      p calling <code>http://#{hostname}#{path}</code> with an <code>Accept</code> header with the value: &nbsp;
-        select
-          for value, key in {yaml: 'application/x-yaml', json: 'application/json', 'xml': 'application/xml'}
-            option(value= key)= value
-        |  will result in the content below:
+    p calling <code>http://#{hostname}#{path}</code> with an <code>Accept</code> header with the value: &nbsp;
+      select
+        for value, key in {yaml: 'application/x-yaml', json: 'application/json', 'xml': 'application/xml'}
+          option(value= key)= value
+      |  will result in the content below:
 
-      div(class='tab-content')
-        div(role='tabpanel', id='yaml').tab-pane.active.fade.in
-          pre: code= YAML.stringify(data, yamlInline || 2, 2)
+    div(class='tab-content')
+      div(id='yaml').tab-pane.active.fade.in
+        pre: code= YAML.stringify(data, yamlInline || 2, 2)
 
-        div(role='tabpanel', id='json').tab-pane.fade
-          pre: code= JSON.stringify(data, null, 2)
+      div(id='json').tab-pane.fade
+        pre: code= JSON.stringify(data, null, 2)
 
-        div(role='tabpanel', id='xml').tab-pane.fade
-          pre: code= XML.create(bodyXmlObj || data, { prettyPrint: true, indent: '  ' }).end({pretty: true, indent: '  ', newline: '\n'})
+      div(id='xml').tab-pane.fade
+        pre: code= XML.create(bodyXmlObj || data, { prettyPrint: true, indent: '  ' }).end({pretty: true, indent: '  ', newline: '\n'})
 
-      p for more info, review the&nbsp;
-        a(href='/docs#' + path.replace('/', '-') + '-') documentation
+    p for more info, review the&nbsp;
+      a(href='/docs#' + path.replace('/', '-') + '-') documentation
 
-      //- hr
-      //- p Try this request with
+    //- hr
+    //- p Try this request with
 
-    script(type='text/javascript').
-      $('select').on('click', function () {
-        event.preventDefault();
+block scripts
+  script(type='text/javascript').
+    $('select').on('click', function () {
+      event.preventDefault();
 
-        $('[href=#' + $(this).val() + ']').tab('show')
-      });
+      $('[href=#' + $(this).val() + ']').tab('show')
+    });
 

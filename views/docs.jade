@@ -1,60 +1,48 @@
 extends layout.jade
 
 block content
-  h1 API Documentation
+  header
+    div.container
+      h1 API Documentation
 
-  div.row.documentation
-    div.col-md-3.hidden-sm.hidden-xs
-      div.affix-container(data-spy='affix',  data-offset-top='150')
-        h4 Overview
-        ul.nav.nav-pills.nav-stacked.sidenav
-          li(role='presentation'): a(href='#http-methods') HTTP Methods
-          li(role='presentation'): a(href='#content-negotiation') Content Negotiation
-          li(role='presentation'): a(href='#jsonp-callbacks') JSONP Callbacks
+  div.container.docs
+    div.col-md-3.hidden-sm
+      div.sidenav.affix-container(data-spy='affix',  data-offset-top='100')
+        ul.nav
+          li
+            a(href="#overview") Overview
+            ul.nav
+              li: a(href='#http-methods') HTTP Methods
+              li: a(href='#content-negotiation') Content Negotiation
+              li: a(href='#jsonp-callbacks') JSONP Callbacks
 
-        h4 API Endpoints
-        ul.nav.nav-pills.nav-stacked.sidenav.endpoints
+          li
+            a(href="#api-endpoints") API Endpoints
+            ul.nav.endpoints
 
-    div.col-md-9
-      div.markdown
-        div.overview-container
-          include:markdown ../docs/index.md
+    div.col-md-9.markdown
+      div.overview-container
+        include:markdown ../docs/index.md
 
-        div.endpoints-container
-          include:markdown ../docs/api.md
+      div.endpoints-container
+        include:markdown ../docs/api.md
 
-  form(method='GET', action='', enctype='text/plain')
+    form(method='GET', action='', enctype='text/plain')
 
-  script#nav-template(type='text/template')
-    li(role='presentation'): a(href='#@-') %
-
-  script#action-template(type='text/template')
-    div.btn-group.pull-right(class='@-')
-      button.btn.btn-default.dropdown-toggle(type='button', data-toggle='dropdown', aria-expanded='false') Try &nbsp;
-        span.caret
-
-      ul.dropdown-menu(role='menu')
-        li: a.get(href='#') GET
-        li: a.post(href='#') POST
-        li: a.any(href='#') ANY
+    script#nav-template(type='text/template')
+      li: a(href='#@') %
 
 block scripts
   script(type='text/javascript').
-    // highlight.js
+    var template = $('#nav-template').text();
+
     $('pre code').each(function (i, block) {
       hljs.highlightBlock(block);
     });
 
-    var sidenav = $('.nav.nav-pills.nav-stacked.sidenav.endpoints');
-
-    var template = {
-      nav: $('#nav-template').text(),
-      action: $('#action-template').text()
-    };
-
     // style tables
     $('table').each(function () {
-      $(this).addClass('table table-condensed table-bordered table-striped table-hover')
+      $(this).addClass('table table-hover')
     });
 
     // attach listener
@@ -79,36 +67,42 @@ block scripts
       }
     });
 
-    // generate some dom elements
-    $('.endpoints-container h3').each(function () {
-      var endpoint = $(this);
-      var text = endpoint.find('code').text();
-      var identifier = text.replace(/:/g, '').replace(/=|\?|\//g, '-').replace(/--/g, '-');
-
+    function addNavItem (element, nav) {
       // create nav item
       var item = $(
-        template.nav
-          .replace(/%/g, text)
-          .replace(/@/g, identifier)
+        template
+          .replace(/%/g, element.innerHTML)
+          .replace(/@/g, element.id)
       );
 
-      $(item).appendTo(sidenav);
+      $(item).appendTo(nav);
 
-      // create action button
-      var href = text
-        .replace(':id', 'xxx')
-        .replace(':code', '418')
-        .replace(':reason', 'I\'m%20a%20teapot')
-        .replace(':status', '308')
-        .replace(':count', '3')
-        .replace(':url', 'http://httpconsole.com/docs')
-        .replace(':ms', '5000')
+      return item;
+    }
 
-      var html = $(
-        template.action
-          .replace(/#/g, href)
-          .replace(/@/g, identifier)
-      );
+    function addSubNav (parent) {
+      var nav = $('<ul class="nav"/>');
 
-      $(html).prependTo(endpoint)
+      nav.appendTo(parent);
+
+      return nav;
+    }
+
+    // generate the sidebar links
+    $('.endpoints-container h3').each(function () {
+      var parent = $('.nav.endpoints');
+
+      var item = addNavItem(this, parent);
+      var nav = addSubNav(item);
+
+      // get all top levels
+      $(this).nextUntil('h3', 'h4').each(function () {
+        var sub_item = addNavItem(this, nav);
+        var sub_nav = addSubNav(sub_item);
+
+        // get all groups
+        $(this).nextUntil('h4', 'h5').each(function () {
+          addNavItem(this, sub_nav)
+        });
+      });
     });

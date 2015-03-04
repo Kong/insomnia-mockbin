@@ -1,136 +1,55 @@
 extends layout.jade
 
 block content
-  h1 Mock, Test &amp; Track HTTP calls!
+  div.showcase
+    div.container
+      h1 Mock, Test &amp; Track HTTP calls!
 
-  p <span class="logo"><strong>HTTP</strong> Console</span> was born out of the need for a better HTTP debugging service, it relies on the popular <a href="http://www.softwareishard.com/blog/har-12-spec/">HAR</a> format to export data and configure mock endpoints.
+      p #[span.logo #[strong HTTP] Console] was born out of the need for a better HTTP debugging service, it relies on the popular #[a(href='http://www.softwareishard.com/blog/har-12-spec/') HAR] format to export data and configure mock endpoints.
 
-  h3 Features
+      div.social
+        a.github-button(href='https://github.com/ahmadnassri/httpconsole/fork', data-icon='octicon-git-branch', data-count-href='/ahmadnassri/httpconsole/network', data-count-api='/repos/ahmadnassri/httpconsole#forks_count') Fork
+        a.github-button(href='https://github.com/ahmadnassri/httpconsole', data-icon='octicon-star', data-count-href='/ahmadnassri/httpconsole/stargazers', data-count-api='/repos/ahmadnassri/httpconsole#stargazers_count') Star
+        a.twitter-share-button(href='https://twitter.com/share', data-url='http://httpconsole.com', data-via='AhmadNassri', data-related='Mashape', data-hashtags='httpconsoleapi', data-dnt='true') Tweet
 
-  li 15+ utility HTTP endpoints
-  li JSON, YAML, XML, HTML output
-  li Mock custom endpoints using any HAR response object <em>(use as webhooks / testing / api mocking api / anything!)</em>
-  li Log and inspect incoming calls to your custom endpoints <em>(see how detailed HTTP logs each client is making)</em>
-  li Plays nice with proxies
-  li Cross-Origin resource sharing <em>(use it in your browser!)</em>
-  li Allows for HTTP Method Override <em>(using <code>X-HTTP-Method-Override</code> header or query string parameter: <code>_method</code>)</em>
+  div.container.home
+    iframe.embed(src='http://localhost:9000/?source=http://localhost:8080/static/samples/echo.json&target=all', frameborder='0', scrolling='no', marginheight='0', marginwidth='0', width='100%', height='300', seamless)
 
-  h3 Get Started
+    a.btn.btn-default(href='/docs') Go to Documentation
 
-  p The following are some examples to send a request to <code><a href="/docs/#-echo">/echo</a></code>, check out the <a href="/docs">documentation</a> for all possible endpoints
+    h2 Features
 
-  div.snippets
-    h4
-      span.devicons.devicons-terminal
-      span cURL
+    div.row
+      div.col-sm-4
+        h3 Utility Endpoints
+        p 15+ utility HTTP endpoints
 
-    pre: code curl -X POST -d 'foo=bar' -H "Accept: application/json" httpconsole.com/echo
+      div.col-sm-4
+        h3 Mock Custom Endpoints
+        p Mock custom endpoints using any HAR response object #[em (use as webhooks / testing / api mocking api / anything!)]
 
-    h4
-      span.devicons.devicons-nodejs_small
-      span NodeJS  <small>using <a href='http://unirest.io/nodejs'>unirest-nodejs</a></small>
+      div.col-sm-4
+        h3 Log and Inspect Calls
+        p Log and inspect incoming calls to your custom endpoints #[em (see how detailed HTTP logs each client is making)]
+        p Plays nice with proxies
 
-    pre: code.
-      unirest.post('http://httpconsole.com/echo')
-        .header('Accept', 'application/json')
-        .send({ 'foo': 'bar' })
-        .end(function (response) {
-          console.log(response.body);
-        });
+    div.row
+      div.col-sm-4
+        h3 Use any HTTP Method
+        p Allows for HTTP Method Override (using #[code X-HTTP-Method-Override] header or query string parameter: #[code _method]
 
-    h4
-      span.devicons.devicons-python
-      span Python <small>using <a href='http://unirest.io/python'>unirest-python</a></small>
+      div.col-sm-4
+        h3 CORS Headers
+        p Cross-Origin resource sharing #[em (use it in your browser!)]
 
-    pre: code.
-      unirest.post("http://httpconsole.com/echo", headers={ "Accept": "application/json" }, params={ "foo": "bar" })
-
-    h4
-      span.devicons.devicons-php
-      span PHP <small>using <a href='http://unirest.io/php'>unirest-php</a></small>
-
-    pre: code.
-      Unirest\Request::post("http://httpconsole.com/echo", array("Accept" => "application/json"), array("foo" => "bar")));
-
-    h4
-      span.devicons.devicons-dotnet
-      span .NET <small>using <a href='http://unirest.io/net'>unirest-net</a></small>
-
-    pre: code.
-      Unirest.post("http://httpconsole.com/echo")
-        .header("accept", "application/json")
-        .field("foo", "bar")
-        .asJson<MyClass>();
-
-    h4
-      span.devicons.devicons-java
-      span Java <small>using <a href='http://unirest.io/java'>unirest-java</a></small>
-
-    pre: code.
-      Unirest.post("http://httpconsole.com/echo")
-        .header("accept", "application/json")
-        .queryString("apiKey", "123")
-        .field("foo", "bar")
-        .asJson();
-
-    h4
-      span.devicons.devicons-ruby
-      span Ruby <small>using <a href='http://unirest.io/ruby'>unirest-ruby</a></small>
-
-    pre: code.
-      response = Unirest.post "http://httpconsole.com/echo",
-                              headers:{ "Accept" => "application/json" },
-                              parameters:{ :foo => "bar" }
-
-    h4
-      span.devicons.devicons-code
-      span Objective-C <small>using <a href='http://unirest.io/objective-c'>unirest-obj-c</a></small>
-
-    pre: code.
-      NSDictionary* headers = @{@"accept": @"application/json"};
-      NSDictionary* parameters = @{@"foo": @"bar"};
-
-      UNIHTTPJsonResponse *response = [[UNIRest post:^(UNISimpleRequest *request) {
-        [request setUrl:@"http://httpconsole.com/echo"];
-        [request setHeaders:headers];
-        [request setParameters:parameters];
-      }] asJson];
-
-
-  :markdown
-    [![version][npm-version]][npm-url]
-    [![License][npm-license]][license-url]
-    [![Build Status][travis-image]][travis-url]
-    [![Downloads][npm-downloads]][npm-url]
-    [![Code Climate][codeclimate-quality]][codeclimate-url]
-    [![Coverage Status][codeclimate-coverage]][codeclimate-url]
-    [![Dependencies][david-image]][david-url]
-    [![Gitter][gitter-image]][gitter-url]
-
-    [license-url]: https://github.com/ahmadnassri/HTTPConsole/blob/master/LICENSE
-
-    [gitter-url]: https://gitter.im/ahmadnassri/HTTPConsole
-    [gitter-image]: https://img.shields.io/badge/Gitter-Join%20Chat-blue.svg?style=flat-square
-
-    [travis-url]: https://travis-ci.org/ahmadnassri/HTTPConsole
-    [travis-image]: https://img.shields.io/travis/ahmadnassri/HTTPConsole.svg?style=flat-square
-
-    [npm-url]: https://www.npmjs.com/package/httpconsole
-    [npm-license]: https://img.shields.io/npm/l/httpconsole.svg?style=flat-square
-    [npm-version]: https://img.shields.io/npm/v/httpconsole.svg?style=flat-square
-    [npm-downloads]: https://img.shields.io/npm/dm/httpconsole.svg?style=flat-square
-
-    [codeclimate-url]: https://codeclimate.com/github/ahmadnassri/HTTPConsole
-    [codeclimate-quality]: https://img.shields.io/codeclimate/github/ahmadnassri/HTTPConsole.svg?style=flat-square
-    [codeclimate-coverage]: https://img.shields.io/codeclimate/coverage/github/ahmadnassri/HTTPConsole.svg?style=flat-square
-
-    [david-url]: https://david-dm.org/ahmadnassri/HTTPConsole
-    [david-image]: https://img.shields.io/david/ahmadnassri/HTTPConsole.svg?style=flat-square
-
-    [docker-image]: https://www.herokucdn.com/deploy/button.svg
-    [docker-url]: https://heroku.com/deploy?template=https://github.com/ahmadnassri/HTTPConsole
+      div.col-sm-4
+        h3 JSON, XML, YAML, HTML
+        p JSON, YAML, XML, HTML output
 
 block scripts
+  script(type='text/javascript', async, defer, id='twitter-wjs', src='https://platform.twitter.com/widgets.js')
+  script(type='text/javascript', async, defer, id='github-bjs', src='https://buttons.github.io/buttons.js')
+
   script(type='text/javascript').
     // highlight.js
     $('pre code').each(function (i, block) {

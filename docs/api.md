@@ -1,6 +1,10 @@
-## API Endpoints 
+## API Endpoints
 
-### `/ip`
+### Utility
+
+#### IP
+
+##### `/ip`
 
 Returns Origin IP.
 
@@ -25,7 +29,7 @@ Returns Origin IP.
 
 ----
 
-### `/ips`
+##### `/ips`
 
 Parses the "X-Forwarded-For" ip address list and return an array. Otherwise, an empty array is returned.
 
@@ -50,7 +54,9 @@ Parses the "X-Forwarded-For" ip address list and return an array. Otherwise, an 
 
 ----
 
-### `/agent`
+#### User Agent
+
+##### `/agent`
 
 Returns user-agent.
 
@@ -76,7 +82,9 @@ Returns user-agent.
 
 ----
 
-### `/status/:code/:reason`
+#### HTTP Status
+
+##### `/status/:code/:reason`
 
 Returns a response with the given HTTP Status code and message in status line and body.
 
@@ -108,7 +116,9 @@ Returns a response with the given HTTP Status code and message in status line an
 
 ----
 
-### `/headers`
+#### HTTP Headers
+
+##### `/headers`
 
 Returns list of all headers used in request as well as total number of bytes from the start of the HTTP request message until (and including) the double CRLF before the body.
 
@@ -154,7 +164,7 @@ Returns list of all headers used in request as well as total number of bytes fro
 
 ----
 
-### `/header/:name`
+##### `/header/:name`
 
 Returns the value of header with the name `:name`
 
@@ -180,7 +190,9 @@ Returns the value of header with the name `:name`
 
 ----
 
-### `/cookies`
+#### Cookies
+
+##### `/cookies`
 
 Returns list of all cookies sent by the client
 
@@ -215,7 +227,7 @@ Returns list of all cookies sent by the client
 
 ----
 
-### `/cookie/:name`
+##### `/cookie/:name`
 
 Returns the value of the cookie with the name `:name`
 
@@ -241,7 +253,9 @@ Returns the value of the cookie with the name `:name`
 
 ----
 
-### `/redirect/:status/:count/?to=:url`
+#### Redirects
+
+##### `/redirect/:status/:count/?to=:url`
 
 Start a redirects loop using the redirect custom status code: `status`, looping through the url pattern: `/redirect/:status/[:count -1]` eventually landing on `:url` *(or `/redirect/:status/0` if no `url` was provided)*
 
@@ -254,7 +268,7 @@ Start a redirects loop using the redirect custom status code: `status`, looping 
 | `?to`     | String | no       | `null`  | URL or Path to redirect to                                                                                   |
 
 
-#### `/redirect/:status`
+##### `/redirect/:status`
 
 ###### Request
 
@@ -276,7 +290,7 @@ Start a redirects loop using the redirect custom status code: `status`, looping 
 > Permanent Redirect. Redirecting to http://localhost:80/redirect/0
 > ```
 
-#### `/redirect/:status?to=:url`
+##### `/redirect/:status?to=:url`
 
 ###### Request
 
@@ -298,7 +312,7 @@ Start a redirects loop using the redirect custom status code: `status`, looping 
 > Permanent Redirect. Redirecting to https://www.mashape.com/
 > ```
 
-#### `/redirect/:status/:count`
+##### `/redirect/:status/:count`
 
 ###### Request
 
@@ -350,7 +364,9 @@ Start a redirects loop using the redirect custom status code: `status`, looping 
 
 ----
 
-### `/stream/:chunks`
+#### Stream
+
+##### `/stream/:chunks`
 
 Streams a chunked response, defaults to 10 chunks with an upper limit of 100
 
@@ -376,7 +392,9 @@ Streams a chunked response, defaults to 10 chunks with an upper limit of 100
 
 ----
 
-### `/delay/:ms`
+#### Delay
+
+##### `/delay/:ms`
 
 Returns a response after a delay in milliseconds, default is 200ms
 
@@ -401,7 +419,9 @@ Returns a response after a delay in milliseconds, default is 200ms
 
 ----
 
-### `/echo`
+#### Debugging
+
+##### `/echo`
 
 Returns a response with identical `Body` and `Content-Type` to what's in teh request.
 
@@ -428,7 +448,7 @@ Returns a response with identical `Body` and `Content-Type` to what's in teh req
 > {"foo": "bar"}
 > ```
 
-### `/debug/:path`
+##### `/debug/:path`
 
 Returns back all the info sent through your request in HAR format
 
@@ -530,7 +550,9 @@ Returns back all the info sent through your request in HAR format
 
 ----
 
-### `/gzip`
+#### Compression
+
+##### `/gzip`
 
 Identical to [`/echo`](#-echo-) but with forced compression on response body *(returns back all the info sent through your request in HAR format)*
 
@@ -562,13 +584,11 @@ Identical to [`/echo`](#-echo-) but with forced compression on response body *(r
 
 ----
 
-### `/bucket/create`
+### Buckets
 
-#### HTTP Method: **GET**
+#### Create Bucket
 
-Displays the web view for creating a new **Bucket**.
-
-#### HTTP Method: **POST**
+##### `POST /bucket/create/view`
 
 Creates a new **Bucket** with a mocked aHTTP response as described by a [HAR Response Object](http://www.softwareishard.com/blog/har-12-spec/#response) body.
 
@@ -653,7 +673,15 @@ Responds with a `Location` header with the newly created **Bucket**, e.g. `Locat
 
 ----
 
-### `/bucket/:id`
+#### Inspect Bucket
+
+##### `GET /bucket/:id/view`
+
+Displays the web view for inspecting a **Bucket**.
+
+#### Retrieve Bucket
+
+##### `/bucket/:id`
 
 The [HAR Response Object](http://www.softwareishard.com/blog/har-12-spec/#response) sent at time of [creation](-/bucket/create) will determine what the response status, headers, content will be.
 

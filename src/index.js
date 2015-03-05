@@ -7,9 +7,6 @@ var mw = require('./middleware');
 module.exports = function (config, redis) {
   var router = express.Router();
 
-  // add httpconsole middlewares
-  // router.use(mw.utilMiddleware);
-
   router.get('/',                               mw.errorHandler, mw.cors, mw.bodyParser, routes.hello,           mw.negotiateContent);
 
   router.all('/ip',                             mw.errorHandler, mw.cors, mw.bodyParser, routes.ips.one,         mw.negotiateContent);

@@ -60,7 +60,6 @@
     "har-validator": "^1.0.2",
     "hiredis": "^0.2.0",
     "jade": "^1.9.2",
-    "marked": "^0.3.3",
     "media-typer": "^0.3.0",
     "method-override": "^2.3.1",
     "morgan": "^1.5.1",

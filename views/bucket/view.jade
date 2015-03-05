@@ -1,12 +1,13 @@
 extends ../layout.jade
 
 block content
-  ul(class='nav nav-tabs')
-    li(class='active'): a(href='#home', data-toggle='tab') YAML
-    li: a(href='#json', data-toggle='tab') JSON
-    li: a(href='#xml', data-toggle='tab') XML
+  div.container
+    ul(class='nav nav-tabs')
+      li(class='active'): a(href='#home', data-toggle='tab') YAML
+      li: a(href='#json', data-toggle='tab') JSON
+      li: a(href='#xml', data-toggle='tab') XML
 
-  div(class='tab-content')
-    div(class='tab-pane active', id='home'): pre: code= data.yaml
-    div(class='tab-pane', id='json'): pre: code= data.json
-    div(class='tab-pane', id='xml'): pre: code= data.xml
+    div(class='tab-content')
+      div(class='tab-pane active', id='home'): pre: code= data.yaml
+      div(class='tab-pane', id='json'): pre: code= data.json
+      div(class='tab-pane', id='xml'): pre: code= data.xml

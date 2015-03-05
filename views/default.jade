@@ -1,41 +1,49 @@
 extends layout.jade
 
 block content
-  if (data)
-    ul(class='nav nav-pills')
-      li.active: a(href='#yaml', data-toggle='tab') YAML
-      li: a(href='#json', data-toggle='tab') JSON
-      li: a(href='#xml', data-toggle='tab') XML
+  div.container
+    if (!data)
+      div.alert.alert-warning No data
 
-    hr
+    else
+      div#preview
+        button(class='btn btn-default btn-clipboard', data-clipboard-target='#{target}'): i.fa.fa-copy
 
-    p calling <code>http://#{hostname}#{path}</code> with an <code>Accept</code> header with the value: &nbsp;
-      select
-        for value, key in {yaml: 'application/x-yaml', json: 'application/json', 'xml': 'application/xml'}
-          option(value= key)= value
-      |  will result in the content below:
+        ul.nav.nav-tabs
+          li.active: a(href='#json', data-toggle='tab') JSON
+          li: a(href='#yaml', data-toggle='tab') YAML
+          li: a(href='#xml', data-toggle='tab') XML
 
-    div(class='tab-content')
-      div(id='yaml').tab-pane.active.fade.in
-        pre: code= data.yaml
+        div.tab-content
+          div(id='json').tab-pane.active.fade.in
+            pre: code= data.json
 
-      div(id='json').tab-pane.fade
-        pre: code= data.json
+          div(id='yaml').tab-pane.fade
+            pre: code= data.yaml
 
-      div(id='xml').tab-pane.fade
-        pre: code= data.xml
+          div(id='xml').tab-pane.fade
+            pre: code= data.xml
 
-    p for more info, review the&nbsp;
-      a(href='/docs#' + path.replace('/', '-') + '-') documentation
+    br
 
-    //- hr
-    //- p Try this request with
+    p: em You're viewing the HTML output, try calling this endpoint with an #[code Accept] header with one of the values: #[code application/x-yaml], #[code application/json], #[code application/xml]
 
 block scripts
   script(type='text/javascript').
-    $('select').on('click', function () {
-      event.preventDefault();
+    $(function() {
+      ZeroClipboard.config({
+        swfPath: '//cdnjs.cloudflare.com/ajax/libs/zeroclipboard/2.2.0/ZeroClipboard.swf',
+        forceHandCursor: true,
+        trustedDomains: [window.location.host, "cdnjs.cloudflare.com"]
+      });
 
-      $('[href=#' + $(this).val() + ']').tab('show')
+      new ZeroClipboard($('.btn-clipboard'));
+
+      // select first tab
+      $('.nav-tabs a:first').tab('show');
+
+      // highlight the code
+      $('.tab-content pre code').each(function (i, block) {
+        hljs.highlightBlock(block);
+      });
     });
-

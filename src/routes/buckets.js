@@ -32,7 +32,7 @@ module.exports = {
       res.status(201);
 
       // send back the newly created id
-      res.body = util.format('http://%s:%s/bucket/%s', req.hostname, config.port_mask || config.port, id);
+      res.body = util.format('/bucket/%s', id);
       res.location(res.body);
 
       next();

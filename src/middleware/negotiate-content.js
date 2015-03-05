@@ -34,22 +34,18 @@ module.exports = function (req, res, next) {
   }
 
   function HTMLResponse () {
-    res.locals.path = req.path;
-    res.locals.hostname = req.hostname;
+    res.locals.req = req;
 
     res.render(res.view || 'default', {
       data: {
         raw: res.body,
-        yaml: YAML.stringify(res.body, res.yamlInline || 3, spaces),
+        yaml: YAML.stringify(res.body, res.yamlInline || 3, 2),
 
-        json: JSON.stringify(res.body, null, spaces),
+        json: JSON.stringify(res.body, null, 2),
 
-        xml: XML.create(res.bodyXmlObj || res.body, {
-          prettyPrint: true,
-          indent: spaces
-        }).end({
+        xml: XML.create(res.bodyXmlObj || res.body).end({
           pretty: true,
-          indent: spaces,
+          indent: '    ',
           newline: '\n'
         })
       }

@@ -1,21 +1,22 @@
 extends ../layout.jade
 
 block content
-  pre: code= YAML.stringify(data, 6, 2)
+  div.container
+    pre: code= YAML.stringify(data, 6, 2)
 
-  for entry in data.log.entries
-    div
-      strong #{entry.request.method}
-      span (#{entry.request.bodySize} bytes)
-      span From #{entry.clientIPAddress}
+    for entry in data.log.entries
+      div
+        strong #{entry.request.method}
+        span (#{entry.request.bodySize} bytes)
+        span From #{entry.clientIPAddress}
 
-    h6 Headers
-    pre: code
-     - for header in entry.request.headers
-      | #{header.name}: #{header.value} &#x000A;
+      h6 Headers
+      pre: code
+       - for header in entry.request.headers
+        | #{header.name}: #{header.value} &#x000A;
 
-    h6 postData
-    pre: code= YAML.stringify(entry.request.postData, 2, 2)
+      h6 postData
+      pre: code= YAML.stringify(entry.request.postData, 2, 2)
 
-    h6 Query
-    pre: code= YAML.stringify(entry.request.queryString, 2, 2)
+      h6 Query
+      pre: code= YAML.stringify(entry.request.queryString, 2, 2)

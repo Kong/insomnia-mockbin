@@ -2,6 +2,8 @@
 
 module.exports = {
   all: function (req, res, next) {
+    res.yamlInline = 2;
+
     res.status(200).body = {
       headers: req.har.log.entries[0].request.headers,
       headersSize: req.har.log.entries[0].request.headersSize

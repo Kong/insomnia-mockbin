@@ -6,13 +6,188 @@ html
     title HTTP Console
 
     link(rel='stylesheet', type='text/css', href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/css/bootstrap.min.css', media='all')
+    link(rel='stylesheet', type='text/css', href='https://fonts.googleapis.com/css?family=Open+Sans:400,600|Source+Code+Pro:200,300,400,500,600,700,900', media='all')
+    link(rel='stylesheet', type='text/css', href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.css', media='all')
+    link(rel='stylesheet', type='text/css', href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/tomorrow.min.css', media='all')
+
+    script(type='text/javascript', src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js')
+    script(type='text/javascript', src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/js/bootstrap.min.js')
+    script(type='text/javascript', src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js')
+    script(type='text/javascript', src='https://cdnjs.cloudflare.com/ajax/libs/zeroclipboard/2.2.0/ZeroClipboard.min.js')
+
+    style.
+      * {
+        -webkit-font-smoothing:antialiased;
+        -moz-osx-font-smoothing:grayscale;
+      }
+
+      body {
+        color: #36434C;
+        font-family: 'Open Sans', helvetica, sans-serif;
+
+        padding: 50px;
+      }
+
+      code, kbd, pre, samp {
+        font-family: 'Source Code Pro', Menlo, Monaco, Consolas, 'Courier New', monospace;
+      }
+
+      #preview {
+        position: relative;
+
+        border-radius: 4px;
+        border: 1px solid #C7C7C7;
+        border: 1px solid rgba(0, 0, 0, .22);
+        background-color: #FFFFFF;
+
+        box-shadow: 1px 0px 3px rgba(0, 0, 0, .15);
+
+        -moz-background-clip: padding;
+        -webkit-background-clip: padding-box;
+        background-clip: padding-box;
+      }
+
+      #preview .nav-tabs {
+        border-color: #EAEAEA;
+        background-color: #FCFCFC;
+      }
+
+      #preview .nav-tabs > li a,
+      #preview .nav-tabs > li a:focus {
+        border-top: none;
+        border-bottom: none;
+        border-radius: 0;
+
+        color: #8C9093;
+        font-size: 13px;
+        font-weight: 600;
+        padding: 16px;
+      }
+
+      #preview .nav-tabs > li a:hover {
+        color: #41484C;
+        background-color: #FCFCFC;
+      }
+
+      #preview .nav-tabs .open > a {
+        border-color: #E6E6E6;
+        background-color: #FCFCFC;
+      }
+
+      #preview .nav-tabs > li.active > a,
+      #preview .nav-tabs > li.active > a:focus,
+      #preview .nav-tabs > li.active > a:hover {
+        color: #216FA6;
+        border-color: #E6E6E6;
+      }
+
+      #preview .nav-tabs > .dropdown.active > a {
+        color: #41484C;
+      }
+
+      #preview .nav-tabs > .dropdown > .dropdown-menu a .fa {
+        opacity: 0;
+      }
+
+      #preview .nav-tabs > .dropdown.active > .dropdown-menu > .active > a .fa {
+        opacity: 1;
+      }
+
+      #preview .nav-tabs > .dropdown.active > .dropdown-menu > .active > a,
+      #preview .nav-tabs > .dropdown.active > .dropdown-menu > .active > a:focus,
+      #preview .nav-tabs > .dropdown.active > .dropdown-menu > .active > a:hover {
+        color: #216FA6;
+        background-color: #F2F9FF;
+      }
+
+      #preview .dropdown-menu {
+        padding: 0;
+        border-radius: 0;
+
+        border-top: 0;
+        margin-top: 0;
+
+        background-color: #FCFCFC;
+        box-shadow: 1px 0px 4px rgba(0, 0, 0, .15);
+      }
+
+      #preview .nav-tabs {
+        border-top-left-radius: 4px;
+        border-top-right-radius: 4px;
+      }
+
+      #preview .nav-tabs > li:hover a {
+        background-color: #FFFFFF;
+      }
+
+      #preview .nav-tabs > li:first-of-type > a {
+        border-left: none;
+        border-top-left-radius: 4px;
+      }
+
+      #preview .tab-content .tab-pane,
+      #preview .tab-content .tab-pane pre,
+      #preview .tab-content .tab-pane pre code {
+        min-height: 300px;
+      }
+
+      #preview .btn-clipboard {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+
+        color: #AAAFB3;
+        border-color: #D7D9DB
+
+        background: #053b7b;
+        background: -moz-linear-gradient(0deg, #FFFFFF 0%, #F7F7F7 100%);
+        background: -webkit-linear-gradient(0deg, #FFFFFF 0%, #F7F7F7 100%);
+        background: -o-linear-gradient(0deg, #FFFFFF 0%, #F7F7F7 100%);
+        background: -ms-linear-gradient(0deg, #FFFFFF 0%, #F7F7F7 100%);
+        background: linear-gradient(0deg, #FFFFFF 0%, #F7F7F7 100%);
+      }
+
+      #preview footer {
+        padding: 10px 15px;
+
+        color: #7b858c;
+        font-size: 11px;
+        font-weight: 600;
+
+        border-top: 1px solid #E6E6E6;
+        border-bottom-left-radius: 4px;
+        border-bottom-right-radius: 4px;
+
+        background-color: #FFFFFF;
+      }
+
+      #preview footer a {
+        color: #399ee5;
+      }
+
+      #preview pre {
+        margin: 0;
+        padding: 0;
+
+        border: none;
+        border-radius: 0;
+
+        background-color: #FFFFFF;
+      }
+
+      #preview pre code {
+        padding: 15px;
+      }
+
+      .hljs {
+        padding: 0;
+      }
 
     block head
 
   body
     block header
 
-    div.container-fluid
-      block content
+    block content
 
     block scripts

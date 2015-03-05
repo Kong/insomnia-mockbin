@@ -14,7 +14,6 @@ var url = require('url');
 // default configs
 var config = rc('httpconsole', {
   port: process.env.npm_package_config_port,
-  port_mask: process.env.npm_package_config_port_mask,
   redis: process.env.npm_package_config_redis,
   quiet: process.env.npm_package_config_quiet === 'false' ? false : true
 });
@@ -42,7 +41,7 @@ var app = express();
 
 app.set('jsonp callback name', '__callback');
 app.set('view engine', 'jade');
-app.enable('view cache');
+//app.enable('view cache');
 app.enable('trust proxy');
 
 // add 3rd party middlewares

@@ -1,5 +1,326 @@
 ## API Endpoints
 
+### Buckets
+
+#### Create Bucket
+
+##### `POST /bucket/create/view`
+
+Creates a new **Bucket** with a mocked aHTTP response as described by a [HAR Response Object](http://www.softwareishard.com/blog/har-12-spec/#response) body.
+
+Responds with a `Location` header with the newly created **Bucket**, e.g. `Location: http://httpconsole.com/b8b21988-64d4-4eb3-94c1-2055c3374b53` *(also repeated in the body)*
+
+- The [HAR Response Object](http://www.softwareishard.com/blog/har-12-spec/#response) sent at time of creation will determine what the response status, headers, content will be.
+- Newly created Bucket will collect requests made to it and allow [later inspection](#view-logs).
+- You can query the new Bucket with any HTTP Method, Headers, Content you desire, everything will be [logged](#view-logs) for later access.
+- You can use this to see what your HTTP client is sending or to inspect and debug webhook requests.
+- Each Bucket will log a maximum of 100 requests.
+
+###### Request
+
+> ```http
+> POST /bucket/create HTTP/1.1
+> User-Agent: curl/7.35.0
+> Host: httpconsole.com
+> Content-Type: application/json
+> Accept: application/json
+> Content-Length: 819
+>
+> {
+>   "status": 200,
+>   "statusText": "OK",
+>   "httpVersion": "HTTP/1.1",
+>   "headers": [
+>     {
+>       "name": "Date",
+>       "value": "Wed, 21 Jan 2015 23:36:35 GMT"
+>     },
+>     {
+>       "name": "Server",
+>       "value": "Apache"
+>     },
+>     {
+>       "name": "Transfer-Encoding",
+>       "value": "chunked"
+>     },
+>     {
+>       "name": "Content-Type",
+>       "value": "text/html; charset=UTF-8"
+>     },
+>     {
+>       "name": "Cache-Control",
+>       "value": "max-age=7200"
+>     },
+>     {
+>       "name": "Connection",
+>       "value": "Keep-Alive"
+>     },
+>     {
+>       "name": "Keep-Alive",
+>       "value": "timeout=5, max=50"
+>     },
+>     {
+>       "name": "Expires",
+>       "value": "Thu, 22 Jan 2015 01:36:35 GMT"
+>     }
+>   ],
+>   "cookies": [],
+>   "content": {
+>     "size": 70972,
+>     "mimeType": "text/html",
+>     "compression": -21
+>   },
+>   "redirectURL": "",
+>   "headersSize": 323,
+>   "bodySize": 70993
+> }
+> ```
+
+###### Response
+
+> ```http
+> HTTP/1.1 200 OK
+> Location: http://httpconsole.com/b8b21988-64d4-4eb3-94c1-2055c3374b53
+> Content-Type: application/json; charset=utf-8
+> Content-Length: 38
+>
+> "b8b21988-64d4-4eb3-94c1-2055c3374b53"
+> ```
+
+----
+
+#### Inspect Bucket
+
+##### `GET /bucket/:id/view`
+
+###### Request
+
+> ```http
+> GET /bucket/b8b21988-64d4-4eb3-94c1-2055c3374b53/view HTTP/1.1
+> Host: httpconsole.com
+> Accept: application/json
+> ```
+
+###### Response
+
+> ```http
+> HTTP/1.1 200 OK
+> Content-Type: application/json
+> Content-Length: 70993
+> 
+> {
+>     "bodySize": 70993, 
+>     "content": {
+>         "compression": 0, 
+>         "mimeType": "text/html", 
+>         "size": 20, 
+>         "text": "<h1>Hello World</h1>"
+>     }, 
+>     "cookies": [], 
+>     "headers": [
+>         {
+>             "name": "Date", 
+>             "value": "Wed, 21 Jan 2015 23:36:35 GMT"
+>         }, 
+>         {
+>             "name": "Server", 
+>             "value": "Apache"
+>         }, 
+>         {
+>             "name": "Transfer-Encoding", 
+>             "value": "chunked"
+>         }, 
+>         {
+>             "name": "Content-Type", 
+>             "value": "text/html; charset=UTF-8"
+>         }, 
+>         {
+>             "name": "Cache-Control", 
+>             "value": "max-age=7200"
+>         }, 
+>         {
+>             "name": "Connection", 
+>             "value": "Keep-Alive"
+>         }, 
+>         {
+>             "name": "Keep-Alive", 
+>             "value": "timeout=5, max=50"
+>         }, 
+>         {
+>             "name": "Expires", 
+>             "value": "Thu, 22 Jan 2015 01:36:35 GMT"
+>         }
+>     ], 
+>     "headersSize": 323, 
+>     "httpVersion": "HTTP/1.1", 
+>     "redirectURL": "", 
+>     "status": 200, 
+>     "statusText": "OK"
+> }
+> ```
+
+#### Query Bucket
+
+##### `/bucket/:id`
+
+The [HAR Response Object](http://www.softwareishard.com/blog/har-12-spec/#response) sent at time of [creation](#create-bucket) will determine what the response status, headers, content will be.
+
+You can query the new Bucket with any HTTP Method, Headers, Content you desire, everything will be logged for later access.
+
+###### Request
+
+> ```http
+> GET /bucket/:id HTTP/1.1
+> Host: httpconsole.com
+>
+> ```
+
+###### Response
+
+*see [HAR Response Object](http://www.softwareishard.com/blog/har-12-spec/#response) for more details.*
+
+> ```http
+> [response.httpVersion] [response.status] [response.statusText]
+> Content-Type: [response.content.mimeType]
+> [response.headers]
+>
+> [response.content.text]
+> ```
+
+###### Example:
+
+###### Request
+
+> ```http
+> GET /bucket/b8b21988-64d4-4eb3-94c1-2055c3374b53/view HTTP/1.1
+> Host: httpconsole.com
+> Accept: application/json
+> ```
+
+###### Response
+
+> ```http
+> HTTP/1.1 200 OK
+> Cache-Control: max-age=7200
+> Connection: keep-alive
+> Content-Encoding: gzip
+> Content-Type: text/html; charset=utf-8
+> Date: Thu, 05 Mar 2015 18:09:40 GMT
+> Expires: Thu, 22 Jan 2015 01:36:35 GMT
+> Server: Apache
+> Transfer-Encoding: chunked
+
+> <h1>Hello World</h1>
+> ```
+
+###### Example:
+
+The following HAR Response Object:
+
+```json
+{
+  "status": 700,
+  "statusText": "HELLO",
+  "httpVersion": "HTTP/1.1",
+  "headers": [
+    {
+      "name": "Date",
+      "value": "Wed, 21 Jan 2015 23:36:35 GMT"
+    },
+    {
+      "name": "Server",
+      "value": "Apache"
+    },
+    {
+      "name": "Transfer-Encoding",
+      "value": "chunked"
+    },
+    {
+      "name": "Content-Type",
+      "value": "text/html; charset=UTF-8"
+    },
+    {
+      "name": "Cache-Control",
+      "value": "max-age=7200"
+    },
+    {
+      "name": "Connection",
+      "value": "Keep-Alive"
+    },
+    {
+      "name": "Keep-Alive",
+      "value": "timeout=5, max=50"
+    },
+    {
+      "name": "Expires",
+      "value": "Thu, 22 Jan 2015 01:36:35 GMT"
+    }
+  ],
+  "cookies": [],
+  "content": {
+    "size": 37,
+    "mimeType": "text/html",
+    "text": "<html><body>Hello World</body></html>"
+  },
+  "redirectURL": "",
+  "headersSize": 323,
+  "bodySize": 37
+}
+```
+
+will generate the following HTTP response
+
+```http
+HTTP/1.1 700 HELLO
+X-Powered-By: httpconsole.com
+Date: Wed, 21 Jan 2015 23:36:35 GMT
+Server: Apache
+Transfer-Encoding: chunked
+Content-Type: text/html; charset=utf-8
+Cache-Control: max-age=7200
+Connection: Keep-Alive
+Keep-Alive: timeout=5, max=50
+Expires: Thu, 22 Jan 2015 01:36:35 GMT
+Vary: Accept, Accept-Encoding
+Content-Length: 37
+
+<html><body>Hello World</body></html>
+```
+
+#### Bucket Access Log
+
+##### `/bucket/:id/log`
+
+List all requests made to this bucket, using HAR log format.
+
+###### Request
+
+> ```http
+> GET /bucket/b8b21988-64d4-4eb3-94c1-2055c3374b53/log HTTP/1.1
+> Host: httpconsole.com
+> Accept: application/json
+> ```
+
+###### Response
+
+> ```http
+> HTTP/1.1 200 OK
+> Content-Type: application/json; charset=utf-8
+> Content-Length: 12
+>
+> "log": {
+>   "creator": {
+>       "name": "httpconsole.com", 
+>       "version": "1.0.1"
+>   }, 
+>   "entries": [
+>       ...
+>   ]
+> }
+> ```
+
+----
+
 ### Utility
 
 #### IP
@@ -584,199 +905,3 @@ Identical to [`/echo`](#-echo-) but with forced compression on response body *(r
 
 ----
 
-### Buckets
-
-#### Create Bucket
-
-##### `POST /bucket/create/view`
-
-Creates a new **Bucket** with a mocked aHTTP response as described by a [HAR Response Object](http://www.softwareishard.com/blog/har-12-spec/#response) body.
-
-Responds with a `Location` header with the newly created **Bucket**, e.g. `Location: http://httpconsole.com/b8b21988-64d4-4eb3-94c1-2055c3374b53` *(also repeated in the body)*
-
-- The [HAR Response Object](http://www.softwareishard.com/blog/har-12-spec/#response) sent at time of creation will determine what the response status, headers, content will be.
-- Newly created **Bucket** will collect requests made to it and allow later inspection.
-- You can query the new **Bucket** with any HTTP Method, Headers, Content you desire, everything will be logged for later access.
-- You can use this to see what your HTTP client is sending or to inspect and debug webhook requests.
-- Each **Bucket** will log a maximum of 100 requests.
-
-###### Request
-
-> ```http
-> POST /bucket/create HTTP/1.1
-> User-Agent: curl/7.35.0
-> Host: httpconsole.com
-> Content-Type: application/json
-> Accept: application/json
-> Content-Length: 819
->
-> {
->   "status": 200,
->   "statusText": "OK",
->   "httpVersion": "HTTP/1.1",
->   "headers": [
->     {
->       "name": "Date",
->       "value": "Wed, 21 Jan 2015 23:36:35 GMT"
->     },
->     {
->       "name": "Server",
->       "value": "Apache"
->     },
->     {
->       "name": "Transfer-Encoding",
->       "value": "chunked"
->     },
->     {
->       "name": "Content-Type",
->       "value": "text/html; charset=UTF-8"
->     },
->     {
->       "name": "Cache-Control",
->       "value": "max-age=7200"
->     },
->     {
->       "name": "Connection",
->       "value": "Keep-Alive"
->     },
->     {
->       "name": "Keep-Alive",
->       "value": "timeout=5, max=50"
->     },
->     {
->       "name": "Expires",
->       "value": "Thu, 22 Jan 2015 01:36:35 GMT"
->     }
->   ],
->   "cookies": [],
->   "content": {
->     "size": 70972,
->     "mimeType": "text/html",
->     "compression": -21
->   },
->   "redirectURL": "",
->   "headersSize": 323,
->   "bodySize": 70993
-> }
-> ```
-
-###### Response
-
-> ```http
-> HTTP/1.1 200 OK
-> Location: http://httpconsole.com/b8b21988-64d4-4eb3-94c1-2055c3374b53
-> Content-Type: application/json; charset=utf-8
-> Content-Length: 38
->
-> "b8b21988-64d4-4eb3-94c1-2055c3374b53"
-> ```
-
-----
-
-#### Inspect Bucket
-
-##### `GET /bucket/:id/view`
-
-Displays the web view for inspecting a **Bucket**.
-
-#### Retrieve Bucket
-
-##### `/bucket/:id`
-
-The [HAR Response Object](http://www.softwareishard.com/blog/har-12-spec/#response) sent at time of [creation](-/bucket/create) will determine what the response status, headers, content will be.
-
-###### Request
-
-> ```http
-> GET /bucket/:id HTTP/1.1
-> Host: httpconsole.com
->
-> ```
-
-###### Response
-
-*see [HAR Response Object](http://www.softwareishard.com/blog/har-12-spec/#response) for more details.*
-
-> ```http
-> [response.httpVersion] [response.status] [response.statusText]
-> Content-Type: [response.content.mimeType]
-> [response.headers]
->
-> [response.content.text]
-> ```
-
-###### Example:
-
-The following HAR Response Object:
-
-```json
-{
-  "status": 700,
-  "statusText": "HELLO",
-  "httpVersion": "HTTP/1.1",
-  "headers": [
-    {
-      "name": "Date",
-      "value": "Wed, 21 Jan 2015 23:36:35 GMT"
-    },
-    {
-      "name": "Server",
-      "value": "Apache"
-    },
-    {
-      "name": "Transfer-Encoding",
-      "value": "chunked"
-    },
-    {
-      "name": "Content-Type",
-      "value": "text/html; charset=UTF-8"
-    },
-    {
-      "name": "Cache-Control",
-      "value": "max-age=7200"
-    },
-    {
-      "name": "Connection",
-      "value": "Keep-Alive"
-    },
-    {
-      "name": "Keep-Alive",
-      "value": "timeout=5, max=50"
-    },
-    {
-      "name": "Expires",
-      "value": "Thu, 22 Jan 2015 01:36:35 GMT"
-    }
-  ],
-  "cookies": [],
-  "content": {
-    "size": 37,
-    "mimeType": "text/html",
-    "text": "<html><body>Hello World</body></html>"
-  },
-  "redirectURL": "",
-  "headersSize": 323,
-  "bodySize": 37
-}
-```
-
-will generate the following HTTP response
-
-```http
-HTTP/1.1 700 HELLO
-X-Powered-By: httpconsole.com
-Date: Wed, 21 Jan 2015 23:36:35 GMT
-Server: Apache
-Transfer-Encoding: chunked
-Content-Type: text/html; charset=utf-8
-Cache-Control: max-age=7200
-Connection: Keep-Alive
-Keep-Alive: timeout=5, max=50
-Expires: Thu, 22 Jan 2015 01:36:35 GMT
-Vary: Accept, Accept-Encoding
-Content-Length: 37
-
-<html><body>Hello World</body></html>
-```
-
-----

@@ -59,6 +59,7 @@
     "express": "^4.12.2",
     "har-validator": "^1.1.2",
     "jade": "^1.9.2",
+    "marked": "^0.3.3",
     "media-typer": "^0.3.0",
     "method-override": "^2.3.1",
     "morgan": "^1.5.1",

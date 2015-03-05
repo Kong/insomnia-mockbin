@@ -4,23 +4,25 @@
 
 #### Create Bucket
 
-##### `POST /bucket/create/view`
+> ##### `POST /bucket/create/view`
 
-Creates a new **Bucket** with a mocked aHTTP response as described by a [HAR Response Object](http://www.softwareishard.com/blog/har-12-spec/#response) body.
+Creates a new **Bucket** with a mock HTTP response as described by a [HAR Response Object](http://www.softwareishard.com/blog/har-12-spec/#response) body.
 
-Responds with a `Location` header with the newly created **Bucket**, e.g. `Location: http://httpconsole.com/b8b21988-64d4-4eb3-94c1-2055c3374b53` *(also repeated in the body)*
+Responds with a `Location` header with the newly created **Bucket**, e.g. `Location: http://httpconsole.com/bucket/b8b21988-64d4-4eb3-94c1-2055c3374b53` *(also repeated in the body)*
 
-- The [HAR Response Object](http://www.softwareishard.com/blog/har-12-spec/#response) sent at time of creation will determine what the response status, headers, content will be.
-- Newly created Bucket will collect requests made to it and allow [later inspection](#view-logs).
-- You can query the new Bucket with any HTTP Method, Headers, Content you desire, everything will be [logged](#view-logs) for later access.
-- You can use this to see what your HTTP client is sending or to inspect and debug webhook requests.
-- Each Bucket will log a maximum of 100 requests.
+- The [HAR Response Object](http://www.softwareishard.com/blog/har-12-spec/#response) sent at time of creation will determine what the response status, headers, content will be
+- You can request the new Bucket with *any* combination of the following:
+  - HTTP methods *(e.g. `POST`, `XXPUT`)*
+  - HTTP headers *(e.g. `X-My-Header-Name: Value`)*
+  - body content *(max of 100mb)*
+  - query string *(e.g. `?foo=bar`)*
+  - path arguments *(e.g. `/bucket/b8b21988-64d4-4eb3-94c1-2055c3374b53/any/extra/path/`)*
+- All requests to bucket will be [logged](#view-logs) for later inspection *(max of 100 requests)*
 
 ###### Request
 
 > ```http
 > POST /bucket/create HTTP/1.1
-> User-Agent: curl/7.35.0
 > Host: httpconsole.com
 > Content-Type: application/json
 > Accept: application/json
@@ -91,7 +93,9 @@ Responds with a `Location` header with the newly created **Bucket**, e.g. `Locat
 
 #### Inspect Bucket
 
-##### `GET /bucket/:id/view`
+> ##### `GET /bucket/:id/view`
+
+Respondes with the [HAR Response Object](http://www.softwareishard.com/blog/har-12-spec/#response) sent at time of [creation](#create-bucket).
 
 ###### Request
 
@@ -159,35 +163,20 @@ Responds with a `Location` header with the newly created **Bucket**, e.g. `Locat
 > }
 > ```
 
-#### Query Bucket
+#### Request Bucket
 
-##### `/bucket/:id`
+> ##### `* /bucket/:id`
 
 The [HAR Response Object](http://www.softwareishard.com/blog/har-12-spec/#response) sent at time of [creation](#create-bucket) will determine what the response status, headers, content will be.
 
-You can query the new Bucket with any HTTP Method, Headers, Content you desire, everything will be logged for later access.
+Each call to this endpoint will be [logged](#bucket-log) *(max of 100 requests)*.
 
-###### Request
-
-> ```http
-> GET /bucket/:id HTTP/1.1
-> Host: httpconsole.com
->
-> ```
-
-###### Response
-
-*see [HAR Response Object](http://www.softwareishard.com/blog/har-12-spec/#response) for more details.*
-
-> ```http
-> [response.httpVersion] [response.status] [response.statusText]
-> Content-Type: [response.content.mimeType]
-> [response.headers]
->
-> [response.content.text]
-> ```
-
-###### Example:
+You can request this endpoint with *any* combination of the following:
+  - HTTP methods *(e.g. `POST`, `XXPUT`)*
+  - HTTP headers *(e.g. `X-My-Header-Name: Value`)*
+  - body content *(max of 100mb)*
+  - query string *(e.g. `?foo=bar`)*
+  - path arguments *(e.g. `/bucket/b8b21988-64d4-4eb3-94c1-2055c3374b53/any/extra/path/`)*
 
 ###### Request
 
@@ -213,85 +202,11 @@ You can query the new Bucket with any HTTP Method, Headers, Content you desire, 
 > <h1>Hello World</h1>
 > ```
 
-###### Example:
-
-The following HAR Response Object:
-
-```json
-{
-  "status": 700,
-  "statusText": "HELLO",
-  "httpVersion": "HTTP/1.1",
-  "headers": [
-    {
-      "name": "Date",
-      "value": "Wed, 21 Jan 2015 23:36:35 GMT"
-    },
-    {
-      "name": "Server",
-      "value": "Apache"
-    },
-    {
-      "name": "Transfer-Encoding",
-      "value": "chunked"
-    },
-    {
-      "name": "Content-Type",
-      "value": "text/html; charset=UTF-8"
-    },
-    {
-      "name": "Cache-Control",
-      "value": "max-age=7200"
-    },
-    {
-      "name": "Connection",
-      "value": "Keep-Alive"
-    },
-    {
-      "name": "Keep-Alive",
-      "value": "timeout=5, max=50"
-    },
-    {
-      "name": "Expires",
-      "value": "Thu, 22 Jan 2015 01:36:35 GMT"
-    }
-  ],
-  "cookies": [],
-  "content": {
-    "size": 37,
-    "mimeType": "text/html",
-    "text": "<html><body>Hello World</body></html>"
-  },
-  "redirectURL": "",
-  "headersSize": 323,
-  "bodySize": 37
-}
-```
-
-will generate the following HTTP response
-
-```http
-HTTP/1.1 700 HELLO
-X-Powered-By: httpconsole.com
-Date: Wed, 21 Jan 2015 23:36:35 GMT
-Server: Apache
-Transfer-Encoding: chunked
-Content-Type: text/html; charset=utf-8
-Cache-Control: max-age=7200
-Connection: Keep-Alive
-Keep-Alive: timeout=5, max=50
-Expires: Thu, 22 Jan 2015 01:36:35 GMT
-Vary: Accept, Accept-Encoding
-Content-Length: 37
-
-<html><body>Hello World</body></html>
-```
-
 #### Bucket Access Log
 
-##### `/bucket/:id/log`
+> ##### `GET /bucket/:id/log`
 
-List all requests made to this bucket, using HAR log format.
+List all requests made to this bucket, using [HAR](http://www.softwareishard.com/blog/har-12-spec/) log format.
 
 ###### Request
 
@@ -321,11 +236,11 @@ List all requests made to this bucket, using HAR log format.
 
 ----
 
-### Utility
+### IP
 
-#### IP
+#### Origin IP
 
-##### `/ip`
+> ##### `GET /ip`
 
 Returns Origin IP.
 
@@ -350,7 +265,9 @@ Returns Origin IP.
 
 ----
 
-##### `/ips`
+#### Proxied IPs
+
+> ##### `GET /ips`
 
 Parses the "X-Forwarded-For" ip address list and return an array. Otherwise, an empty array is returned.
 
@@ -375,37 +292,11 @@ Parses the "X-Forwarded-For" ip address list and return an array. Otherwise, an 
 
 ----
 
-#### User Agent
+### Status
 
-##### `/agent`
+#### Custom Status
 
-Returns user-agent.
-
-###### Request
-
-> ```http
-> GET /agent HTTP/1.1
-> User-Agent: curl/7.35.0
-> Host: httpconsole.com
-> Accept: application/json
->
-> ```
-
-###### Response
-
-> ```http
-> HTTP/1.1 200 OK
-> Content-Type: application/json; charset=utf-8
-> Content-Length: 13
->
-> "curl/7.35.0"
-> ```
-
-----
-
-#### HTTP Status
-
-##### `/status/:code/:reason`
+> ##### `GET /status/:code/:reason`
 
 Returns a response with the given HTTP Status code and message in status line and body.
 
@@ -437,9 +328,11 @@ Returns a response with the given HTTP Status code and message in status line an
 
 ----
 
-#### HTTP Headers
+### Headers
 
-##### `/headers`
+#### List Request Headers
+
+> ##### `GET /headers`
 
 Returns list of all headers used in request as well as total number of bytes from the start of the HTTP request message until (and including) the double CRLF before the body.
 
@@ -448,7 +341,6 @@ Returns list of all headers used in request as well as total number of bytes fro
 > ```http
 > GET /headers HTTP/1.1
 > Host: httpconsole.com
-> User-Agent: curl/7.35.0
 > X-Custom-Header: Foo
 >
 > ```
@@ -473,28 +365,27 @@ Returns list of all headers used in request as well as total number of bytes fro
 >     {
 >       "name": "host",
 >       "value": "httpconsole.com"
->     },
->     {
->       "name": "user-agent",
->       "value": "curl/7.35.0"
->     }:name
+>     }
 >   ],
 >   "headersSize": 124
 > }
 > ```
 
-----
+#### Single Header Value
 
-##### `/header/:name`
+> ##### `GET /header/:name`
 
 Returns the value of header with the name `:name`
+
+| Parameter | Type   | Required |
+| --------- | ------ | -------- |
+| `:name`   | String | yes      |
 
 ###### Request
 
 > ```http
 > GET /header/x-custom-header HTTP/1.1
 > Host: httpconsole.com
-> User-Agent: curl/7.35.0
 > X-Custom-Header: Foo
 >
 > ```
@@ -509,11 +400,39 @@ Returns the value of header with the name `:name`
 > "Foo"
 > ```
 
+#### User Agent
+
+> ##### `GET /agent`
+
+Returns user-agent.
+
+###### Request
+
+> ```http
+> GET /agent HTTP/1.1
+> Host: httpconsole.com
+> User-Agent: curl/7.35.0
+> Accept: application/json
+>
+> ```
+
+###### Response
+
+> ```http
+> HTTP/1.1 200 OK
+> Content-Type: application/json; charset=utf-8
+> Content-Length: 13
+>
+> "curl/7.35.0"
+> ```
+
 ----
 
-#### Cookies
+### Cookies
 
-##### `/cookies`
+#### List All Cookies
+
+> ##### `GET /cookies`
 
 Returns list of all cookies sent by the client
 
@@ -522,7 +441,6 @@ Returns list of all cookies sent by the client
 > ```http
 > GET /cookies HTTP/1.1
 > Host: httpconsole.com
-> User-Agent: curl/7.35.0
 > Cookie: my-cookie=ALL YOUR BASE ARE BELONG TO US; foo=bar
 >
 > ```
@@ -548,16 +466,21 @@ Returns list of all cookies sent by the client
 
 ----
 
-##### `/cookie/:name`
+#### Single Cookie Value
+
+> ##### `GET /cookie/:name`
 
 Returns the value of the cookie with the name `:name`
+
+| Parameter | Type   | Required |
+| --------- | ------ | -------- |
+| `:name`   | String | yes      |
 
 ###### Request
 
 > ```http
 > GET /header/my-cookie HTTP/1.1
 > Host: httpconsole.com
-> User-Agent: curl/7.35.0
 > Cookie: my-cookie=ALL YOUR BASE ARE BELONG TO US; foo=bar
 >
 > ```
@@ -574,9 +497,11 @@ Returns the value of the cookie with the name `:name`
 
 ----
 
-#### Redirects
+### Redirects
 
-##### `/redirect/:status/:count/?to=:url`
+#### Custom Redirect Loop
+
+> ##### `/redirect/:status/:count/?to=:url`
 
 Start a redirects loop using the redirect custom status code: `status`, looping through the url pattern: `/redirect/:status/[:count -1]` eventually landing on `:url` *(or `/redirect/:status/0` if no `url` was provided)*
 
@@ -589,7 +514,9 @@ Start a redirects loop using the redirect custom status code: `status`, looping 
 | `?to`     | String | no       | `null`  | URL or Path to redirect to                                                                                   |
 
 
-##### `/redirect/:status`
+#### Redirect Status
+
+> ##### `GET /redirect/:status`
 
 ###### Request
 
@@ -607,11 +534,12 @@ Start a redirects loop using the redirect custom status code: `status`, looping 
 > Content-Type: text/plain; charset=utf-8
 > Content-Length: 65
 > 
-
 > Permanent Redirect. Redirecting to http://localhost:80/redirect/0
 > ```
 
-##### `/redirect/:status?to=:url`
+#### Redirect To Url
+
+> ##### `GET /redirect/:status?to=:url`
 
 ###### Request
 
@@ -633,7 +561,9 @@ Start a redirects loop using the redirect custom status code: `status`, looping 
 > Permanent Redirect. Redirecting to https://www.mashape.com/
 > ```
 
-##### `/redirect/:status/:count`
+#### Redirect Loop
+
+> ##### `GET /redirect/:status/:count`
 
 ###### Request
 
@@ -685,9 +615,11 @@ Start a redirects loop using the redirect custom status code: `status`, looping 
 
 ----
 
-#### Stream
+### Stream
 
-##### `/stream/:chunks`
+#### Stream output
+
+> ##### `GET /stream/:chunks`
 
 Streams a chunked response, defaults to 10 chunks with an upper limit of 100
 
@@ -713,9 +645,11 @@ Streams a chunked response, defaults to 10 chunks with an upper limit of 100
 
 ----
 
-#### Delay
+### Delay
 
-##### `/delay/:ms`
+#### Delayed Response
+
+> ##### `GET /delay/:ms`
 
 Returns a response after a delay in milliseconds, default is 200ms
 
@@ -740,9 +674,11 @@ Returns a response after a delay in milliseconds, default is 200ms
 
 ----
 
-#### Debugging
+### Debugging
 
-##### `/echo`
+#### Echo 
+
+> ##### `POST /echo`
 
 Returns a response with identical `Body` and `Content-Type` to what's in teh request.
 
@@ -757,8 +693,6 @@ Returns a response with identical `Body` and `Content-Type` to what's in teh req
 > {"foo": "bar"}
 > ```
 
-----
-
 ###### Response
 
 > ```http
@@ -769,16 +703,17 @@ Returns a response with identical `Body` and `Content-Type` to what's in teh req
 > {"foo": "bar"}
 > ```
 
-##### `/debug/:path`
+#### HTTP Request
 
-Returns back all the info sent through your request in HAR format
+> ##### `* /request/:path?`
+
+Returns back all the info sent through your request in [HAR Request Obejct](http://www.softwareishard.com/blog/har-12-spec/#request) format.
 
 ###### Request
 
 > ```http
-> POST /debug/any/path?foo=bar&foo=baz&key=value HTTP/1.1
+> POST /request/any/path?foo=bar&foo=baz&key=value HTTP/1.1
 > Host: httpconsole.com
-> User-Agent: curl/7.35.0
 > Cookie: Greet=Hello;World=Universe
 > X-Custom-Header: Foo
 > Accept: application/json
@@ -798,7 +733,7 @@ Returns back all the info sent through your request in HAR format
 > {
 >   "request": {
 >     "method": "POST",
->     "url": "http://localhost/echo?foo=bar&foo=baz&key=value",
+>     "url": "http://localhost/request/any/path?foo=bar&foo=baz&key=value",
 >     "httpVersion": "HTTP/1.1",
 >     "cookies": [
 >       {
@@ -834,10 +769,6 @@ Returns back all the info sent through your request in HAR format
 >       {
 >         "name": "host",
 >         "value": "localhost:3000"
->       },
->       {
->         "name": "user-agent",
->         "value": "curl/7.35.0"
 >       }
 >     ],
 >     "queryString": [
@@ -869,20 +800,129 @@ Returns back all the info sent through your request in HAR format
 > }
 > ```
 
+#### HTTP Archive
+
+> ##### `* /har/:path?`
+
+Returns back all the info sent through your request in [HAR Obejct](http://www.softwareishard.com/blog/har-12-spec/) format.
+
+###### Request
+
+> ```http
+> POST /har/any/path?foo=bar&foo=baz&key=value HTTP/1.1
+> Host: httpconsole.com
+> Cookie: Greet=Hello;World=Universe
+> X-Custom-Header: Foo
+> Accept: application/json
+> Content-Length: 7
+> Content-Type: application/x-www-form-urlencoded
+>
+> foo=bar
+> ```
+
+###### Response
+
+> ```http
+> HTTP/1.1 200 OK
+> Content-Type: application/json; charset=utf-8
+> Content-Length: 1330
+>
+> {
+>   "log": {
+>     "version": "1.2",
+>     "creator": {
+>       "name": "httpconsole.com", 
+>       "version": "1.0.1"
+>     },
+>     "entries": [{
+>       "clientIPAddress": "192.0.189.88", 
+>       "startedDateTime": "2015-03-05T20:31:31.665Z",
+>       "request": {
+>         "method": "POST",
+>         "url": "http://localhost/har/any/path?foo=bar&foo=baz&key=value",
+>         "httpVersion": "HTTP/1.1",
+>         "cookies": [
+>           {
+>             "name": "World",
+>             "value": "Universe"
+>           },
+>           {
+>             "name": "Greet",
+>             "value": "Hello"
+>           }
+>         ],
+>         "headers": [
+>           {
+>             "name": "content-type",
+>             "value": "application/x-www-form-urlencoded"
+>           },
+>           {
+>             "name": "content-length",
+>             "value": "7"
+>           },
+>           {
+>             "name": "accept",
+>             "value": "application/json"
+>           },
+>           {
+>             "name": "x-custom-header",
+>             "value": "Foo"
+>           },
+>           {
+>             "name": "cookie",
+>             "value": "Greet=Hello;World=Universe"
+>           },
+>           {
+>             "name": "host",
+>             "value": "localhost:3000"
+>           }
+>         ],
+>         "queryString": [
+>           {
+>             "name": "key",
+>             "value": "value"
+>           },
+>           {
+>             "name": "foo",
+>             "value": [
+>               "bar",
+>               "baz"
+>             ]
+>           }
+>         ],
+>         "postData": {
+>           "mimeType": "application/x-www-form-urlencoded",
+>           "text": "foo=bar",
+>           "params": [
+>             {
+>               "name": "foo",
+>               "value": "bar"
+>             }
+>           ]
+>         },
+>         "headersSize": 267,
+>         "bodySize": 7
+>       }
+>     }]
+>   }
+> }
+> ```
+
 ----
 
-#### Compression
+### Compression
 
-##### `/gzip`
+#### Gzip
 
-Identical to [`/echo`](#-echo-) but with forced compression on response body *(returns back all the info sent through your request in HAR format)*
+> ##### `GET /gzip`
+
+Identical to [`/echo`](#echo) but with forced compression on response body *(returns back all the info sent through your request in HAR format)*
 
 ###### Request
 
 > ```http
 > POST /gzip?foo=bar&foo=baz&key=value HTTP/1.1
 > Host: httpconsole.com
-> User-Agent: curl/7.35.0
 > Cookie: Greet=Hello;World=Universe
 > X-Custom-Header: Foo
 > Accept: application/json

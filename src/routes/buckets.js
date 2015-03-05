@@ -35,9 +35,9 @@ var Buckets = function (dsn_str) {
 
   router.get('/:uuid/view',              mw.errorHandler, mw.cors, mw.bodyParser, this.routes.view.bind(this),    mw.negotiateContent);
 
-  router.all('/:uuid',                   mw.errorHandler, mw.cors, mw.bodyParser, this.routes.send.bind(this),    mw.negotiateContent);
-
   router.get('/:uuid/log',               mw.errorHandler, mw.cors, mw.bodyParser, this.routes.log.bind(this),     mw.negotiateContent);
+
+  router.all('/:uuid*',                  mw.errorHandler, mw.cors, mw.bodyParser, this.routes.send.bind(this),    mw.negotiateContent);
 
   return router;
 };

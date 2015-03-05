@@ -34,7 +34,7 @@ module.exports = function (config) {
 
   router.all('/echo',                           mw.errorHandler, mw.cors, mw.bodyParser, routes.echo,            mw.negotiateContent);
 
-  router.all('/debug*',                         mw.errorHandler, mw.cors, mw.bodyParser, routes.debug,           mw.negotiateContent);
+  router.all('/har*',                           mw.errorHandler, mw.cors, mw.bodyParser, routes.har,           mw.negotiateContent);
 
   router.all('/request*',                       mw.errorHandler, mw.cors, mw.bodyParser, routes.request,         mw.negotiateContent);
 

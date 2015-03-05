@@ -58,7 +58,6 @@
     "dicer": "^0.2.3",
     "express": "^4.12.2",
     "har-validator": "^1.1.2",
-    "hiredis": "^0.2.0",
     "jade": "^1.9.2",
     "media-typer": "^0.3.0",
     "method-override": "^2.3.1",

@@ -7,6 +7,6 @@ block content
     li: a(href='#xml', data-toggle='tab') XML
 
   div(class='tab-content')
-    div(class='tab-pane active', id='home'): pre: code= YAML.stringify(data, 3, 2)
-    div(class='tab-pane', id='json'): pre: code= JSON.stringify(data, null, 2)
-    div(class='tab-pane', id='xml'): pre: code= XML.create(data, { prettyPrint: true, indent: '  ' }).end({pretty: true, indent: '  ', newline: '\n'})
+    div(class='tab-pane active', id='home'): pre: code= data.yaml
+    div(class='tab-pane', id='json'): pre: code= data.json
+    div(class='tab-pane', id='xml'): pre: code= data.xml

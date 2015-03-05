@@ -1,17 +1,21 @@
 'use strict';
 
-var HTTPConsole = require('../src');
+var cookieParser = require('cookie-parser');
+var express = require('express');
+var httpconsole = require('../src');
+var should = require('should');
 var unirest = require('unirest');
 
-var should = require('should');
-
 describe('Simple Endpoints', function () {
-  var app = HTTPConsole({
-    port: 3000,
-    quiet: true
-  });
+  // express setup
+  var app = express();
+  app.enable('trust proxy');
+  app.set('view engine', 'jade');
 
-  app.createServer().start();
+  app.use(cookieParser());
+
+  app.use('/', httpconsole());
+  app.listen(3000);
 
   it('home page responds with html content', function (done) {
     var req = unirest.get('http://localhost:3000/');

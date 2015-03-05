@@ -17,13 +17,13 @@ block content
 
     div(class='tab-content')
       div(id='yaml').tab-pane.active.fade.in
-        pre: code= YAML.stringify(data, yamlInline || 2, 2)
+        pre: code= data.yaml
 
       div(id='json').tab-pane.fade
-        pre: code= JSON.stringify(data, null, 2)
+        pre: code= data.json
 
       div(id='xml').tab-pane.fade
-        pre: code= XML.create(bodyXmlObj || data, { prettyPrint: true, indent: '  ' }).end({pretty: true, indent: '  ', newline: '\n'})
+        pre: code= data.xml
 
     p for more info, review the&nbsp;
       a(href='/docs#' + path.replace('/', '-') + '-') documentation

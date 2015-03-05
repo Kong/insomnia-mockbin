@@ -8,8 +8,6 @@ var httpconsole = require('./src');
 var methodOverride = require('method-override');
 var morgan = require('morgan');
 var rc = require('rc');
-var redis = require('redis');
-var url = require('url');
 
 // default configs
 var config = rc('httpconsole', {
@@ -20,28 +18,12 @@ var config = rc('httpconsole', {
 
 debug('system started with config %j', config);
 
-if (config.redis) {
-  // parse redis dsn
-  var dsn = url.parse(config.redis);
-
-  // connect to redis
-  var client = redis.createClient(dsn.port, dsn.hostname, {
-    auth_pass: dsn.auth ? dsn.auth.split(':').pop() : false
-  });
-
-  client.on('error', function (err) {
-    debug('redis error:', err);
-  });
-} else {
-  debug('no redis dsn provided, will not load bucket routes');
-}
-
 // express setup
 var app = express();
 
 app.set('jsonp callback name', '__callback');
 app.set('view engine', 'jade');
-//app.enable('view cache');
+app.enable('view cache');
 app.enable('trust proxy');
 
 // add 3rd party middlewares
@@ -51,7 +33,7 @@ app.use(cookieParser());
 app.use(compression());
 
 // magic starts here
-app.use('/', httpconsole(config, client));
+app.use('/', httpconsole(config));
 
 if (!config.quiet) {
   app.use(morgan('dev'));

@@ -46,7 +46,7 @@
     "codeclimate-test-reporter": "0.0.4",
     "mocha": "^2.1.0",
     "mocha-lcov-reporter": "0.0.2",
-    "should": "^5.0.1",
+    "should": "^5.1.0",
     "unirest": "^0.4.0"
   },
   "dependencies": {
@@ -57,7 +57,7 @@
     "debug": "^2.1.2",
     "dicer": "^0.2.3",
     "express": "^4.12.2",
-    "har-validator": "^1.0.2",
+    "har-validator": "^1.1.2",
     "hiredis": "^0.2.0",
     "jade": "^1.9.2",
     "media-typer": "^0.3.0",

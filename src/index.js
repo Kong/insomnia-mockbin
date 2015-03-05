@@ -1,10 +1,11 @@
 'use strict';
 
+var debug = require('debug')('httpconsole');
 var express = require('express');
-var routes = require('./routes');
 var mw = require('./middleware');
+var routes = require('./routes');
 
-module.exports = function (config, redis) {
+module.exports = function (config) {
   var router = express.Router();
 
   router.get('/',                               mw.errorHandler, mw.cors, mw.bodyParser, routes.hello,           mw.negotiateContent);
@@ -39,15 +40,11 @@ module.exports = function (config, redis) {
 
   router.all('/gzip',                           mw.errorHandler, mw.cors, mw.bodyParser, routes.gzip,            mw.negotiateContent);
 
-  router.get('/bucket/create',                  mw.errorHandler, mw.cors, mw.bodyParser, routes.buckets.form,    mw.negotiateContent);
-
-  router.post('/bucket/create',                 mw.errorHandler, mw.cors, mw.bodyParser, routes.buckets.create,  mw.negotiateContent);
-
-  router.get('/bucket/:uuid/view',              mw.errorHandler, mw.cors, mw.bodyParser, routes.buckets.view,    mw.negotiateContent);
-
-  router.all('/bucket/:uuid',                   mw.errorHandler, mw.cors, mw.bodyParser, routes.buckets.send,    mw.negotiateContent);
-
-  router.get('/bucket/:uuid/log',               mw.errorHandler, mw.cors, mw.bodyParser, routes.buckets.log,     mw.negotiateContent);
+  if (config.redis) {
+    router.use('/bucket', routes.buckets(config.redis));
+  } else {
+    debug('no redis dsn provided, will not load bucket routes');
+  }
 
   return router;
 };

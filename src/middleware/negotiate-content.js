@@ -22,6 +22,8 @@ module.exports = function (req, res, next) {
   }
 
   function JSONResponse () {
+    req.app.set('json spaces', spaces);
+
     res.jsonp(res.body);
   }
 
@@ -53,14 +55,14 @@ module.exports = function (req, res, next) {
   }
 
   res.format({
+    'application/json': JSONResponse,
+    'text/json': JSONResponse,
+    'text/x-json': JSONResponse,
+    'application/x-json': JSONResponse,
+
     'text/javascript': JSONResponse,
     'application/javascript': JSONResponse,
     'application/x-javascript': JSONResponse,
-
-    'text/json': JSONResponse,
-    'text/x-json': JSONResponse,
-    'application/json': JSONResponse,
-    'application/x-json': JSONResponse,
 
     'text/xml': XMLResponse,
     'application/xml': XMLResponse,

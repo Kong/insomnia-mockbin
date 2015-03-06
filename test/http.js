@@ -87,7 +87,7 @@ describe('Simple Endpoints', function () {
     });
 
     req.end(function (res) {
-      res.body.should.equal('mockbin test');
+      res.body.should.equal('mockbin tester');
 
       done();
     });

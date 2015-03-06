@@ -5,7 +5,6 @@
 [![Code Climate][codeclimate-quality]][codeclimate-url]
 [![Coverage Status][codeclimate-coverage]][codeclimate-url]
 [![Dependencies][david-image]][david-url]
-[![Gitter][gitter-image]][gitter-url]
 
 
 ## Table of contents
@@ -118,9 +117,6 @@ Licensed under [The MIT License](LICENSE).
 Made with &#9829; at [Mashape](https://www.mashape.com/)
 
 [license-url]: https://github.com/ahmadnassri/mockbin/blob/master/LICENSE
-
-[gitter-url]: https://gitter.im/ahmadnassri/mockbin
-[gitter-image]: https://img.shields.io/badge/Gitter-Join%20Chat-blue.svg?style=flat-square
 
 [travis-url]: https://travis-ci.org/ahmadnassri/mockbin
 [travis-image]: https://img.shields.io/travis/ahmadnassri/mockbin.svg?style=flat-square

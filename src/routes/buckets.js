@@ -1,6 +1,6 @@
 'use strict';
 
-var debug = require('debug')('httpconsole');
+var debug = require('debug')('mockbin');
 var express = require('express');
 var mw = require('../middleware');
 var pkg = require('../../package.json');
@@ -161,7 +161,7 @@ Buckets.prototype.routes = {
         log: {
           version: '1.2',
           creator: {
-            name: 'httpconsole.com',
+            name: 'mockbin.com',
             version: pkg.version
           },
           entries: []

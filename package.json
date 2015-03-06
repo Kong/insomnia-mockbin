@@ -1,23 +1,22 @@
 {
-  "version": "1.2.1",
-  "name": "httpconsole",
+  "version": "1.0.0",
+  "name": "mockbin",
   "description": "Mock, Test & Track HTTP calls",
   "author": "Ahmad Nassri <ahmad@ahmadnassri.com> (https://www.ahmadnassri.com/)",
-  "homepage": "http://httpconsole.com/",
+  "homepage": "http://mockbin.com/",
   "license": "MIT",
   "main": "./src/index.js",
-  "bin": "./bin/httpconsole",
+  "bin": "./bin/mockbin",
   "engines": {
     "node": "0.10.x",
     "npm": "1.4.x"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/ahmadnassri/httpconsole.git"
+    "url": "https://github.com/ahmadnassri/mockbin.git"
   },
   "bugs": {
-    "email": "opensource@mashape.com",
-    "url": "https://github.com/ahmadnassri/httpconsole/issues"
+    "url": "https://github.com/ahmadnassri/mockbin/issues"
   },
   "keywords": [
     "HAR",

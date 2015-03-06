@@ -6,9 +6,9 @@ var program = require('commander');
 var pkg = require('../package.json');
 var compression = require('compression');
 var cookieParser = require('cookie-parser');
-var debug = require('debug')('httpconsole');
+var debug = require('debug')('mockbin');
 var express = require('express');
-var httpconsole = require('../src');
+var mockbin = require('../src');
 var methodOverride = require('method-override');
 var morgan = require('morgan');
 var rc = require('rc');
@@ -21,7 +21,7 @@ program
   .parse(process.argv);
 
 // default configs
-var config = rc('httpconsole', {
+var config = rc('mockbin', {
   port: program.port,
   redis: program.redis,
   quiet: program.quiet
@@ -44,7 +44,7 @@ app.use(cookieParser());
 app.use(compression());
 
 // magic starts here
-app.use('/', httpconsole(config));
+app.use('/', mockbin(config));
 
 if (!config.quiet) {
   app.use(morgan('dev'));

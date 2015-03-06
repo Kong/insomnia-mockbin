@@ -2,7 +2,7 @@
 
 var cookieParser = require('cookie-parser');
 var express = require('express');
-var httpconsole = require('../src');
+var mockbin = require('../src');
 var should = require('should');
 var unirest = require('unirest');
 
@@ -14,7 +14,7 @@ describe('Simple Endpoints', function () {
 
   app.use(cookieParser());
 
-  app.use('/', httpconsole());
+  app.use('/', mockbin());
   app.listen(3000);
 
   it('home page responds with html content', function (done) {
@@ -83,11 +83,11 @@ describe('Simple Endpoints', function () {
 
     req.headers({
       Accept: 'text/plain',
-      'User-Agent': 'HTTP Console Tester'
+      'User-Agent': 'mockbin tester'
     });
 
     req.end(function (res) {
-      res.body.should.equal('HTTP Console Tester');
+      res.body.should.equal('mockbin test');
 
       done();
     });
@@ -248,13 +248,13 @@ describe('Simple Endpoints', function () {
   });
 
   it('GET /redirect/:status?to=URL should redirect to URL', function (done) {
-    var req = unirest.get('http://localhost:3000/redirect/308?to=http://httpconsole.com/');
+    var req = unirest.get('http://localhost:3000/redirect/308?to=http://mockbin.com/');
 
     req.followRedirect(false);
 
     req.end(function (res) {
       res.status.should.equal(308);
-      res.headers.should.containEql({location: 'http://httpconsole.com/'});
+      res.headers.should.containEql({location: 'http://mockbin.com/'});
 
       done();
     });

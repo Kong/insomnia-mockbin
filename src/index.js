@@ -1,6 +1,6 @@
 'use strict';
 
-var debug = require('debug')('httpconsole');
+var debug = require('debug')('mockbin');
 var express = require('express');
 var mw = require('./middleware');
 var routes = require('./routes');

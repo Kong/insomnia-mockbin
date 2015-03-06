@@ -8,7 +8,7 @@
 
 Creates a new **Bucket** with a mock HTTP response as described by a [HAR Response Object](http://www.softwareishard.com/blog/har-12-spec/#response) body.
 
-Responds with a `Location` header with the newly created **Bucket**, e.g. `Location: http://httpconsole.com/bucket/b8b21988-64d4-4eb3-94c1-2055c3374b53` *(also repeated in the body)*
+Responds with a `Location` header with the newly created **Bucket**, e.g. `Location: http://mockbin.com/bucket/b8b21988-64d4-4eb3-94c1-2055c3374b53` *(also repeated in the body)*
 
 - The [HAR Response Object](http://www.softwareishard.com/blog/har-12-spec/#response) sent at time of creation will determine what the response status, headers, content will be
 - You can request the new Bucket with *any* combination of the following:
@@ -23,7 +23,7 @@ Responds with a `Location` header with the newly created **Bucket**, e.g. `Locat
 
 > ```http
 > POST /bucket/create HTTP/1.1
-> Host: httpconsole.com
+> Host: mockbin.com
 > Content-Type: application/json
 > Accept: application/json
 > Content-Length: 819
@@ -82,7 +82,7 @@ Responds with a `Location` header with the newly created **Bucket**, e.g. `Locat
 
 > ```http
 > HTTP/1.1 200 OK
-> Location: http://httpconsole.com/b8b21988-64d4-4eb3-94c1-2055c3374b53
+> Location: http://mockbin.com/b8b21988-64d4-4eb3-94c1-2055c3374b53
 > Content-Type: application/json; charset=utf-8
 > Content-Length: 38
 >
@@ -101,7 +101,7 @@ Respondes with the [HAR Response Object](http://www.softwareishard.com/blog/har-
 
 > ```http
 > GET /bucket/b8b21988-64d4-4eb3-94c1-2055c3374b53/view HTTP/1.1
-> Host: httpconsole.com
+> Host: mockbin.com
 > Accept: application/json
 > ```
 
@@ -182,7 +182,7 @@ You can request this endpoint with *any* combination of the following:
 
 > ```http
 > GET /bucket/b8b21988-64d4-4eb3-94c1-2055c3374b53/view HTTP/1.1
-> Host: httpconsole.com
+> Host: mockbin.com
 > Accept: application/json
 > ```
 
@@ -212,7 +212,7 @@ List all requests made to this bucket, using [HAR](http://www.softwareishard.com
 
 > ```http
 > GET /bucket/b8b21988-64d4-4eb3-94c1-2055c3374b53/log HTTP/1.1
-> Host: httpconsole.com
+> Host: mockbin.com
 > Accept: application/json
 > ```
 
@@ -225,7 +225,7 @@ List all requests made to this bucket, using [HAR](http://www.softwareishard.com
 >
 > "log": {
 >   "creator": {
->       "name": "httpconsole.com", 
+>       "name": "mockbin.com", 
 >       "version": "1.0.1"
 >   }, 
 >   "entries": [
@@ -248,7 +248,7 @@ Returns Origin IP.
 
 > ```http
 > GET /ip HTTP/1.1
-> Host: httpconsole.com
+> Host: mockbin.com
 > Accept: application/json
 >
 > ```
@@ -275,7 +275,7 @@ Parses the "X-Forwarded-For" ip address list and return an array. Otherwise, an 
 
 > ```http
 > GET /ips HTTP/1.1
-> Host: httpconsole.com
+> Host: mockbin.com
 > Accept: application/json
 >
 > ```
@@ -309,7 +309,7 @@ Returns a response with the given HTTP Status code and message in status line an
 
 > ```http
 > GET /status/20/Hello HTTP/1.1
-> Host: httpconsole.com
+> Host: mockbin.com
 >
 > ```
 
@@ -340,7 +340,7 @@ Returns list of all headers used in request as well as total number of bytes fro
 
 > ```http
 > GET /headers HTTP/1.1
-> Host: httpconsole.com
+> Host: mockbin.com
 > X-Custom-Header: Foo
 >
 > ```
@@ -364,7 +364,7 @@ Returns list of all headers used in request as well as total number of bytes fro
 >     },
 >     {
 >       "name": "host",
->       "value": "httpconsole.com"
+>       "value": "mockbin.com"
 >     }
 >   ],
 >   "headersSize": 124
@@ -385,7 +385,7 @@ Returns the value of header with the name `:name`
 
 > ```http
 > GET /header/x-custom-header HTTP/1.1
-> Host: httpconsole.com
+> Host: mockbin.com
 > X-Custom-Header: Foo
 >
 > ```
@@ -410,7 +410,7 @@ Returns user-agent.
 
 > ```http
 > GET /agent HTTP/1.1
-> Host: httpconsole.com
+> Host: mockbin.com
 > User-Agent: curl/7.35.0
 > Accept: application/json
 >
@@ -440,7 +440,7 @@ Returns list of all cookies sent by the client
 
 > ```http
 > GET /cookies HTTP/1.1
-> Host: httpconsole.com
+> Host: mockbin.com
 > Cookie: my-cookie=ALL YOUR BASE ARE BELONG TO US; foo=bar
 >
 > ```
@@ -480,7 +480,7 @@ Returns the value of the cookie with the name `:name`
 
 > ```http
 > GET /header/my-cookie HTTP/1.1
-> Host: httpconsole.com
+> Host: mockbin.com
 > Cookie: my-cookie=ALL YOUR BASE ARE BELONG TO US; foo=bar
 >
 > ```
@@ -522,7 +522,7 @@ Start a redirects loop using the redirect custom status code: `status`, looping 
 
 > ```http
 > GET /redirect/308 HTTP/1.1
-> Host: httpconsole.com
+> Host: mockbin.com
 >
 > ```
 
@@ -545,7 +545,7 @@ Start a redirects loop using the redirect custom status code: `status`, looping 
 
 > ```http
 > GET /redirect/308?to=https://www.mashape.com/ HTTP/1.1
-> Host: httpconsole.com
+> Host: mockbin.com
 >
 > ```
 
@@ -569,7 +569,7 @@ Start a redirects loop using the redirect custom status code: `status`, looping 
 
 > ```http
 > GET /redirect/308/3 HTTP/1.1
-> Host: httpconsole.com
+> Host: mockbin.com
 >
 > ```
 
@@ -627,7 +627,7 @@ Streams a chunked response, defaults to 10 chunks with an upper limit of 100
 
 > ```http
 > GET /stream/4 HTTP/1.1
-> Host: httpconsole.com
+> Host: mockbin.com
 > ```
 
 ###### Response
@@ -657,7 +657,7 @@ Returns a response after a delay in milliseconds, default is 200ms
 
 > ```http
 > GET /delay/5000 HTTP/1.1
-> Host: httpconsole.com
+> Host: mockbin.com
 >
 > ```
 
@@ -686,7 +686,7 @@ Returns a response with identical `Body` and `Content-Type` to what's in teh req
 
 > ```http
 > POST /echo HTTP/1.1
-> Host: httpconsole.com
+> Host: mockbin.com
 > Content-Type: application/json
 > Content-Length: 14
 >
@@ -713,7 +713,7 @@ Returns back all the info sent through your request in [HAR Request Obejct](http
 
 > ```http
 > POST /request/any/path?foo=bar&foo=baz&key=value HTTP/1.1
-> Host: httpconsole.com
+> Host: mockbin.com
 > Cookie: Greet=Hello;World=Universe
 > X-Custom-Header: Foo
 > Accept: application/json
@@ -810,7 +810,7 @@ Returns back all the info sent through your request in [HAR Obejct](http://www.s
 
 > ```http
 > POST /har/any/path?foo=bar&foo=baz&key=value HTTP/1.1
-> Host: httpconsole.com
+> Host: mockbin.com
 > Cookie: Greet=Hello;World=Universe
 > X-Custom-Header: Foo
 > Accept: application/json
@@ -831,7 +831,7 @@ Returns back all the info sent through your request in [HAR Obejct](http://www.s
 >   "log": {
 >     "version": "1.2",
 >     "creator": {
->       "name": "httpconsole.com", 
+>       "name": "mockbin.com", 
 >       "version": "1.0.1"
 >     },
 >     "entries": [{
@@ -922,7 +922,7 @@ Identical to [`/echo`](#echo) but with forced compression on response body *(ret
 
 > ```http
 > POST /gzip?foo=bar&foo=baz&key=value HTTP/1.1
-> Host: httpconsole.com
+> Host: mockbin.com
 > Cookie: Greet=Hello;World=Universe
 > X-Custom-Header: Foo
 > Accept: application/json

@@ -6,43 +6,43 @@
 
 ```shell
 # GET /request
-curl -X GET httpconsole.com/request
+curl -X GET mockbin.com/request
 
 # POST /request
 curl -X POST
 
 # DELETE /request
-curl -X DELETE httpconsole.com/request
+curl -X DELETE mockbin.com/request
 
 # PATCH /request
-curl -X PATCH httpconsole.com/request
+curl -X PATCH mockbin.com/request
 
 # FOO /request
-curl -X FOO httpconsole.com/request
+curl -X FOO mockbin.com/request
 
 # BAR /request
-curl -X BAR httpconsole.com/request
+curl -X BAR mockbin.com/request
 
 # MY-METHOD /request
-curl -X MY-METHOD httpconsole.com/request
+curl -X MY-METHOD mockbin.com/request
 ```
 
 ### Content Negotiation
 
-HTTP Console is able to response in a number of formats: JSON, YAML, XML, HTML. The response varies based on `Accept` header:
+mockbin is able to response in a number of formats: JSON, YAML, XML, HTML. The response varies based on `Accept` header:
 
 ```shell
 # Response in JSON (default)
-curl httpconsole.com/request -H "Accept: application/json" 
+curl mockbin.com/request -H "Accept: application/json" 
 
 # Response in YAML
-curl httpconsole.com/request -H "Accept: application/yaml" 
+curl mockbin.com/request -H "Accept: application/yaml" 
 
 # Response in XML
-curl httpconsole.com/request -H "Accept: application/xml" 
+curl mockbin.com/request -H "Accept: application/xml" 
 
 # Response in HTML 
-curl httpconsole.com/request -H "Accept: text/html" 
+curl mockbin.com/request -H "Accept: text/html" 
 ```
 
 ### JSONP Callbacks
@@ -50,5 +50,5 @@ curl httpconsole.com/request -H "Accept: text/html"
 You can recieve a JSONP response by adding the query string `__callback`:
 
 ```shell
-curl httpconsole.com/request?__callback=myfunc -H "Accept: application/json"
+curl mockbin.com/request?__callback=myfunc -H "Accept: application/json"
 ```

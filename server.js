@@ -2,15 +2,15 @@
 
 var compression = require('compression');
 var cookieParser = require('cookie-parser');
-var debug = require('debug')('httpconsole');
+var debug = require('debug')('mockbin');
 var express = require('express');
-var httpconsole = require('./src');
+var mockbin = require('./src');
 var methodOverride = require('method-override');
 var morgan = require('morgan');
 var rc = require('rc');
 
 // default configs
-var config = rc('httpconsole', {
+var config = rc('mockbin', {
   port: process.env.npm_package_config_port,
   redis: process.env.npm_package_config_redis,
   quiet: process.env.npm_package_config_quiet === 'false' ? false : true
@@ -33,7 +33,7 @@ app.use(cookieParser());
 app.use(compression());
 
 // magic starts here
-app.use('/', httpconsole(config));
+app.use('/', mockbin(config));
 
 if (!config.quiet) {
   app.use(morgan('dev'));

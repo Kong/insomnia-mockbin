@@ -7,14 +7,14 @@
 ## Install from source
 
 ```shell
-git clone https://github.com/ahmadnassri/HTTPConsole.git ./httpconsole
-cd httpconsole
+git clone https://github.com/ahmadnassri/mockbin.git ./mockbin
+cd mockbin
 ```
 
 ## Install with [npm](https://www.npmjs.com/):
 
 ```shell
-npm install httpconsole
+npm install mockbin
 ```
 
 *read more on [Installation](docs/install.md)*.

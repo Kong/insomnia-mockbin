@@ -42,7 +42,7 @@ var utils = {
       log: {
         version: '1.2',
         creator: {
-          name: 'httpconsole.com',
+          name: 'mockbin.com',
           version: pkg.version
         },
         entries: [{

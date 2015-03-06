@@ -1,8 +1,8 @@
 {
-  "name": "httpconsole",
+  "name": "mockbin",
   "description": "Mock, Test & Track HTTP calls!",
-  "repository": "https://github.com/ahmadnassri/httpconsole",
-  "website": "http://httpconsole.com/",
+  "repository": "https://github.com/ahmadnassri/mockbin",
+  "website": "http://mockbin.com/",
   "success_url": "/",
   "addons": [
     "openredis"

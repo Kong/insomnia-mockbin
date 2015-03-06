@@ -19,12 +19,15 @@
     "url": "https://github.com/ahmadnassri/mockbin/issues"
   },
   "keywords": [
+    "API",
+    "Bin",
     "HAR",
     "HTTP",
-    "API",
+    "JSON",
+    "Mock",
+    "Mocking",
     "Test",
-    "Testing",
-    "Console"
+    "Testing"
   ],
   "config": {
     "port": 8080,

@@ -8,11 +8,14 @@
     "openredis"
   ],
   "keywords": [
+    "API",
+    "Bin",
     "HAR",
     "HTTP",
-    "API",
+    "JSON",
+    "Mock",
+    "Mocking",
     "Test",
-    "Testing",
-    "Console"
+    "Testing"
   ]
 }

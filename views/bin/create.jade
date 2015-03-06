@@ -69,93 +69,95 @@ block content
 
 block scripts
   script.
-    var addKeyPair = function (event) {
-      var self = $(this);
+    $(function() {
+      var addKeyPair = function (event) {
+        var self = $(this);
 
-      var group = self.parents('.form-group');
-      var form = self.parents('form');
+        var group = self.parents('.form-group');
+        var form = self.parents('form');
 
-      group.clone().appendTo(form);
-    };
+        group.clone().appendTo(form);
+      };
 
-    var processFormData = function (event) {
-      var response = {
-          status: '',
-          statusText: '',
-          httpVersion: "HTTP/1.1",
-          headers: [],
-          cookies: [],
-          content: {
-            size: 0,
-            encoding: '',
-            mimeType: '',
-            text: ''
-          },
-          redirectURL: '',
-          headersSize: 0,
-          bodySize: 0
-        };
+      var processFormData = function (event) {
+        var response = {
+            status: '',
+            statusText: '',
+            httpVersion: "HTTP/1.1",
+            headers: [],
+            cookies: [],
+            content: {
+              size: 0,
+              encoding: '',
+              mimeType: '',
+              text: ''
+            },
+            redirectURL: '',
+            headersSize: 0,
+            bodySize: 0
+          };
 
-      $('.has-error').removeClass('has-error');
+        $('.has-error').removeClass('has-error');
 
-      $('.form input:not(:valid)').each(function () {
-        $(this).parents('.form-group').addClass('has-error');
-      });
-
-      [{form: 'status', parent: response}, {form: 'content', parent: response.content}].forEach(function (item) {
-        $('form[name="' + item.form + '"] div.form-group:not(.pair) .form-control').each(function () {
-          var self = $(this);
-
-          item.parent[self.attr('name')] = self.val();
-        });
-      });
-
-      ['headers', 'cookies'].forEach(function (pair) {
-        var params = [];
-
-        $('form[name="' + pair + '"] .pair input[name="name"]').slice(0, -1).each(function (index, header) {
-          var value = $(header).val();
-
-          if (value.trim() !== '') {
-            params.push({name: value});
-          }
+        $('.form input:not(:valid)').each(function () {
+          $(this).parents('.form-group').addClass('has-error');
         });
 
+        [{form: 'status', parent: response}, {form: 'content', parent: response.content}].forEach(function (item) {
+          $('form[name="' + item.form + '"] div.form-group:not(.pair) .form-control').each(function () {
+            var self = $(this);
 
-        $('form[name="' + pair + '"] .pair input[name="value"]').slice(0, -1).each(function (index, header) {
-          if (params[index]) {
-            params[index].value = $(header).val();
-          }
+            item.parent[self.attr('name')] = self.val();
+          });
         });
 
-        response[pair] = params;
+        ['headers', 'cookies'].forEach(function (pair) {
+          var params = [];
+
+          $('form[name="' + pair + '"] .pair input[name="name"]').slice(0, -1).each(function (index, header) {
+            var value = $(header).val();
+
+            if (value.trim() !== '') {
+              params.push({name: value});
+            }
+          });
+
+
+          $('form[name="' + pair + '"] .pair input[name="value"]').slice(0, -1).each(function (index, header) {
+            if (params[index]) {
+              params[index].value = $(header).val();
+            }
+          });
+
+          response[pair] = params;
+        });
+
+        // fix type issues
+        response.status = parseInt(response.status);
+
+        $('input[name="response"]').val(JSON.stringify(response));
+        $('pre code').text(JSON.stringify(response, null, 2));
+
+        hljs.highlightBlock($('pre code')[0]);
+      };
+
+      $('.toggle-comments').on('click', function (event) {
+        $('.form').toggleClass('no-comments');
+        $('.form  input[name="comment"]').attr('disabled', $(this).hasClass('active'));
       });
 
-      // fix type issues
-      response.status = parseInt(response.status);
+      $('form').on('click', '.form-group.pair:last-of-type .btn-success', addKeyPair);
 
-      $('input[name="response"]').val(JSON.stringify(response));
-      $('pre code').text(JSON.stringify(response, null, 2));
+      $('form').on('focus', '.form-group.pair:last-child input', addKeyPair);
 
-      hljs.highlightBlock($('pre code')[0]);
-    };
+      $('form').on('click', '.form-group.pair .btn-danger', function (event) {
+        $(this).parents('.form-group').remove();
+      });
 
-    $('.toggle-comments').on('click', function (event) {
-      $('.form').toggleClass('no-comments');
-      $('.form  input[name="comment"]').attr('disabled', $(this).hasClass('active'));
-    });
+      $('form').on('keyup keypress change blur', '.form-control', processFormData);
+      $('form').on('click', '.btn', processFormData);
 
-    $('form').on('click', '.form-group.pair:last-of-type .btn-success', addKeyPair);
-
-    $('form').on('focus', '.form-group.pair:last-child input', addKeyPair);
-
-    $('form').on('click', '.form-group.pair .btn-danger', function (event) {
-      $(this).parents('.form-group').remove();
-    });
-
-    $('form').on('keyup keypress change blur', '.form-control', processFormData);
-    $('form').on('click', '.btn', processFormData);
-
-    $(document).ready(function () {
-      processFormData();
+      $(document).ready(function () {
+        processFormData();
+      });
     });

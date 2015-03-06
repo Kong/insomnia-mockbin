@@ -1,28 +1,28 @@
 ## API Endpoints
 
-### Buckets
+### Bins
 
-#### Create Bucket
+#### Create Bin
 
-> ##### `POST /bucket/create/view`
+> ##### `POST /bin/create/view`
 
-Creates a new **Bucket** with a mock HTTP response as described by a [HAR Response Object](http://www.softwareishard.com/blog/har-12-spec/#response) body.
+Creates a new **Bin** with a mock HTTP response as described by a [HAR Response Object](http://www.softwareishard.com/blog/har-12-spec/#response) body.
 
-Responds with a `Location` header with the newly created **Bucket**, e.g. `Location: http://mockbin.com/bucket/b8b21988-64d4-4eb3-94c1-2055c3374b53` *(also repeated in the body)*
+Responds with a `Location` header with the newly created **Bin**, e.g. `Location: http://mockbin.com/bin/b8b21988-64d4-4eb3-94c1-2055c3374b53` *(also repeated in the body)*
 
 - The [HAR Response Object](http://www.softwareishard.com/blog/har-12-spec/#response) sent at time of creation will determine what the response status, headers, content will be
-- You can request the new Bucket with *any* combination of the following:
+- You can request the new Bin with *any* combination of the following:
   - HTTP methods *(e.g. `POST`, `XXPUT`)*
   - HTTP headers *(e.g. `X-My-Header-Name: Value`)*
   - body content *(max of 100mb)*
   - query string *(e.g. `?foo=bar`)*
-  - path arguments *(e.g. `/bucket/b8b21988-64d4-4eb3-94c1-2055c3374b53/any/extra/path/`)*
-- All requests to bucket will be [logged](#view-logs) for later inspection *(max of 100 requests)*
+  - path arguments *(e.g. `/bin/b8b21988-64d4-4eb3-94c1-2055c3374b53/any/extra/path/`)*
+- All requests to Bin will be [logged](#view-logs) for later inspection *(max of 100 requests)*
 
 ###### Request
 
 > ```http
-> POST /bucket/create HTTP/1.1
+> POST /bin/create HTTP/1.1
 > Host: mockbin.com
 > Content-Type: application/json
 > Accept: application/json
@@ -91,16 +91,16 @@ Responds with a `Location` header with the newly created **Bucket**, e.g. `Locat
 
 ----
 
-#### Inspect Bucket
+#### Inspect Bin
 
-> ##### `GET /bucket/:id/view`
+> ##### `GET /bin/:id/view`
 
-Respondes with the [HAR Response Object](http://www.softwareishard.com/blog/har-12-spec/#response) sent at time of [creation](#create-bucket).
+Respondes with the [HAR Response Object](http://www.softwareishard.com/blog/har-12-spec/#response) sent at time of [creation](#create-bin).
 
 ###### Request
 
 > ```http
-> GET /bucket/b8b21988-64d4-4eb3-94c1-2055c3374b53/view HTTP/1.1
+> GET /bin/b8b21988-64d4-4eb3-94c1-2055c3374b53/view HTTP/1.1
 > Host: mockbin.com
 > Accept: application/json
 > ```
@@ -163,25 +163,25 @@ Respondes with the [HAR Response Object](http://www.softwareishard.com/blog/har-
 > }
 > ```
 
-#### Request Bucket
+#### Request Bin
 
-> ##### `* /bucket/:id`
+> ##### `* /bin/:id`
 
-The [HAR Response Object](http://www.softwareishard.com/blog/har-12-spec/#response) sent at time of [creation](#create-bucket) will determine what the response status, headers, content will be.
+The [HAR Response Object](http://www.softwareishard.com/blog/har-12-spec/#response) sent at time of [creation](#create-bin) will determine what the response status, headers, content will be.
 
-Each call to this endpoint will be [logged](#bucket-log) *(max of 100 requests)*.
+Each call to this endpoint will be [logged](#bin-log) *(max of 100 requests)*.
 
 You can request this endpoint with *any* combination of the following:
   - HTTP methods *(e.g. `POST`, `XXPUT`)*
   - HTTP headers *(e.g. `X-My-Header-Name: Value`)*
   - body content *(max of 100mb)*
   - query string *(e.g. `?foo=bar`)*
-  - path arguments *(e.g. `/bucket/b8b21988-64d4-4eb3-94c1-2055c3374b53/any/extra/path/`)*
+  - path arguments *(e.g. `/bin/b8b21988-64d4-4eb3-94c1-2055c3374b53/any/extra/path/`)*
 
 ###### Request
 
 > ```http
-> GET /bucket/b8b21988-64d4-4eb3-94c1-2055c3374b53/view HTTP/1.1
+> GET /bin/b8b21988-64d4-4eb3-94c1-2055c3374b53/view HTTP/1.1
 > Host: mockbin.com
 > Accept: application/json
 > ```
@@ -202,16 +202,16 @@ You can request this endpoint with *any* combination of the following:
 > <h1>Hello World</h1>
 > ```
 
-#### Bucket Access Log
+#### Bin Access Log
 
-> ##### `GET /bucket/:id/log`
+> ##### `GET /bin/:id/log`
 
-List all requests made to this bucket, using [HAR](http://www.softwareishard.com/blog/har-12-spec/) log format.
+List all requests made to this Bin, using [HAR](http://www.softwareishard.com/blog/har-12-spec/) log format.
 
 ###### Request
 
 > ```http
-> GET /bucket/b8b21988-64d4-4eb3-94c1-2055c3374b53/log HTTP/1.1
+> GET /bin/b8b21988-64d4-4eb3-94c1-2055c3374b53/log HTTP/1.1
 > Host: mockbin.com
 > Accept: application/json
 > ```

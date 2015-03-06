@@ -10,9 +10,9 @@ var util = require('util');
 var uuid = require('node-uuid');
 var validate = require('har-validator');
 
-var Buckets = function (dsn_str) {
-  if (!(this instanceof Buckets)) {
-    return new Buckets(dsn_str);
+var Bins = function (dsn_str) {
+  if (!(this instanceof Bins)) {
+    return new Bins(dsn_str);
   }
 
   // parse redis dsn
@@ -29,35 +29,48 @@ var Buckets = function (dsn_str) {
 
   var router = express.Router();
 
-  router.get('/create',                  mw.errorHandler, mw.cors, mw.bodyParser, this.routes.form.bind(this),    mw.negotiateContent);
+  router.get('/create',       mw.errorHandler, mw.bodyParser, this.routes.form.bind(this),    mw.cors, mw.negotiateContent);
 
-  router.post('/create',                 mw.errorHandler, mw.cors, mw.bodyParser, this.routes.create.bind(this),  mw.negotiateContent);
+  router.post('/create',      mw.errorHandler, mw.bodyParser, this.routes.create.bind(this),  mw.cors, mw.negotiateContent);
 
-  router.get('/:uuid/view',              mw.errorHandler, mw.cors, mw.bodyParser, this.routes.view.bind(this),    mw.negotiateContent);
+  router.get('/:uuid/view',   mw.errorHandler, mw.bodyParser, this.routes.view.bind(this),    mw.cors, mw.negotiateContent);
 
-  router.get('/:uuid/log',               mw.errorHandler, mw.cors, mw.bodyParser, this.routes.log.bind(this),     mw.negotiateContent);
+  router.get('/:uuid/sample', mw.errorHandler, mw.bodyParser, this.routes.sample.bind(this),  mw.cors, mw.negotiateContent);
 
-  router.all('/:uuid*',                  mw.errorHandler, mw.cors, mw.bodyParser, this.routes.send.bind(this),    mw.negotiateContent);
+  router.get('/:uuid/log',    mw.errorHandler, mw.bodyParser, this.routes.log.bind(this),     mw.cors, mw.negotiateContent);
+
+  router.all('/:uuid*',       mw.errorHandler, mw.bodyParser, this.routes.send.bind(this),    mw.cors, mw.negotiateContent);
 
   return router;
 };
 
-Buckets.prototype.routes = {
+Bins.prototype.routes = {
   form: function (req, res, next) {
     res.status(200);
 
-    res.view = 'bucket/create';
+    res.view = 'bin/create';
 
     next();
   },
 
   create: function (req, res, next) {
+    var mock = req.jsonBody;
+
     // check for full HAR
-    if (req.jsonBody.response) {
-      req.jsonBody = req.jsonBody.response;
+    if (req.jsonBody && req.jsonBody.response) {
+      mock = req.jsonBody.response;
     }
 
-    validate.response(req.jsonBody, function (err, valid) {
+    // overritten by application/x-www-form-urlencoded or multipart/form-data\
+    if (req.simple.postData.params && req.simple.postData.params.response) {
+      try {
+        mock = JSON.parse(req.simple.postData.params.response);
+      } catch (e) {
+        debug(e);
+      }
+    }
+
+    validate.response(mock, function (err, valid) {
       if (!valid) {
         res.status(400).body = {
           error: err[0]
@@ -68,15 +81,10 @@ Buckets.prototype.routes = {
 
       var id = uuid.v4();
 
-      this.client.set(id, JSON.stringify(req.jsonBody));
+      this.client.set(id, JSON.stringify(mock));
 
-      res.view = 'bucket/created';
-
-      res.status(201);
-
-      // send back the newly created id
-      res.body = util.format('%s://%s/bucket/%s', req.protocol, req.hostname, id);
-      res.location(res.body);
+      res.view = 'redirect';
+      res.status(201).location(util.format('/bin/%s', id)).body = id;
 
       next();
     }.bind(this));
@@ -95,11 +103,70 @@ Buckets.prototype.routes = {
 
         res.status(200);
 
-        res.view = 'bucket/view';
+        res.view = 'bin/view';
         res.body = har;
       }
 
       next();
+    });
+  },
+
+  sample: function (req, res, next) {
+    this.client.get(req.params.uuid, function (err, value) {
+      if (err) {
+        debug(err);
+
+        throw(err);
+      }
+
+      if (value) {
+        res.status(200).json({
+          method: 'POST',
+          url: util.format('%s://%s/bin/%s', req.protocol, req.hostname, req.params.uuid),
+          httpVersion: 'HTTP/1.1',
+          queryString: [
+            {
+              name: 'foo',
+              value: 'bar'
+            },
+            {
+              name: 'foo',
+              value: 'baz'
+            }
+          ],
+          headers: [
+            {
+              name: 'Accept',
+              value: 'application/json'
+            },
+            {
+              name: 'Content-Type',
+              value: 'application/x-www-form-urlencoded'
+            }
+          ],
+          cookies:  [
+            {
+              name: 'foo',
+              value: 'bar'
+            },
+            {
+              name: 'bar',
+              value: 'baz'
+            }
+          ],
+          postData: {
+            mimeType: 'application/x-www-form-urlencoded',
+            params: [{
+              name: 'foo',
+              value: 'bar'
+            },
+            {
+              name: 'bar',
+              value: 'baz'
+            }]
+          }
+        });
+      }
     });
   },
 
@@ -148,7 +215,7 @@ Buckets.prototype.routes = {
   log: function (req, res, next) {
     res.status(200);
 
-    res.view = 'bucket/log';
+    res.view = 'bin/log';
 
     this.client.lrange(req.params.uuid + '-log', 0, -1, function (err, history) {
       if (err) {
@@ -179,4 +246,4 @@ Buckets.prototype.routes = {
   }
 };
 
-module.exports = Buckets;
+module.exports = Bins;

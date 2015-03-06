@@ -2,6 +2,7 @@
 
 var XML = require('xmlbuilder');
 var YAML = require('yamljs');
+var moment = require('moment');
 
 module.exports = function (req, res, next) {
   if (typeof res.body !== 'object') {
@@ -36,9 +37,11 @@ module.exports = function (req, res, next) {
   }
 
   function HTMLResponse () {
-    res.locals.req = req;
+    req.app.locals.moment = moment;
 
     res.render(res.view || 'default', {
+      req: req,
+      res: res,
       data: {
         raw: res.body,
         yaml: YAML.stringify(res.body, res.yamlInline || 3, 2),

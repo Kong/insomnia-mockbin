@@ -4,7 +4,7 @@ module.exports = function (req, res, next) {
   res.yamlInline = 6;
 
   // force compression
-  req.set('accept-encoding', 'gzip').status(200).body = req.har;
+  res.status(200).append('accept-encoding', 'gzip').body = req.har;
 
   next();
 };

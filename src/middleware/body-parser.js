@@ -73,7 +73,7 @@ module.exports = function (req, res, next) {
             var param = {};
 
             if (headers['content-disposition']) {
-              var disposition = typer.parse(headers['content-disposition'][0].replace('form-data', 'form-data/text'));
+              var disposition = typer.parse(headers['content-disposition'][0].replace('form-data', 'form-data/text') || 'form-data/text');
 
               param.name = disposition.parameters.name;
 
@@ -83,7 +83,7 @@ module.exports = function (req, res, next) {
             }
 
             if (headers['content-type']) {
-              var type = typer.parse(headers['content-type'][0]);
+              var type = typer.parse(headers['content-type'][0] || 'application/octet-stream');
 
               param.contentType = [[type.type, type.subtype].join('/'), type.suffix].join('+').replace(/\+$/, '');
             }

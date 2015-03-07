@@ -93,12 +93,28 @@ module.exports = function (req, res, next) {
         });
 
         dice.on('finish', function () {
+          // createa a new simple object param
           req.multiPart = req.multiPartParams.map(function (param, index) {
             // append value to pair
             param.value = req.multiPartData[index];
 
-            // createa a new simple object
-            req.multiPartSimple[param.name] = param.value;
+            switch (typeof req.multiPartSimple[param.name]) {
+              case 'undefined':
+                req.multiPartSimple[param.name] = param.value;
+                break;
+
+              // array
+              case 'object':
+                req.multiPartSimple[param.name].push(param.value);
+                break;
+
+              case 'string':
+                // this exists? must be an array, make it so
+                req.multiPartSimple[param.name] = [req.multiPartSimple[param.name]];
+                req.multiPartSimple[param.name].push(param.value);
+                break;
+            }
+
             return param;
           });
 

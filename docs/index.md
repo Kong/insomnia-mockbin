@@ -2,7 +2,7 @@
 
 ### HTTP Methods
 
-**Unless otherwise indicated** all Endpoints will accept *any* HTTP request with *any* header, using *any* HTTP Method.
+**Unless otherwise indicated** all Endpoints will accept *any* HTTP request with *any* header, using *any of the supported* HTTP Methods: `DELETE`, `GET`, `HEAD`, `POST`, `PUT`, `OPTIONS`, `TRACE`, `COPY`, `LOCK`, `MKCOL`, `MOVE`, `PROPFIND`, `PROPPATCH`, `SEARCH`, `UNLOCK`, `REPORT`, `MKACTIVITY`, `CHECKOUT`, `MERGE`, `M-SEARCH`, `NOTIFY`, `SUBSCRIBE`, `UNSUBSCRIBE`, `PATCH`, `PURGE`
 
 ```shell
 # GET /request
@@ -17,14 +17,11 @@ curl -X DELETE mockbin.com/request
 # PATCH /request
 curl -X PATCH mockbin.com/request
 
-# FOO /request
-curl -X FOO mockbin.com/request
+# SUBSCRIBE /request
+curl -X SUBSCRIBE mockbin.com/request
 
-# BAR /request
-curl -X BAR mockbin.com/request
-
-# MY-METHOD /request
-curl -X MY-METHOD mockbin.com/request
+# SEARCH /request
+curl -X SEARCH mockbin.com/request
 ```
 
 ### Content Negotiation

@@ -33,7 +33,7 @@ describe('Simple Endpoints', function () {
   })
 
   it('should send CORS headers', function (done) {
-    var req = unirest.get('http://localhost:3000/request')
+    var req = unirest.options('http://localhost:3000/request')
 
     req.end(function (res) {
       res.headers.should.have.property('access-control-allow-origin').and.equal('*')

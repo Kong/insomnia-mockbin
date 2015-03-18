@@ -1,31 +1,31 @@
-'use strict';
+'use strict'
 
-var XML = require('xmlbuilder');
-var YAML = require('yamljs');
-var moment = require('moment');
+var XML = require('xmlbuilder')
+var YAML = require('yamljs')
+var moment = require('moment')
 
 module.exports = function (req, res, next) {
   if (typeof res.body !== 'object') {
     res.bodyXmlObj = {
       result: res.body
-    };
+    }
   }
 
   // am I pretty?
-  var spaces = req.headers['x-pretty-print'] ? parseInt(req.headers['x-pretty-print']) : false;
+  var spaces = req.headers['x-pretty-print'] ? parseInt(req.headers['x-pretty-print'], 10) : false
 
   function YAMLResponse () {
     if (typeof res.body === 'string') {
-      return res.send(res.body);
+      return res.send(res.body)
     }
 
-    res.send(YAML.stringify(res.body, 6, spaces));
+    res.send(YAML.stringify(res.body, 6, spaces))
   }
 
   function JSONResponse () {
-    req.app.set('json spaces', spaces);
+    req.app.set('json spaces', spaces)
 
-    res.jsonp(res.body);
+    res.jsonp(res.body)
   }
 
   function XMLResponse () {
@@ -33,11 +33,11 @@ module.exports = function (req, res, next) {
       pretty: spaces ? true : false,
       indent: new Array(spaces).join(' '),
       newline: '\n'
-    }));
+    }))
   }
 
   function HTMLResponse () {
-    req.app.locals.moment = moment;
+    req.app.locals.moment = moment
 
     res.render(res.view || 'default', {
       req: req,
@@ -54,7 +54,7 @@ module.exports = function (req, res, next) {
           newline: '\n'
         })
       }
-    });
+    })
   }
 
   res.format({
@@ -82,7 +82,7 @@ module.exports = function (req, res, next) {
     'text/plain': YAMLResponse,
 
     default: JSONResponse
-  });
+  })
 
-  next();
-};
+  next()
+}

@@ -1,15 +1,15 @@
-'use strict';
+'use strict'
 
 module.exports = {
   all: function (req, res, next) {
-    res.body = req.har.log.entries[0].request.cookies;
+    res.body = req.har.log.entries[0].request.cookies
 
-    next();
+    next()
   },
 
   one: function (req, res, next) {
-    res.body = req.cookies ? req.cookies[req.params.name.toLowerCase()] : false;
+    res.body = req.cookies ? req.cookies[req.params.name.toLowerCase()] : false
 
-    next();
+    next()
   }
-};
+}

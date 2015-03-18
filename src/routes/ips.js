@@ -1,15 +1,15 @@
-'use strict';
+'use strict'
 
 module.exports = {
   one: function (req, res, next) {
-    res.status(200).body = req.ip;
+    res.status(200).body = req.ip
 
-    next();
+    next()
   },
 
   all: function (req, res, next) {
-    res.status(200).body = req.ips;
+    res.status(200).body = req.ips
 
-    next();
+    next()
   }
-};
+}

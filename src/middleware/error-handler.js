@@ -1,11 +1,11 @@
-'use strict';
+'use strict'
 
-var debug = require('debug')('mockbin');
+var debug = require('debug')('mockbin')
 
 module.exports = function (err, req, res, next) {
-  debug(err);
+  debug(err)
 
-  res.status(err.status || 500).view = 'error';
+  res.status(err.status || 500).view = 'error'
 
-  next();
-};
+  next()
+}

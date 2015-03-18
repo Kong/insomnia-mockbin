@@ -1,40 +1,38 @@
-'use strict';
+'use strict'
 
-var pkg = require('../package.json');
+var pkg = require('../package.json')
 
 var utils = {
   objectToArray: function (obj) {
     if (!obj || typeof obj !== 'object') {
-      return [];
+      return []
     }
 
-    var name;
-    var results = [];
-    var names = Object.keys(obj);
-
-    while (name = names.pop()) {
+    var results = Object.keys(obj).reduce(function (results, name) {
       results.push({
         name: name,
         value: obj[name]
-      });
-    }
+      })
 
-    return results;
+      return results
+    }, [])
+
+    return results
   },
 
   getReqHeaderSize: function (req) {
-    var keys = Object.keys(req.headers);
+    var keys = Object.keys(req.headers)
 
     var values = keys.map(function (key) {
-      return req.headers[key];
-    });
+      return req.headers[key]
+    })
 
-    var headers = req.method + req.url + req.versionMajor + req.versionMinor + keys.join() + values.join();
+    var headers = req.method + req.url + req.versionMajor + req.versionMinor + keys.join() + values.join()
 
     // startline: [method] [url] HTTP/1.1\r\n = 12
     // endline: \r\n = 2
     // every header + \r\n = * 2
-    return new Buffer(headers).length + (keys.length * 2) + 12 + 2;
+    return new Buffer(headers).length + (keys.length * 2) + 12 + 2
   },
 
   createHar: function (req) {
@@ -67,7 +65,7 @@ var utils = {
           }
         }]
       }
-    };
+    }
   },
 
   createSimpleHar: function (req) {
@@ -89,8 +87,8 @@ var utils = {
       },
       headersSize: utils.getReqHeaderSize(req),
       bodySize: req.rawBody.length
-    };
+    }
   }
-};
+}
 
-module.exports = utils;
+module.exports = utils

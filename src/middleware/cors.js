@@ -1,12 +1,12 @@
-'use strict';
+'use strict'
 
 module.exports = function (req, res, next) {
   res.set({
-    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Origin': req.headers.origin ? req.headers.origin : '*',
     'Access-Control-Allow-Methods': '*',
     'Access-Control-Allow-Headers': '*',
     'Access-Control-Allow-Credentials': 'true'
-  });
+  })
 
-  next();
-};
+  next()
+}

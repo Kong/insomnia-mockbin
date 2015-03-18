@@ -1,9 +1,9 @@
-'use strict';
+'use strict'
 
 module.exports = function (req, res, next) {
-  res.yamlInline = 6;
+  res.yamlInline = 6
 
-  res.body = req.simple;
+  res.body = req.simple
 
-  next();
-};
+  next()
+}

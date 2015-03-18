@@ -8,6 +8,8 @@ module.exports = function (req, res, next) {
     methods: req.method
   }
 
+  console.log(req.headers)
+
   if (req.headers.origin) {
     cors.origin = req.headers.origin
   }
@@ -18,11 +20,6 @@ module.exports = function (req, res, next) {
 
   if (req.headers['access-control-request-method']) {
     cors.methods = req.headers['access-control-request-method']
-  }
-
-  if (req.method === 'OPTIONS') {
-    cors.headers = '*'
-    cors.methods = '*'
   }
 
   res.set({

@@ -8,8 +8,6 @@ module.exports = function (req, res, next) {
     methods: req.method
   }
 
-  console.log(req.headers)
-
   if (req.headers.origin) {
     cors.origin = req.headers.origin
   }

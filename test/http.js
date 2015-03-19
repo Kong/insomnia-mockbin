@@ -37,8 +37,8 @@ describe('Simple Endpoints', function () {
 
     req.end(function (res) {
       res.headers.should.have.property('access-control-allow-origin').and.equal('*')
-      res.headers.should.have.property('access-control-allow-methods').and.equal('*')
-      res.headers.should.have.property('access-control-allow-headers').and.equal('*')
+      res.headers.should.have.property('access-control-allow-methods').and.equal('OPTIONS')
+      res.headers.should.have.property('access-control-allow-headers').and.equal('host,content-length,connection')
       done()
     })
   })

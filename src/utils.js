@@ -1,6 +1,7 @@
 'use strict'
 
 var pkg = require('../package.json')
+var debug = require('debug')('mockbin')
 
 var utils = {
   objectToArray: function (obj) {
@@ -35,6 +36,33 @@ var utils = {
     return new Buffer(headers).length + (keys.length * 2) + 12 + 2
   },
 
+  getProtocol: function (req) {
+    // cloudflare forward for
+    if (req.headers['cf-visitor']) {
+      try {
+        var cf = JSON.parse(req.headers['cf-visitor'])
+
+        if (cf.scheme) {
+          return cf.scheme
+        }
+      } catch (e) {
+        debug('could not parse cf-visitor header: %s', req.headers['cf-visitor'])
+      }
+    }
+
+    // standard x-forward
+    if (req.headers['x-forwarded-proto']) {
+      return req.headers['x-forwarded-proto']
+    }
+
+    // Non-standard header field used by Microsoft applications and load-balancers
+    if (req.headers['front-end-https'] === 'on') {
+      return 'https'
+    }
+
+    return req.protocol
+  },
+
   createHar: function (req) {
     return {
       log: {
@@ -48,7 +76,7 @@ var utils = {
           clientIPAddress: req.ip,
           request: {
             method: req.method,
-            url: req.protocol + '://' + req.hostname + req.originalUrl,
+            url: this.getProtocol(req) + '://' + req.hostname + req.originalUrl,
             httpVersion: 'HTTP/1.1',
             // TODO, add cookie details
             cookies: utils.objectToArray(req.cookies),
@@ -73,7 +101,7 @@ var utils = {
       startedDateTime: new Date().toISOString(),
       clientIPAddress: req.ip,
       method: req.method,
-      url: req.protocol + '://' + req.hostname + req.originalUrl,
+      url: this.getProtocol(req) + '://' + req.hostname + req.originalUrl,
       httpVersion: 'HTTP/1.1',
       // TODO, add cookie details
       cookies: req.cookies,

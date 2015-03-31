@@ -9,11 +9,12 @@ var unirest = require('unirest')
 
 require('should')
 
-describe('Simple Endpoints', function () {
+describe('HTTP', function () {
   // express setup
   var app = express()
   app.enable('trust proxy')
   app.set('view engine', 'jade')
+  app.set('views', __dirname + '/../src/views')
 
   app.use(cookieParser())
 

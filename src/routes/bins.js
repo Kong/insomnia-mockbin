@@ -46,8 +46,6 @@ var Bins = function (dsn_str) {
 
 Bins.prototype.routes = {
   form: function (req, res, next) {
-    res.status(200)
-
     res.view = 'bin/create'
 
     next()
@@ -70,10 +68,16 @@ Bins.prototype.routes = {
       }
     }
 
+    // provide optional values before validation
+    mock.redirectURL = ''
+    mock.bodySize = 0
+    mock.headersSize = 0
+    mock.content.size = 0
+
     validate.response(mock, function (err, valid) {
       if (!valid) {
-        res.status(400).body = {
-          error: err[0]
+        res.body = {
+          errors: err.errors
         }
 
         return next()
@@ -101,8 +105,6 @@ Bins.prototype.routes = {
       if (value) {
         var har = JSON.parse(value)
 
-        res.status(200)
-
         res.view = 'bin/view'
         res.body = har
       }
@@ -120,7 +122,7 @@ Bins.prototype.routes = {
       }
 
       if (value) {
-        res.status(200).json({
+        res.json({
           method: 'POST',
           url: util.format('%s://%s/bin/%s', req.protocol, req.hostname, req.params.uuid),
           httpVersion: 'HTTP/1.1',
@@ -213,8 +215,6 @@ Bins.prototype.routes = {
   },
 
   log: function (req, res, next) {
-    res.status(200)
-
     res.view = 'bin/log'
 
     this.client.lrange(req.params.uuid + '-log', 0, -1, function (err, history) {

@@ -1,0 +1,80 @@
+extends ../layout.jade
+
+mixin method (method)
+  - var mapping = { GET: 'success', POST: 'primary', PUT: 'info', PATCH: 'warning' , DELETE: 'danger' }
+
+  - var className = mapping[method] ? mapping[method] : 'default'
+
+  span(class='label-#{className}').label= method
+
+block content
+  div(data-page="bin/log").container
+    div.btn-group.pull-right
+      a(href= '/bin/' + req.params.uuid + '/view/#apiembed').btn.btn-primary Send Some Requests
+      a(href= '/bin/' + req.params.uuid).btn.btn-primary Visit in Browser
+      a(href= '/bin/' + req.params.uuid + '/view').btn.btn-primary View Details
+
+    h3 Bin History: #[code= req.params.uuid]
+
+    hr
+
+    table.table.table-hover
+      thead
+        tr
+          th(width='5%') Method
+          th(width='50%') Path
+          th(width='10%') Size
+          th(width='10%') Date
+          th(width='10%') IP
+          th(width='10%').text-right Actions
+
+      tbody
+        for entry, id in data.raw.log.entries
+          tr
+            td.method
+              +method(entry.request.method)
+
+            td
+              samp= entry.request.url.slice(entry.request.url.indexOf('/bin/'))
+
+            td
+              samp #{entry.request.bodySize / 1000} KB
+
+            td.date= moment(entry.startedDateTime).fromNow()
+            td.ip= entry.clientIPAddress
+            td.action.text-right
+              div.btn-group.btn-group-sm
+                a.btn.btn-default(href='#entry-#{id}'): i.fa.fa-link
+                button.btn.btn-default(data-id= id): i.fa.fa-chevron-down
+
+          tr.data(id='entry-#{id}')
+            td(colspan= 6)
+              div.row
+                div.col-sm-6
+                  h4 Request Details #[small in #[a(href="https://ahmadnassri.github.io/har-resources/" target="_blank") HAR] format]
+
+                  div#preview
+                    pre: code= JSON.stringify(entry.request, null, 2)
+
+                div.col-sm-6
+                  h4 Request Body
+
+                  div#preview
+                    pre: code= entry.request.postData && entry.request.postData.text ? entry.request.postData.text : 'No body was sent'
+
+
+block scripts
+  script.
+    $(function() {
+      $('button[data-id]').on('click', function () {
+        // clear state
+        history.pushState('', document.title, window.location.pathname);
+
+        $('#entry-' + $(this).data('id') + ' td').toggle();
+      })
+
+      // highlight the code
+      $('pre code').each(function (i, block) {
+        hljs.highlightBlock(block);
+      });
+    });

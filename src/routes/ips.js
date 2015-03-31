@@ -2,13 +2,13 @@
 
 module.exports = {
   one: function (req, res, next) {
-    res.status(200).body = req.ip
+    res.body = req.ip
 
     next()
   },
 
   all: function (req, res, next) {
-    res.status(200).body = req.ips
+    res.body = req.ips
 
     next()
   }

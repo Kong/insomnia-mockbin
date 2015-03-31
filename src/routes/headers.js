@@ -1,25 +1,27 @@
 'use strict'
 
 module.exports = {
-  all: function (req, res, next) {
-    res.yamlInline = 2
-
-    res.status(200).body = {
-      headers: req.har.log.entries[0].request.headers,
-      headersSize: req.har.log.entries[0].request.headersSize
-    }
-
-    next()
-  },
-
   one: function (req, res, next) {
-    res.status(200).body = req.headers[req.params.name.toLowerCase()]
+    var name = req.params.name.toLowerCase()
+
+    res.body = req.headers ? (req.headers[name] ? req.headers[name] : false) : false
 
     next()
   },
 
   agent: function (req, res, next) {
-    res.status(200).body = req.headers['user-agent']
+    req.params.name = 'user-agent'
+
+    module.exports.one(req, res, next)
+  },
+
+  all: function (req, res, next) {
+    res.yamlInline = 2
+
+    res.body = {
+      headers: req.har.log.entries[0].request.headers,
+      headersSize: req.har.log.entries[0].request.headersSize
+    }
 
     next()
   }

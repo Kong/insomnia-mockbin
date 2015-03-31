@@ -1,0 +1,185 @@
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  color: #36434C;
+  font-family: 'Open Sans', helvetica, sans-serif;
+
+  padding: 50px;
+}
+
+code, kbd, pre, samp {
+  background-color: #FFFFFF;
+  font-family: 'Source Code Pro', Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+#preview {
+  position: relative;
+
+  border-radius: 4px;
+  border: 1px solid #C7C7C7;
+  border: 1px solid rgba(0, 0, 0, .22);
+  background-color: #FFFFFF;
+
+  box-shadow: 1px 0px 3px rgba(0, 0, 0, .15);
+
+  -moz-background-clip: padding;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+}
+
+#preview header {
+  height: 50px;
+  border-bottom: 1px solid #EAEAEA;
+  background-color: #FCFCFC;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+}
+
+#preview .nav-tabs {
+  border: 0;
+  height: 51px;
+  width: 10000px;
+  position: absolute;
+}
+
+#preview .nav-tabs > li {
+  margin-bottom: 0;
+}
+
+#preview .nav-tabs > li a,
+#preview .nav-tabs > li a:focus {
+  border-top: none;
+  border-bottom: none;
+  border-radius: 0;
+
+  color: #8C9093;
+  font-size: 13px;
+  font-weight: 600;
+
+  padding: 16px;
+  margin-right: 0;
+}
+
+#preview .nav-tabs > li:not(.active) a:hover {
+  color: #41484C;
+  background-color: #FCFCFC;
+}
+
+#preview .nav-tabs .open > a {
+  border-color: #E6E6E6;
+  background-color: #FCFCFC;
+}
+
+#preview .nav-tabs {
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+}
+
+#preview .nav-tabs > li:first-of-type > a {
+  border-left: none;
+  border-top-left-radius: 4px;
+}
+
+#preview .nav-tabs > li.active > a,
+#preview .nav-tabs > li.active > a:focus,
+#preview .nav-tabs > li.active > a:hover {
+  color: #216FA6;
+  border-color: #E6E6E6;
+}
+
+
+#preview .tab-content .tab-pane,
+#preview .tab-content .tab-pane pre,
+#preview .tab-content .tab-pane pre code {
+  height: 100%;
+
+  white-space: pre;
+  word-break: normal;
+  word-wrap: normal;
+}
+
+#preview .tab-content .tab-pane .btn-clipboard {
+  position: absolute;
+  top: 13px;
+  right: 12px;
+
+  border-color: #D7D9DB;
+
+  color: #399ee5;
+  font-size: 11px;
+  font-weight: 600;
+
+  padding: 3px 7px;
+
+  background: #F7F7F7;
+  background: -moz-linear-gradient(0deg, #F7F7F7 0%, #FFFFFF 100%);
+  background: -webkit-linear-gradient(0deg, #F7F7F7 0%, #FFFFFF 100%);
+  background: -o-linear-gradient(0deg, #F7F7F7 0%, #FFFFFF 100%);
+  background: -ms-linear-gradient(0deg, #F7F7F7 0%, #FFFFFF 100%);
+  background: linear-gradient(0deg, #F7F7F7 0%, #FFFFFF 100%);
+}
+
+#preview pre {
+  margin: 0;
+  padding: 0;
+
+  border: none;
+  border-radius: 4px;
+
+  background-color: #FFFFFF;
+}
+
+#preview .hljs {
+  padding: 15px;
+  border-radius: 4px;
+  background-color: #FFFFFF;
+}
+
+div[data-page="bin/create"] .form-inline .form-group {
+  margin-bottom: 15px;
+}
+
+div[data-page="bin/create"] .pair:last-of-type .btn-danger {
+  display: none;
+}
+
+div[data-page="bin/create"] .pair:not(:last-of-type) .btn-success {
+  display: none;
+}
+
+div[data-page="bin/create"] .pair .input-group > .form-control {
+  width: 50%;
+}
+
+div[data-page="bin/create"] .pair .input-group > .form-control:last-of-type {
+  margin-left: -1px;
+}
+
+div[data-page="bin/create"] code {
+  min-height: 400px;
+}
+
+div[data-page="bin/view"] .btn-block {
+  text-align: left;
+}
+
+div[data-page="bin/log"] h3 {
+  margin-top: 0;
+}
+
+div[data-page="bin/log"] pre {
+  height: 500px;
+
+  overflow: auto;
+}
+
+div[data-page="bin/log"] tr.data td {
+  display: none;
+}
+
+div[data-page="bin/log"] tr.data:target td {
+  display: table-cell;
+}

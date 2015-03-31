@@ -72,13 +72,22 @@ npm start
 
 ## Usage
 
-Once installed, visit [http://localhost:8080/](http://localhost:8080/) to display the web view. *(8080 is [default port](/docs/config.md#port))*
+```shell
+  Usage: mockbin [options]
 
-*read more on [Usage](docs/usage.md)*.
+  Options:
+
+    -h, --help         output usage information
+    -V, --version      output the version number
+    -p, --port <port>  Port that the HTTP server will run on
+    -r, --redis [dsn]  Redis dsn
+    -q, --quiet        Disable console logging
+
+```
 
 ## Documentation
 
-Read the full API documentation [here](docs/api.md).
+Read the full API documentation, please review the [wiki](https://github.com/Mashape/mockbin/wiki).
 
 ## Bugs and feature requests
 
@@ -110,11 +119,7 @@ For more information on SemVer, please visit <http://semver.org/>.
 
 ## License
 
-Licensed under [The MIT License](LICENSE).
-
-----
-
-Made with &#9829; at [Mashape](https://www.mashape.com/)
+[MIT](LICENSE) &copy; [Mashape](https://www.mashape.com)
 
 [license-url]: https://github.com/Mashape/mockbin/blob/master/LICENSE
 

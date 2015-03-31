@@ -7,22 +7,16 @@ block content
 
     else
       div#preview
-        button(class='btn btn-default btn-clipboard', data-clipboard-target='#{target}'): i.fa.fa-copy
-
-        ul.nav.nav-tabs
-          li.active: a(href='#json', data-toggle='tab') JSON
-          li: a(href='#yaml', data-toggle='tab') YAML
-          li: a(href='#xml', data-toggle='tab') XML
+        header
+          ul.nav.nav-tabs
+            for key in ['json', 'yaml', 'xml']
+              li: a(href='##{key}', data-toggle='tab')= key.toUpperCase()
 
         div.tab-content
-          div(id='json').tab-pane.active.fade.in
-            pre: code= data.json
-
-          div(id='yaml').tab-pane.fade
-            pre: code= data.yaml
-
-          div(id='xml').tab-pane.fade
-            pre: code= data.xml
+          for key in ['json', 'yaml', 'xml']
+            div(id= key).tab-pane.active.fade.in
+              button(data-clipboard-target='#{key}-code').btn.btn-default.btn-xs.btn-clipboard #[i.fa.fa-copy] #[span Copy to Clipboard]
+              pre: code(id='#{key}-code')= data[key]
 
     br
 
@@ -31,13 +25,15 @@ block content
 block scripts
   script(type='text/javascript').
     $(function() {
+      // configure Zero Clipboard
       ZeroClipboard.config({
         swfPath: '//cdnjs.cloudflare.com/ajax/libs/zeroclipboard/2.2.0/ZeroClipboard.swf',
         forceHandCursor: true,
         trustedDomains: [window.location.host, "cdnjs.cloudflare.com"]
-      });
+      })
 
-      new ZeroClipboard($('.btn-clipboard'));
+      // attach Zero Clipboard
+      new ZeroClipboard($('.btn-clipboard'))
 
       // select first tab
       $('.nav-tabs a:first').tab('show');

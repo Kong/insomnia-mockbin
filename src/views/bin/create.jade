@@ -1,0 +1,101 @@
+extends ../layout.jade
+
+block content
+  div(data-page="bin/create").container
+    div.panel.panel-default
+      div.panel-heading: h4 Bin Builder
+      div.panel-body
+        div.row
+          div.col-sm-6
+            form(name='status')
+              h4 Status
+
+              div.form-group.row
+                div.col-sm-4
+                  div.input-group
+                    span.input-group-addon Status Code
+                    input.form-control(type='number', name='status', value='200', placeholder='200', required='')
+
+                div.col-sm-8
+                  div.input-group
+                    span.input-group-addon Status Message
+                    input.form-control(type='text', name='statusText', value='OK', placeholder='OK', required='')
+
+            form.form-inline(name='headers')
+              h4 Headers
+
+              div.form-group.pair
+                div.input-group
+                  span.input-group-addon Header
+
+                  input.form-control(type='text', name='name', placeholder='name', required='')
+                  input.form-control(type='text', name='value', placeholder='value')
+
+                  span.input-group-btn
+                    button(type='button', tabindex='-1').btn.btn-success: i.glyphicon.glyphicon-plus
+                    button(type='button', tabindex='-1').btn.btn-danger: i.glyphicon.glyphicon-remove
+
+            form.form-inline(name='cookies')
+              h4 Cookies
+
+              div.form-group.pair
+                div.input-group
+                  span.input-group-addon Cookie
+
+                  input.form-control(type='text', name='name', placeholder='name', required='')
+                  input.form-control(type='text', name='value', placeholder='value')
+
+                  span.input-group-btn
+                    button(type='button', tabindex='-1').btn.btn-success: i.glyphicon.glyphicon-plus
+                    button(type='button', tabindex='-1').btn.btn-danger: i.glyphicon.glyphicon-remove
+
+            form.form-horizontal(name='content')
+              h4 Body
+
+              div.form-group
+                div.col-sm-12: textarea(rows=5, name='text', value='', placeholder='body content').form-control
+
+              div.form-group.row
+                div.col-sm-6
+                  div.input-group
+                    span.input-group-addon mimeType
+                    input.form-control(type='text', name='mimeType', value='text/plain', placeholder='multipart/form-data', required='')
+
+                div.col-sm-6
+                  div.input-group
+                    span.input-group-addon Encoding
+                    select.form-control(name='encoding')
+                      option(value='') None
+                      option(value='base64') Base64
+
+          div.col-sm-6
+            h4 Preview
+
+            div#preview
+              pre: code
+
+      div.panel-footer
+        div.row
+          div.col-sm-4
+            div.input-group
+              span.input-group-addon Use Example
+              select(name='example').form-control
+                option(value='') Select ...
+                option(value='json') JSON
+                option(value='xml') XML
+                option(value='jsonp') JSONP
+                option(value='text') Plain text
+
+          div.col-sm-6
+            div.input-group
+              span.input-group-addon Load from Disk
+              input(type='file').form-control
+
+          div.col-sm-2
+            form(method="POST", action="/bin/create")
+              input(type='hidden', name='response', value='')
+              button(type='submit').btn.btn-primary.btn-validate.pull-right Create Bucket
+
+block scripts
+  script(type='text/javascript', src='/static/bin/create.js')
+

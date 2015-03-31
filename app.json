@@ -1,21 +1,21 @@
 {
   "name": "mockbin",
   "description": "Mock, Test & Track HTTP calls!",
-  "repository": "https://github.com/ahmadnassri/mockbin",
+  "repository": "https://github.com/Mashape/mockbin",
   "website": "http://mockbin.com/",
   "success_url": "/",
   "addons": [
     "openredis"
   ],
   "keywords": [
-    "API",
-    "Bin",
-    "HAR",
-    "HTTP",
-    "JSON",
-    "Mock",
-    "Mocking",
-    "Test",
-    "Testing"
+    "api",
+    "bin",
+    "har",
+    "http",
+    "json",
+    "mock",
+    "mocking",
+    "test",
+    "testing"
   ]
 }

@@ -116,22 +116,22 @@ Licensed under [The MIT License](LICENSE).
 
 Made with &#9829; at [Mashape](https://www.mashape.com/)
 
-[license-url]: https://github.com/ahmadnassri/mockbin/blob/master/LICENSE
+[license-url]: https://github.com/Mashape/mockbin/blob/master/LICENSE
 
-[travis-url]: https://travis-ci.org/ahmadnassri/mockbin
-[travis-image]: https://img.shields.io/travis/ahmadnassri/mockbin.svg?style=flat-square
+[travis-url]: https://travis-ci.org/Mashape/mockbin
+[travis-image]: https://img.shields.io/travis/Mashape/mockbin.svg?style=flat-square
 
 [npm-url]: https://www.npmjs.com/package/mockbin
 [npm-license]: https://img.shields.io/npm/l/mockbin.svg?style=flat-square
 [npm-version]: https://img.shields.io/npm/v/mockbin.svg?style=flat-square
 [npm-downloads]: https://img.shields.io/npm/dm/mockbin.svg?style=flat-square
 
-[codeclimate-url]: https://codeclimate.com/github/ahmadnassri/mockbin
-[codeclimate-quality]: https://img.shields.io/codeclimate/github/ahmadnassri/mockbin.svg?style=flat-square
-[codeclimate-coverage]: https://img.shields.io/codeclimate/coverage/github/ahmadnassri/mockbin.svg?style=flat-square
+[codeclimate-url]: https://codeclimate.com/github/Mashape/mockbin
+[codeclimate-quality]: https://img.shields.io/codeclimate/github/Mashape/mockbin.svg?style=flat-square
+[codeclimate-coverage]: https://img.shields.io/codeclimate/coverage/github/Mashape/mockbin.svg?style=flat-square
 
-[david-url]: https://david-dm.org/ahmadnassri/mockbin
-[david-image]: https://img.shields.io/david/ahmadnassri/mockbin.svg?style=flat-square
+[david-url]: https://david-dm.org/Mashape/mockbin
+[david-image]: https://img.shields.io/david/Mashape/mockbin.svg?style=flat-square
 
 [docker-image]: https://www.herokucdn.com/deploy/button.svg
-[docker-url]: https://heroku.com/deploy?template=https://github.com/ahmadnassri/mockbin
+[docker-url]: https://heroku.com/deploy?template=https://github.com/Mashape/mockbin

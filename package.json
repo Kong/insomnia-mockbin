@@ -2,33 +2,41 @@
   "version": "1.3.4",
   "name": "mockbin",
   "description": "Mock, Test & Track HTTP calls",
-  "author": "Ahmad Nassri <ahmad@ahmadnassri.com> (https://www.ahmadnassri.com/)",
-  "homepage": "http://mockbin.com/",
+  "author": "Ahmad Nassri <ahmad@mashape.com> (https://www.mashape.com/)",
+  "homepage": "https://mockbin.org/",
   "license": "MIT",
   "main": "./src/index.js",
   "bin": "./bin/mockbin",
+  "keywords": [
+    "api",
+    "bin",
+    "har",
+    "http",
+    "json",
+    "mock",
+    "mocking",
+    "test",
+    "testing"
+  ],
   "engines": {
-    "node": "0.10.x",
-    "npm": "1.4.x"
+    "node": ">=0.10"
   },
+  "files": [
+    "bin",
+    "bin",
+    "src",
+    "views",
+    "Procfile",
+    "app.js",
+    "server.js"
+  ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/ahmadnassri/mockbin.git"
+    "url": "https://github.com/Mashape/mockbin"
   },
   "bugs": {
-    "url": "https://github.com/ahmadnassri/mockbin/issues"
+    "url": "https://github.com/Mashape/mockbin/issues"
   },
-  "keywords": [
-    "API",
-    "Bin",
-    "HAR",
-    "HTTP",
-    "JSON",
-    "Mock",
-    "Mocking",
-    "Test",
-    "Testing"
-  ],
   "config": {
     "port": 8080,
     "redis": "redis://127.0.0.1:6379",
@@ -39,40 +47,38 @@
   },
   "scripts": {
     "test": "standard && mocha --recursive --reporter spec",
-    "coverage": "mocha -r blanket -R mocha-lcov-reporter > test/report/lcov.info",
-    "html-cov": "mocha -r blanket -R html-cov > test/report/coverage.html",
-    "codeclimate": "codeclimate < test/report/lcov.info"
+    "coverage": "istanbul cover ./node_modules/mocha/bin/_mocha -- --fgrep 'Request Validation' --invert",
+    "codeclimate": "codeclimate < coverage/lcov.info"
   },
   "devDependencies": {
-    "blanket": "^1.1.6",
     "codeclimate-test-reporter": "0.0.4",
+    "istanbul": "^0.3.13",
     "mocha": "^2.2.1",
-    "mocha-lcov-reporter": "0.0.2",
-    "should": "^5.1.0",
-    "standard": "^3.1.2",
+    "should": "^5.2.0",
+    "standard": "^3.3.0",
     "unirest": "^0.4.0"
   },
   "dependencies": {
-    "change-case": "^2.2.0",
-    "commander": "^2.6.0",
-    "compression": "^1.4.1",
+    "change-case": "^2.3.0",
+    "commander": "^2.7.1",
+    "compression": "^1.4.3",
     "cookie-parser": "^1.3.4",
-    "debug": "^2.1.2",
-    "dicer": "^0.2.3",
-    "express": "^4.12.2",
-    "har-validator": "^1.1.2",
+    "debug": "^2.1.3",
+    "dicer": "^0.2.4",
+    "express": "^4.12.3",
+    "har-validator": "^1.5.1",
     "jade": "^1.9.2",
     "marked": "^0.3.3",
     "media-typer": "^0.3.0",
-    "method-override": "^2.3.1",
+    "method-override": "^2.3.2",
     "moment": "^2.9.0",
-    "morgan": "^1.5.1",
-    "node-uuid": "^1.4.2",
-    "qs": "^2.3.3",
-    "rc": "^0.6.0",
+    "morgan": "^1.5.2",
+    "node-uuid": "^1.4.3",
+    "qs": "^2.4.1",
+    "rc": "^1.0.1",
     "redis": "^0.12.1",
     "require-directory": "^2.1.0",
-    "xmlbuilder": "^2.6.1",
+    "xmlbuilder": "^2.6.2",
     "yamljs": "^0.2.1"
   }
 }

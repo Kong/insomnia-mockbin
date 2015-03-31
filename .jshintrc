@@ -1,23 +1,4 @@
 {
-  "boss": true,
-  "eqeqeq": true,
-  "eqnull": true,
-  "latedef": true,
-  "laxbreak": true,
-  "newcap": false,
-  "noarg": true,
-  "node": true,
-  "quotmark": "single",
-  "strict": false,
-  "undef": true,
-  "unused": "vars",
-  "globals"   : {
-    /* MOCHA */
-    "describe"   : false,
-    "it"         : false,
-    "before"     : false,
-    "beforeEach" : false,
-    "after"      : false,
-    "afterEach"  : false
-  }
+  "asi": true,
+  "node": true
 }

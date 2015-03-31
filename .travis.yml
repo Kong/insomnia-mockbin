@@ -1,5 +1,7 @@
 language: node_js
+
 node_js:
+ - iojs
  - 0.10
  - 0.11
  - 0.12
@@ -7,6 +9,5 @@ node_js:
 script: npm test
 
 after_script:
-  - mkdir test/report
   - npm run coverage
   - npm run codeclimate

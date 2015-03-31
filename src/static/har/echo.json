@@ -1,0 +1,12 @@
+{
+  "method": "POST",
+  "url": "http://mockbin.org/request",
+  "headers": [
+    { "name": "Accept", "value": "application/json" },
+    { "name": "Content-Type", "value": "application/json" }
+  ],
+  "postData": {
+    "mimeType": "application/json",
+    "text": "{\"foo\": \"bar\"}"
+  }
+}

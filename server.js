@@ -1,42 +1,35 @@
 'use strict'
 
-var compression = require('compression')
-var cookieParser = require('cookie-parser')
-var debug = require('debug')('mockbin')
-var express = require('express')
-var mockbin = require('./src')
-var methodOverride = require('method-override')
-var morgan = require('morgan')
-var rc = require('rc')
+var app = require('./app')
+var cluster = require('cluster')
+var os = require('os')
+var pkg = require('./package.json')
 
-// default configs
-var config = rc('mockbin', {
-  port: process.env.npm_package_config_port,
-  redis: process.env.npm_package_config_redis,
-  quiet: process.env.npm_package_config_quiet === 'false' ? false : true
-})
+require('dotenv').load()
 
-debug('system started with config %j', config)
+// WEB_CONCURRENCY set by Heroku config
+var WORKERS = process.env.WEB_CONCURRENCY || os.cpus().length
 
-// express setup
-var app = express()
+if (cluster.isMaster) {
+  // Spawn as many workers as there are CPUs in the system.
+  for (var i = 0; i < WORKERS; i++) {
+    cluster.fork()
+  }
 
-app.set('jsonp callback name', '__callback')
-app.set('view engine', 'jade')
-app.enable('view cache')
-app.enable('trust proxy')
+  cluster.on('exit', function (worker, code, signal) {
+    console.info('worker', worker.process.pid, 'died :(')
+    console.info('spawning a new worker')
+    cluster.fork()
+  })
+} else {
+  // setup options
+  var options = {
+    port: process.env.PORT || process.env.npm_package_config_port || pkg.config.port,
+    redis: process.env.REDIS || process.env.npm_package_config_redis || pkg.config.redis,
+    quiet: process.env.QUIET || process.env.npm_package_config_quiet || pkg.config.quiet
+  }
 
-// add 3rd party middlewares
-app.use(methodOverride('X-HTTP-Method-Override'))
-app.use(methodOverride('_method'))
-app.use(cookieParser())
-app.use(compression())
-
-// magic starts here
-app.use('/', mockbin(config))
-
-if (!config.quiet) {
-  app.use(morgan('dev'))
+  app(options, function () {
+    console.info('spawning worker #' + cluster.worker.id)
+  })
 }
-
-app.listen(config.port)

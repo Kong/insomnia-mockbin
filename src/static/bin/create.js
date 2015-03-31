@@ -59,12 +59,12 @@ var sample = {
     headers: [
       {
         name: 'Content-Type',
-        value: 'application/json'
+        value: 'application/xml'
       }
     ],
     cookies: [],
     content: {
-      mimeType: 'application/json',
+      mimeType: 'application/xml',
       text: '<?xml version="1.0"?>\n<foo>Hello World</foo>'
     }
   }

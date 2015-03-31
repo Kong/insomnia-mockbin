@@ -8,7 +8,7 @@
 
 Creates a new **Bin** with a mock HTTP response as described by a [HAR Response Object](http://www.softwareishard.com/blog/har-12-spec/#response) body.
 
-Responds with a `Location` header with the newly created **Bin**, e.g. `Location: http://mockbin.com/bin/b8b21988-64d4-4eb3-94c1-2055c3374b53` *(also repeated in the body)*
+Responds with a `Location` header with the newly created **Bin**, e.g. `Location: http://mockbin.org/bin/3c149e20-bc9c-4c68-8614-048e6023a108` *(also repeated in the body)*
 
 - The [HAR Response Object](http://www.softwareishard.com/blog/har-12-spec/#response) sent at time of creation will determine what the response status, headers, content will be
 - You can request the new Bin with *any* combination of the following:
@@ -16,14 +16,14 @@ Responds with a `Location` header with the newly created **Bin**, e.g. `Location
   - HTTP headers *(e.g. `X-My-Header-Name: Value`)*
   - body content *(max of 100mb)*
   - query string *(e.g. `?foo=bar`)*
-  - path arguments *(e.g. `/bin/b8b21988-64d4-4eb3-94c1-2055c3374b53/any/extra/path/`)*
+  - path arguments *(e.g. `/bin/3c149e20-bc9c-4c68-8614-048e6023a108/any/extra/path/`)*
 - All requests to Bin will be [logged](#view-logs) for later inspection *(max of 100 requests)*
 
 ###### Request
 
 > ```http
 > POST /bin/create HTTP/1.1
-> Host: mockbin.com
+> Host: mockbin.org
 > Content-Type: application/json
 > Accept: application/json
 > Content-Length: 819
@@ -82,11 +82,11 @@ Responds with a `Location` header with the newly created **Bin**, e.g. `Location
 
 > ```http
 > HTTP/1.1 200 OK
-> Location: http://mockbin.com/b8b21988-64d4-4eb3-94c1-2055c3374b53
+> Location: http://mockbin.org/3c149e20-bc9c-4c68-8614-048e6023a108
 > Content-Type: application/json; charset=utf-8
 > Content-Length: 38
 >
-> "b8b21988-64d4-4eb3-94c1-2055c3374b53"
+> "3c149e20-bc9c-4c68-8614-048e6023a108"
 > ```
 
 ----
@@ -100,8 +100,8 @@ Respondes with the [HAR Response Object](http://www.softwareishard.com/blog/har-
 ###### Request
 
 > ```http
-> GET /bin/b8b21988-64d4-4eb3-94c1-2055c3374b53/view HTTP/1.1
-> Host: mockbin.com
+> GET /bin/3c149e20-bc9c-4c68-8614-048e6023a108/view HTTP/1.1
+> Host: mockbin.org
 > Accept: application/json
 > ```
 
@@ -176,13 +176,13 @@ You can request this endpoint with *any* combination of the following:
   - HTTP headers *(e.g. `X-My-Header-Name: Value`)*
   - body content *(max of 100mb)*
   - query string *(e.g. `?foo=bar`)*
-  - path arguments *(e.g. `/bin/b8b21988-64d4-4eb3-94c1-2055c3374b53/any/extra/path/`)*
+  - path arguments *(e.g. `/bin/3c149e20-bc9c-4c68-8614-048e6023a108/any/extra/path/`)*
 
 ###### Request
 
 > ```http
-> GET /bin/b8b21988-64d4-4eb3-94c1-2055c3374b53/view HTTP/1.1
-> Host: mockbin.com
+> GET /bin/3c149e20-bc9c-4c68-8614-048e6023a108/view HTTP/1.1
+> Host: mockbin.org
 > Accept: application/json
 > ```
 
@@ -211,8 +211,8 @@ List all requests made to this Bin, using [HAR](http://www.softwareishard.com/bl
 ###### Request
 
 > ```http
-> GET /bin/b8b21988-64d4-4eb3-94c1-2055c3374b53/log HTTP/1.1
-> Host: mockbin.com
+> GET /bin/3c149e20-bc9c-4c68-8614-048e6023a108/log HTTP/1.1
+> Host: mockbin.org
 > Accept: application/json
 > ```
 
@@ -225,7 +225,7 @@ List all requests made to this Bin, using [HAR](http://www.softwareishard.com/bl
 >
 > "log": {
 >   "creator": {
->       "name": "mockbin.com", 
+>       "name": "mockbin.org", 
 >       "version": "1.0.1"
 >   }, 
 >   "entries": [
@@ -248,7 +248,7 @@ Returns Origin IP.
 
 > ```http
 > GET /ip HTTP/1.1
-> Host: mockbin.com
+> Host: mockbin.org
 > Accept: application/json
 >
 > ```
@@ -275,7 +275,7 @@ Parses the "X-Forwarded-For" ip address list and return an array. Otherwise, an 
 
 > ```http
 > GET /ips HTTP/1.1
-> Host: mockbin.com
+> Host: mockbin.org
 > Accept: application/json
 >
 > ```
@@ -309,7 +309,7 @@ Returns a response with the given HTTP Status code and message in status line an
 
 > ```http
 > GET /status/20/Hello HTTP/1.1
-> Host: mockbin.com
+> Host: mockbin.org
 >
 > ```
 
@@ -340,7 +340,7 @@ Returns list of all headers used in request as well as total number of bytes fro
 
 > ```http
 > GET /headers HTTP/1.1
-> Host: mockbin.com
+> Host: mockbin.org
 > X-Custom-Header: Foo
 >
 > ```
@@ -364,7 +364,7 @@ Returns list of all headers used in request as well as total number of bytes fro
 >     },
 >     {
 >       "name": "host",
->       "value": "mockbin.com"
+>       "value": "mockbin.org"
 >     }
 >   ],
 >   "headersSize": 124
@@ -385,7 +385,7 @@ Returns the value of header with the name `:name`
 
 > ```http
 > GET /header/x-custom-header HTTP/1.1
-> Host: mockbin.com
+> Host: mockbin.org
 > X-Custom-Header: Foo
 >
 > ```
@@ -410,7 +410,7 @@ Returns user-agent.
 
 > ```http
 > GET /agent HTTP/1.1
-> Host: mockbin.com
+> Host: mockbin.org
 > User-Agent: curl/7.35.0
 > Accept: application/json
 >
@@ -440,7 +440,7 @@ Returns list of all cookies sent by the client
 
 > ```http
 > GET /cookies HTTP/1.1
-> Host: mockbin.com
+> Host: mockbin.org
 > Cookie: my-cookie=ALL YOUR BASE ARE BELONG TO US; foo=bar
 >
 > ```
@@ -480,7 +480,7 @@ Returns the value of the cookie with the name `:name`
 
 > ```http
 > GET /header/my-cookie HTTP/1.1
-> Host: mockbin.com
+> Host: mockbin.org
 > Cookie: my-cookie=ALL YOUR BASE ARE BELONG TO US; foo=bar
 >
 > ```
@@ -522,7 +522,7 @@ Start a redirects loop using the redirect custom status code: `status`, looping 
 
 > ```http
 > GET /redirect/308 HTTP/1.1
-> Host: mockbin.com
+> Host: mockbin.org
 >
 > ```
 
@@ -545,7 +545,7 @@ Start a redirects loop using the redirect custom status code: `status`, looping 
 
 > ```http
 > GET /redirect/308?to=https://www.mashape.com/ HTTP/1.1
-> Host: mockbin.com
+> Host: mockbin.org
 >
 > ```
 
@@ -569,7 +569,7 @@ Start a redirects loop using the redirect custom status code: `status`, looping 
 
 > ```http
 > GET /redirect/308/3 HTTP/1.1
-> Host: mockbin.com
+> Host: mockbin.org
 >
 > ```
 
@@ -627,7 +627,7 @@ Streams a chunked response, defaults to 10 chunks with an upper limit of 100
 
 > ```http
 > GET /stream/4 HTTP/1.1
-> Host: mockbin.com
+> Host: mockbin.org
 > ```
 
 ###### Response
@@ -657,7 +657,7 @@ Returns a response after a delay in milliseconds, default is 200ms
 
 > ```http
 > GET /delay/5000 HTTP/1.1
-> Host: mockbin.com
+> Host: mockbin.org
 >
 > ```
 
@@ -686,7 +686,7 @@ Returns a response with identical `Body` and `Content-Type` to what's in teh req
 
 > ```http
 > POST /echo HTTP/1.1
-> Host: mockbin.com
+> Host: mockbin.org
 > Content-Type: application/json
 > Content-Length: 14
 >
@@ -713,7 +713,7 @@ Returns back all the info sent through your request in [HAR Request Obejct](http
 
 > ```http
 > POST /request/any/path?foo=bar&foo=baz&key=value HTTP/1.1
-> Host: mockbin.com
+> Host: mockbin.org
 > Cookie: Greet=Hello;World=Universe
 > X-Custom-Header: Foo
 > Accept: application/json
@@ -810,7 +810,7 @@ Returns back all the info sent through your request in [HAR Obejct](http://www.s
 
 > ```http
 > POST /har/any/path?foo=bar&foo=baz&key=value HTTP/1.1
-> Host: mockbin.com
+> Host: mockbin.org
 > Cookie: Greet=Hello;World=Universe
 > X-Custom-Header: Foo
 > Accept: application/json
@@ -831,7 +831,7 @@ Returns back all the info sent through your request in [HAR Obejct](http://www.s
 >   "log": {
 >     "version": "1.2",
 >     "creator": {
->       "name": "mockbin.com", 
+>       "name": "mockbin.org", 
 >       "version": "1.0.1"
 >     },
 >     "entries": [{
@@ -922,7 +922,7 @@ Identical to [`/echo`](#echo) but with forced compression on response body *(ret
 
 > ```http
 > POST /gzip?foo=bar&foo=baz&key=value HTTP/1.1
-> Host: mockbin.com
+> Host: mockbin.org
 > Cookie: Greet=Hello;World=Universe
 > X-Custom-Header: Foo
 > Accept: application/json

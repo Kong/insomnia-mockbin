@@ -2,26 +2,24 @@
 
 ### HTTP Methods
 
-**Unless otherwise indicated** all Endpoints will accept *any* HTTP request with *any* header, using *any of the supported* HTTP Methods: `DELETE`, `GET`, `HEAD`, `POST`, `PUT`, `OPTIONS`, `TRACE`, `COPY`, `LOCK`, `MKCOL`, `MOVE`, `PROPFIND`, `PROPPATCH`, `SEARCH`, `UNLOCK`, `REPORT`, `MKACTIVITY`, `CHECKOUT`, `MERGE`, `M-SEARCH`, `NOTIFY`, `SUBSCRIBE`, `UNSUBSCRIBE`, `PATCH`, `PURGE`
+**Unless otherwise indicated**: all Endpoints will accept *any* HTTP request with *any* header, using *any of the supported* HTTP Methods: `DELETE`, `GET`, `HEAD`, `POST`, `PUT`, `OPTIONS`, `TRACE`, `COPY`, `LOCK`, `MKCOL`, `MOVE`, `PROPFIND`, `PROPPATCH`, `SEARCH`, `UNLOCK`, `REPORT`, `MKACTIVITY`, `CHECKOUT`, `MERGE`, `M-SEARCH`, `NOTIFY`, `SUBSCRIBE`, `UNSUBSCRIBE`, `PATCH`, `PURGE`
 
 ```shell
-# GET /request
-curl -X GET mockbin.com/request
+# GET
+curl mockbin.org/request
 
-# POST /request
-curl -X POST
-
-# DELETE /request
-curl -X DELETE mockbin.com/request
-
-# PATCH /request
-curl -X PATCH mockbin.com/request
-
-# SUBSCRIBE /request
-curl -X SUBSCRIBE mockbin.com/request
+# PATCH
+curl -X PATCH mockbin.org/request
 
 # SEARCH /request
-curl -X SEARCH mockbin.com/request
+curl -X SEARCH mockbin.org/request
+```
+
+You can use the `X-HTTP-Method-Override` header to mock a custom HTTP Method by sending a `POST` request with the desired HTTP method:
+
+```shell
+# SEARCH /request
+curl -X POST -H "X-HTTP-Method-Override: HELLO" mockbin.org/request
 ```
 
 ### Content Negotiation
@@ -30,16 +28,16 @@ mockbin is able to response in a number of formats: JSON, YAML, XML, HTML. The r
 
 ```shell
 # Response in JSON (default)
-curl mockbin.com/request -H "Accept: application/json" 
+curl mockbin.org/request -H "Accept: application/json" 
 
 # Response in YAML
-curl mockbin.com/request -H "Accept: application/yaml" 
+curl mockbin.org/request -H "Accept: application/yaml" 
 
 # Response in XML
-curl mockbin.com/request -H "Accept: application/xml" 
+curl mockbin.org/request -H "Accept: application/xml" 
 
 # Response in HTML 
-curl mockbin.com/request -H "Accept: text/html" 
+curl mockbin.org/request -H "Accept: text/html" 
 ```
 
 ### JSONP Callbacks
@@ -47,5 +45,5 @@ curl mockbin.com/request -H "Accept: text/html"
 You can recieve a JSONP response by adding the query string `__callback`:
 
 ```shell
-curl mockbin.com/request?__callback=myfunc -H "Accept: application/json"
+curl mockbin.org/request?__callback=myfunc -H "Accept: application/json"
 ```

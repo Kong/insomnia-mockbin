@@ -23,7 +23,7 @@ module.exports = function (options, callback) {
   // add 3rd party middlewares
   app.use(compression())
   app.use(cookieParser())
-  app.use(methodOverride('_method'))
+  app.use(methodOverride('__method'))
   app.use(methodOverride('X-HTTP-Method-Override'))
   app.use('/static', express.static(__dirname + '/src/static'))
 

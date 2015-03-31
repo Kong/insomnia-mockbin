@@ -23,7 +23,7 @@
   },
   "files": [
     "bin",
-    "bin",
+    "docs",
     "src",
     "Procfile",
     "app.js",

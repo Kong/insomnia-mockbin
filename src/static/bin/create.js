@@ -125,7 +125,6 @@ $(function () {
       headers: [],
       cookies: [],
       content: {
-        encoding: '',
         mimeType: '',
         text: ''
       }

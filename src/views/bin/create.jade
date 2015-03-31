@@ -10,22 +10,18 @@ block content
             form(name='status')
               h4 Status
 
-              div.form-group.row
-                div.col-sm-5
-                  div.input-group
-                    span.input-group-addon Status Code
-                    input.form-control(type='number', name='status', value='200', placeholder='200', required='')
+              div.form-group
+                div.input-group.multi
+                  span.input-group-addon Code
 
-                div.col-sm-7
-                  div.input-group
-                    span.input-group-addon Status Message
-                    input.form-control(type='text', name='statusText', value='OK', placeholder='OK', required='')
+                  input.form-control(type='number', name='status', value='200', placeholder='200', required='')
+                  input.form-control(type='text', name='statusText', value='OK', placeholder='OK', required='')
 
             form.form-inline(name='headers')
               h4 Headers
 
               div.form-group.pair
-                div.input-group
+                div.input-group.multi
                   span.input-group-addon Header
 
                   input.form-control(type='text', name='name', placeholder='name', required='')
@@ -39,7 +35,7 @@ block content
               h4 Cookies
 
               div.form-group.pair
-                div.input-group
+                div.input-group.multi
                   span.input-group-addon Cookie
 
                   input.form-control(type='text', name='name', placeholder='name', required='')
@@ -55,18 +51,11 @@ block content
               div.form-group
                 div.col-sm-12: textarea(rows=5, name='text', value='', placeholder='body content').form-control
 
-              div.form-group.row
-                div.col-sm-6
+              div.form-group
+                div.col-sm-12
                   div.input-group
                     span.input-group-addon mimeType
                     input.form-control(type='text', name='mimeType', value='text/plain', placeholder='multipart/form-data', required='')
-
-                div.col-sm-6
-                  div.input-group
-                    span.input-group-addon Encoding
-                    select.form-control(name='encoding')
-                      option(value='') None
-                      option(value='base64') Base64
 
           div.col-sm-6
             h4 Preview
@@ -78,7 +67,7 @@ block content
         div.row
           div.col-sm-4
             div.input-group
-              span.input-group-addon Use Example
+              span.input-group-addon Example
               select(name='example').form-control
                 option(value='') Select ...
                 option(value='json') JSON
@@ -88,13 +77,13 @@ block content
 
           div.col-sm-6
             div.input-group
-              span.input-group-addon Load from Disk
+              span.input-group-addon Load File
               input(type='file').form-control
 
           div.col-sm-2
             form(method="POST", action="/bin/create")
               input(type='hidden', name='response', value='')
-              button(type='submit').btn.btn-primary.btn-validate.pull-right Create Bucket
+              button(type='submit').btn.btn-primary.btn-block Create Bin
 
 block scripts
   script(type='text/javascript', src='/static/bin/create.js')

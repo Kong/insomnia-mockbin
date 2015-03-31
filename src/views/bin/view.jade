@@ -25,17 +25,6 @@ block content
 block scripts
   script(type='text/javascript').
     $(function() {
-      ZeroClipboard.config({
-        swfPath: '//cdnjs.cloudflare.com/ajax/libs/zeroclipboard/2.2.0/ZeroClipboard.swf',
-        forceHandCursor: true,
-        trustedDomains: [window.location.host, "cdnjs.cloudflare.com"]
-      });
-
-      new ZeroClipboard($('.btn-clipboard'));
-
-      // select first tab
-      $('.nav-tabs a:first').tab('show');
-
       // highlight the code
       $('pre code').each(function (i, block) {
         hljs.highlightBlock(block);

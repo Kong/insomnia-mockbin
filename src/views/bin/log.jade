@@ -2,7 +2,6 @@ extends ../layout.jade
 
 mixin method (method)
   - var mapping = { GET: 'success', POST: 'primary', PUT: 'info', PATCH: 'warning' , DELETE: 'danger' }
-
   - var className = mapping[method] ? mapping[method] : 'default'
 
   span(class='label-#{className}').label= method
@@ -21,24 +20,22 @@ block content
     table.table.table-hover
       thead
         tr
-          th(width='5%') Method
-          th(width='40%') Path
+          th(width='10%') Method
+          th(width='30%') Path
           th(width='10%') Size
-          th(width='15%') Date
-          th(width='10%') IP
-          th(width='10%').text-right Actions
+          th(width='20%') Date
+          th(width='15%') IP
+          th(width='15%').text-right Actions
 
       tbody
         for entry, id in data.raw.log.entries
-          tr
+          tr(data-id= id)
             td.method
               +method(entry.request.method)
 
-            td
-              samp= entry.request.url.slice(entry.request.url.indexOf('/bin/'))
+            td= entry.request.url.slice(entry.request.url.indexOf('/bin/'))
 
-            td
-              samp #{entry.request.bodySize / 1000} KB
+            td #{entry.request.bodySize / 1000} KB
 
             td.date= moment(entry.startedDateTime).fromNow()
             td.ip= entry.clientIPAddress
@@ -66,11 +63,17 @@ block content
 block scripts
   script.
     $(function() {
-      $('button[data-id]').on('click', function () {
+      $('tr[data-id] td, button[data-id]').on('click', function (e) {
+        var id = $(this).data('id')
+
+        if (e.target.tagName === 'TD') {
+          id = $(this).parent().data('id')
+        }
+
         // clear state
         history.pushState('', document.title, window.location.pathname);
 
-        $('#entry-' + $(this).data('id') + ' td').toggle();
+        $('#entry-' + id + ' td').toggle();
       })
 
       // highlight the code

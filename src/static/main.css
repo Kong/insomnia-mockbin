@@ -126,6 +126,8 @@ code, kbd, pre, samp {
   margin: 0;
   padding: 0;
 
+  max-height: 300px;
+
   border: none;
   border-radius: 4px;
 
@@ -181,10 +183,26 @@ div[data-page="bin/log"] pre {
   overflow: auto;
 }
 
+div[data-page="bin/log"] tr[data-id] td {
+  cursor: pointer;
+  font-family: 'Source Code Pro', Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
 div[data-page="bin/log"] tr.data td {
   display: none;
 }
 
 div[data-page="bin/log"] tr.data:target td {
   display: table-cell;
+}
+
+.table {
+  table-layout: fixed;
+  white-space: nowrap;
+}
+
+.table td {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

@@ -5,6 +5,8 @@ html
 
     title Mockbin by Mashape
 
+    meta(name='viewport', content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no')
+
     link(rel='stylesheet', type='text/css', href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.4/css/bootstrap.min.css', media='all')
     link(rel='stylesheet', type='text/css', href='https://fonts.googleapis.com/css?family=Open+Sans:400,600|Source+Code+Pro:200,300,400,500,600,700,900', media='all')
     link(rel='stylesheet', type='text/css', href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.css', media='all')
@@ -20,6 +22,21 @@ html
 
   body
     block header
+      nav.navbar.navbar-default
+        div.container
+          div.navbar-header
+            button.navbar-toggle.collapsed(type='button', data-toggle='collapse', data-target='#navbar')
+              span.icon-bar
+              span.icon-bar
+              span.icon-bar
+
+            div.navbar-brand
+              a(href='/') mockbin
+
+          div#navbar.collapse.navbar-collapse
+            ul.nav.navbar-nav.navbar-right
+              for link, name in [{name: 'Create Bin', href: '/bin/create'}, {name: 'Docs', href: 'https://github.com/Mashape/mockbin/tree/master/docs'}, {name: 'Github', href: 'https://github.com/Mashape/mockbin'}]
+                li(class={active: req.originalUrl === link.href}): a(href= link.href)= link.name
 
     block content
 

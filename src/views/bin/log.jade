@@ -8,14 +8,19 @@ mixin method (method)
 
 block content
   div(data-page="bin/log").container
-    div.btn-group.pull-right
-      a(href= '/bin/' + req.params.uuid + '/view/#apiembed').btn.btn-primary Send Some Requests
-      a(href= '/bin/' + req.params.uuid).btn.btn-primary Visit in Browser
+    div.btn-group.pull-right.hidden-xs
       a(href= '/bin/' + req.params.uuid + '/view').btn.btn-primary View Details
 
     h3 Bin History: #[code= req.params.uuid]
 
+    div.visible-xs
+      a(href= '/bin/' + req.params.uuid + '/view').btn.btn-block.btn-primary View Details
+
     hr
+
+    div.alert.alert-warning.visible-xs
+      strong Warning &nbsp;
+      span Best viewed on a desktop screen, with minimum #[code 800px] width.
 
     table.table.table-hover
       thead

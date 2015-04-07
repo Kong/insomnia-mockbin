@@ -39,6 +39,12 @@ npm install mockbin
 
 *read more on [Installation](docs/install.md)*.
 
+### Docker
+
+[![Docker][docker-logo]](docs/install.md#install-with-docker)
+
+*read more on [Installation](docs/install.md#install-with-docker)*.
+
 
 ### Requirements
 
@@ -140,3 +146,4 @@ For more information on SemVer, please visit <http://semver.org/>.
 
 [docker-image]: https://www.herokucdn.com/deploy/button.svg
 [docker-url]: https://heroku.com/deploy?template=https://github.com/Mashape/mockbin
+[docker-logo]: https://d3oypxn00j2a10.cloudfront.net/0.16.0/images/pages/brand_guidelines/small_h.png

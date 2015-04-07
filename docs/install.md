@@ -18,3 +18,21 @@ npm install mockbin
 ```
 
 *read more on [Installation](docs/install.md)*.
+
+## Install with [Docker](https://www.docker.com/)
+
+### Building the docker image
+
+```shell
+docker build -t mockbin .
+```
+
+### Running the docker container
+
+```shell
+docker run -d --name myredis redis
+docker run -d -p 80:8080 --link myredis:redis mockbin
+```
+
+
+

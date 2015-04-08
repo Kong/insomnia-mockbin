@@ -1,4 +1,4 @@
-# mockbin [![version][npm-version]][npm-url] [![License][npm-license]][license-url]
+# Mockbin [![version][npm-version]][npm-url] [![License][npm-license]][license-url]
 
 [![Build Status][travis-image]][travis-url]
 [![Downloads][npm-downloads]][npm-url]

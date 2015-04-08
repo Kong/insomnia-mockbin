@@ -45,7 +45,6 @@ npm install mockbin
 
 *read more on [Installation](docs/install.md#install-with-docker)*.
 
-
 ### Requirements
 
 other than the dependencies listed in [package.json](package.json) The following are required:
@@ -93,7 +92,7 @@ npm start
 
 ## Documentation
 
-Read the full API documentation, please review the [wiki](https://github.com/Mashape/mockbin/wiki).
+Read the full API documentation, please review the [api docs](https://github.com/Mashape/mockbin/tree/master/docs).
 
 ## Bugs and feature requests
 

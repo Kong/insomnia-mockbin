@@ -5,10 +5,8 @@ var YAML = require('yamljs')
 var moment = require('moment')
 
 module.exports = function (req, res, next) {
-  if (typeof res.body !== 'object') {
-    res.bodyXmlObj = {
-      result: res.body
-    }
+  res.bodyXmlObj = {
+    response: res.body
   }
 
   // am I pretty?

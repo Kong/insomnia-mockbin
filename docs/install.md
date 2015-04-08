@@ -17,8 +17,6 @@ cd mockbin
 npm install mockbin
 ```
 
-*read more on [Installation](docs/install.md)*.
-
 ## Install with [Docker](https://www.docker.com/)
 
 ### Building the docker image

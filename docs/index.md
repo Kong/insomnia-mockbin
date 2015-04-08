@@ -24,7 +24,7 @@ curl -X POST -H "X-HTTP-Method-Override: HELLO" mockbin.org/request
 
 ### Content Negotiation
 
-mockbin is able to response in a number of formats: JSON, YAML, XML, HTML. The response varies based on `Accept` header:
+mockbin is able to respond in a number of formats: JSON, YAML, XML, HTML. The response varies based on `Accept` header:
 
 ```shell
 # Response in JSON (default)

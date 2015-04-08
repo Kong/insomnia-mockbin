@@ -5,7 +5,7 @@
 [![Code Climate][codeclimate-quality]][codeclimate-url]
 [![Coverage Status][codeclimate-coverage]][codeclimate-url]
 [![Dependencies][david-image]][david-url]
-
+[![Gitter][gitter-image]][gitter-url]
 
 ## Table of contents
 - [Features](#features) 
@@ -146,3 +146,6 @@ For more information on SemVer, please visit <http://semver.org/>.
 [docker-image]: https://www.herokucdn.com/deploy/button.svg
 [docker-url]: https://heroku.com/deploy?template=https://github.com/Mashape/mockbin
 [docker-logo]: https://d3oypxn00j2a10.cloudfront.net/0.16.0/images/pages/brand_guidelines/small_h.png
+
+[gitter-url]: https://gitter.im/Mashape/mockbin
+[gitter-image]: https://img.shields.io/badge/Gitter-Join%20Chat-blue.svg?style=flat-square

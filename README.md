@@ -1,13 +1,18 @@
-# HTTP Console [![Build Status][travis-image]][travis-url] [![version][npm-version]][npm-url]
+# Mockbin [![version][npm-version]][npm-url] [![License][npm-license]][license-url]
 
-[![License][npm-license]][license-url]
+[![Join the chat at https://gitter.im/Mashape/mockbin](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Mashape/mockbin?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
+[![Build Status][travis-image]][travis-url]
 [![Downloads][npm-downloads]][npm-url]
+[![Code Climate][codeclimate-quality]][codeclimate-url]
+[![Coverage Status][codeclimate-coverage]][codeclimate-url]
 [![Dependencies][david-image]][david-url]
-[![Gitter][gitter-image]][gitter-url]
+
 
 ## Table of contents
 - [Features](#features) 
 - [Installation](#installation) 
+- [Usage](#usage) 
 - [Documentation](#documentation) 
 - [Bugs and feature requests](#bugs-and-feature-requests)
 - [Contributing](#contributing)
@@ -24,30 +29,72 @@
 
 ## Installation
 
+install from source or through [npm](https://www.npmjs.com/):
+
 ```shell
-npm install httpconsole
+npm install mockbin
 ```
+
+### Heroku
+
+[![Deploy][docker-image]][docker-url]
+
+*read more on [Installation](docs/install.md)*.
+
+### Docker
+
+[![Docker][docker-logo]](docs/install.md#install-with-docker)
+
+*read more on [Installation](docs/install.md#install-with-docker)*.
+
+### Requirements
+
+other than the dependencies listed in [package.json](package.json) The following are required:
+
+- [Redis](http://redis.io/)
+
+### Configuration
+
+you will need to tell *mockbin* where Redis is:
+
+```shell
+npm config set mockbin:redis redis://127.0.0.1:6379
+```
+
+By Default the server will run on port `8080`, you can customize the port like so: 
+
+```shell
+npm config set mockbin:port 8001
+```
+
+*read more on [Configuration](docs/config.md)*.
+
+### Running
 
 After installing the `npm` package you can now start the server like so:
 
 ```shell
 npm start
 ```
-By Default the server will run on port `8080`, you can customize the port like so: 
+
+## Usage
 
 ```shell
-npm config set httpconsole:port 8001
-```
+  Usage: mockbin [options]
 
-**note**: in environments such as Heroku, the port which the server is running on, is forwarded to another, by default the application will use the port defined above in all responses (e.g. redirects), if you wish to use a masked port, set the following config:
+  Options:
 
-```shell
-npm config set httpconsole:port_mask 80
+    -h, --help         output usage information
+    -V, --version      output the version number
+    -p, --port <port>  Port that the HTTP server will run on
+    -r, --redis [dsn]  Redis dsn
+    -q, --quiet        Disable console logging
+
 ```
 
 ## Documentation
 
-Read the API documentation [here](docs/api.md).
+Read the full API documentation, please review the [API Docs](https://github.com/Mashape/mockbin/tree/master/docs).
 
 ## Bugs and feature requests
 
@@ -79,28 +126,25 @@ For more information on SemVer, please visit <http://semver.org/>.
 
 ## License
 
-Licensed under [The MIT License](LICENSE).
+[MIT](LICENSE) &copy; [Mashape](https://www.mashape.com)
 
-----
+[license-url]: https://github.com/Mashape/mockbin/blob/master/LICENSE
 
-Made with &#9829; at [Mashape](https://www.mashape.com/)
+[travis-url]: https://travis-ci.org/Mashape/mockbin
+[travis-image]: https://img.shields.io/travis/Mashape/mockbin.svg?style=flat-square
 
-[license-url]: https://github.com/ahmadnassri/httpconsole/blob/master/LICENSE
+[npm-url]: https://www.npmjs.com/package/mockbin
+[npm-license]: https://img.shields.io/npm/l/mockbin.svg?style=flat-square
+[npm-version]: https://img.shields.io/npm/v/mockbin.svg?style=flat-square
+[npm-downloads]: https://img.shields.io/npm/dm/mockbin.svg?style=flat-square
 
-[gitter-url]: https://gitter.im/ahmadnassri/httpconsole
-[gitter-image]: https://img.shields.io/badge/Gitter-Join%20Chat-blue.svg?style=flat
+[codeclimate-url]: https://codeclimate.com/github/Mashape/mockbin
+[codeclimate-quality]: https://img.shields.io/codeclimate/github/Mashape/mockbin.svg?style=flat-square
+[codeclimate-coverage]: https://img.shields.io/codeclimate/coverage/github/Mashape/mockbin.svg?style=flat-square
 
-[travis-url]: https://travis-ci.org/ahmadnassri/httpconsole
-[travis-image]: https://img.shields.io/travis/ahmadnassri/httpconsole.svg?style=flat
+[david-url]: https://david-dm.org/Mashape/mockbin
+[david-image]: https://img.shields.io/david/Mashape/mockbin.svg?style=flat-square
 
-[npm-url]: https://www.npmjs.com/package/httpconsole
-[npm-license]: https://img.shields.io/npm/l/httpconsole.svg?style=flat
-[npm-version]: https://badge.fury.io/js/httpconsole.svg
-[npm-downloads]: https://img.shields.io/npm/dm/httpconsole.svg?style=flat
-
-[codeclimate-url]: https://codeclimate.com/github/ahmadnassri/httpconsole
-[codeclimate-quality]: https://img.shields.io/codeclimate/github/ahmadnassri/httpconsole.svg?style=flat
-[codeclimate-coverage]: https://img.shields.io/codeclimate/coverage/github/ahmadnassri/httpconsole.svg?style=flat
-
-[david-url]: https://david-dm.org/ahmadnassri/httpconsole
-[david-image]: https://img.shields.io/david/ahmadnassri/httpconsole.svg?style=flat
+[docker-image]: https://www.herokucdn.com/deploy/button.svg
+[docker-url]: https://heroku.com/deploy?template=https://github.com/Mashape/mockbin
+[docker-logo]: https://d3oypxn00j2a10.cloudfront.net/0.16.0/images/pages/brand_guidelines/small_h.png

@@ -10,7 +10,7 @@ module.exports = function (req, res, next) {
   }
 
   // am I pretty?
-  var spaces = req.headers['x-pretty-print'] ? parseInt(req.headers['x-pretty-print'], 10) : false
+  var spaces = req.headers['x-pretty-print'] ? parseInt(req.headers['x-pretty-print'], 10) : 2
 
   function YAMLResponse () {
     if (typeof res.body === 'string') {

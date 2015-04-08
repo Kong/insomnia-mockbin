@@ -92,7 +92,7 @@ npm start
 
 ## Documentation
 
-Read the full API documentation, please review the [api docs](https://github.com/Mashape/mockbin/tree/master/docs).
+Read the full API documentation, please review the [API Docs](https://github.com/Mashape/mockbin/tree/master/docs).
 
 ## Bugs and feature requests
 

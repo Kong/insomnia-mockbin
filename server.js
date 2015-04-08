@@ -2,10 +2,11 @@
 
 var app = require('./app')
 var cluster = require('cluster')
+var dotenv = require('dotenv')
 var os = require('os')
 var pkg = require('./package.json')
 
-require('dotenv').load()
+dotenv.config({silent: true})
 
 // WEB_CONCURRENCY set by Heroku config
 var WORKERS = process.env.WEB_CONCURRENCY || os.cpus().length

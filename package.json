@@ -1,7 +1,7 @@
 {
   "version": "1.4.6",
   "name": "mockbin",
-  "description": "Mock, Test & Track HTTP calls",
+  "description": "Test, mock, and track HTTP requests & responses between libraries, sockets and APIs",
   "author": "Ahmad Nassri <ahmad@mashape.com> (https://www.mashape.com/)",
   "homepage": "https://mockbin.org/",
   "license": "MIT",

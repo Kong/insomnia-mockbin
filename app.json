@@ -1,6 +1,6 @@
 {
   "name": "mockbin",
-  "description": "Mock, Test & Track HTTP calls!",
+  "description": "Test, mock, and track HTTP requests & responses between libraries, sockets and APIs",
   "repository": "https://github.com/Mashape/mockbin",
   "website": "http://mockbin.com/",
   "success_url": "/",

@@ -11,3 +11,7 @@ script: npm test
 after_script:
   - npm run coverage
   - npm run codeclimate
+
+webhooks:
+  urls:
+    - https://webhooks.gitter.im/e/c59c50e0fd30dff70a23

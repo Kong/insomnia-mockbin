@@ -12,9 +12,10 @@ after_script:
   - npm run coverage
   - npm run codeclimate
 
-webhooks:
-  urls:
-    - https://webhooks.gitter.im/e/c59c50e0fd30dff70a23
-  on_success: change
-  on_failure: always
-  on_start: false
+notifications:
+  webhooks:
+    urls:
+      - https://webhooks.gitter.im/e/c59c50e0fd30dff70a23
+    on_success: always
+    on_failure: always
+    on_start: false

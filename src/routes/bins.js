@@ -85,7 +85,7 @@ Bins.prototype.routes = {
 
       var id = uuid.v4()
 
-      this.client.set(id, JSON.stringify(mock))
+      this.client.set('bin:' + id, JSON.stringify(mock))
 
       res.view = 'redirect'
       res.status(201).location(util.format('/bin/%s', id)).body = id
@@ -95,7 +95,7 @@ Bins.prototype.routes = {
   },
 
   view: function (req, res, next) {
-    this.client.get(req.params.uuid, function (err, value) {
+    this.client.get('bin:' + req.params.uuid, function (err, value) {
       if (err) {
         debug(err)
 
@@ -114,7 +114,7 @@ Bins.prototype.routes = {
   },
 
   sample: function (req, res, next) {
-    this.client.get(req.params.uuid, function (err, value) {
+    this.client.get('bin:' + req.params.uuid, function (err, value) {
       if (err) {
         debug(err)
 
@@ -173,7 +173,7 @@ Bins.prototype.routes = {
   },
 
   send: function (req, res, next) {
-    this.client.get(req.params.uuid, function (err, value) {
+    this.client.get('bin:' + req.params.uuid, function (err, value) {
       if (err) {
         debug(err)
 
@@ -184,8 +184,8 @@ Bins.prototype.routes = {
         var har = JSON.parse(value)
 
         // log interaction & send the appropriate response based on HAR
-        this.client.rpush(req.params.uuid + '-log', JSON.stringify(req.har.log.entries[0]))
-        this.client.ltrim(req.params.uuid + '-log', 0, 100)
+        this.client.rpush('log:' + req.params.uuid, JSON.stringify(req.har.log.entries[0]))
+        this.client.ltrim('log:' + req.params.uuid, 0, 100)
 
         // headers
         har.headers.map(function (header) {
@@ -217,7 +217,7 @@ Bins.prototype.routes = {
   log: function (req, res, next) {
     res.view = 'bin/log'
 
-    this.client.lrange(req.params.uuid + '-log', 0, -1, function (err, history) {
+    this.client.lrange('log:' + req.params.uuid, 0, -1, function (err, history) {
       if (err) {
         debug(err)
 

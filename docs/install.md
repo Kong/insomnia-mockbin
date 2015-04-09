@@ -27,10 +27,9 @@ docker build -t mockbin .
 
 ### Running the docker container
 
+To run, this image needs to be linked to a Redis container:
+
 ```shell
-docker run -d --name myredis redis
-docker run -d -p 80:8080 --link myredis:redis mockbin
+docker run -d --name mockbin_redis redis
+docker run -d -p 8080:8080 --link mockbin_redis:redis mashape/mockbin
 ```
-
-
-

@@ -4,14 +4,14 @@
 
 #### Create Bin
 
-> ##### `POST /bin/create/view`
+> ##### `POST /bin/create`
 
 Creates a new **Bin** with a mock HTTP response as described by a [HAR Response Object](http://www.softwareishard.com/blog/har-12-spec/#response) body.
 
 Responds with a `Location` header with the newly created **Bin**, e.g. `Location: http://mockbin.org/bin/3c149e20-bc9c-4c68-8614-048e6023a108` *(also repeated in the body)*
 
 - The [HAR Response Object](http://www.softwareishard.com/blog/har-12-spec/#response) sent at time of creation will determine what the response status, headers, content will be
-- You can request the new Bin with *any* combination of the following:
+- You can request the newly created Bin with *any* combination of the following:
   - HTTP methods *(e.g. `POST`, `XXPUT`)*
   - HTTP headers *(e.g. `X-My-Header-Name: Value`)*
   - body content *(max of 100mb)*
@@ -81,7 +81,7 @@ Responds with a `Location` header with the newly created **Bin**, e.g. `Location
 ###### Response
 
 > ```http
-> HTTP/1.1 200 OK
+> HTTP/1.1 201 Created
 > Location: http://mockbin.org/3c149e20-bc9c-4c68-8614-048e6023a108
 > Content-Type: application/json; charset=utf-8
 > Content-Length: 38

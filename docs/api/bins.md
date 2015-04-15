@@ -8,7 +8,7 @@
 
 Creates a new **Bin** with a mock HTTP response as described by a [HAR Response Object](http://www.softwareishard.com/blog/har-12-spec/#response) body.
 
-Responds with a `Location` header with the newly created **Bin**, e.g. `Location: http://mockbin.org/bin/3c149e20-bc9c-4c68-8614-048e6023a108` *(also repeated in the body)*
+Responds with a `Location` header with the newly created **Bin**, e.g. `Location: /bin/3c149e20-bc9c-4c68-8614-048e6023a108` *(also repeated in the body)*
 
 - The [HAR Response Object](http://www.softwareishard.com/blog/har-12-spec/#response) sent at time of creation will determine what the response status, headers, content will be
 - You can request the newly created Bin with *any* combination of the following:
@@ -82,7 +82,7 @@ Responds with a `Location` header with the newly created **Bin**, e.g. `Location
 
 > ```http
 > HTTP/1.1 201 Created
-> Location: http://mockbin.org/3c149e20-bc9c-4c68-8614-048e6023a108
+> Location: /bin/3c149e20-bc9c-4c68-8614-048e6023a108
 > Content-Type: application/json; charset=utf-8
 > Content-Length: 38
 >

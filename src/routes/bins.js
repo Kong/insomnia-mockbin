@@ -39,6 +39,8 @@ var Bins = function (dsn_str) {
 
   router.get('/:uuid/log', mw.errorHandler, mw.bodyParser, this.routes.log.bind(this), mw.cors, mw.negotiateContent)
 
+  router.post('/:uuid/log/clear', mw.errorHandler, mw.bodyParser, this.routes.clear_log.bind(this), mw.cors, mw.negotiateContent)
+
   router.all('/:uuid*', mw.errorHandler, mw.bodyParser, this.routes.send.bind(this), mw.cors, mw.negotiateContent)
 
   return router
@@ -243,6 +245,20 @@ Bins.prototype.routes = {
 
       next()
     })
+  },
+
+  clear_log: function (req, res, next) {
+    this.client.del('log:' + req.params.uuid, function (err, history) {
+      if (err) {
+        debug(err)
+
+        throw err
+      }
+
+      res.view = 'redirect';
+      res.status(200).location(util.format('/bin/%s', req.params.uuid));
+      next();
+    });
   }
 }
 

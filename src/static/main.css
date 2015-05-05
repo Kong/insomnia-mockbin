@@ -176,6 +176,10 @@ div[data-page="bin/log"] h3 {
   margin-top: 0;
 }
 
+div[data-page="bin/log"] h3 label {
+  margin-left: 1em;
+}
+
 div[data-page="bin/log"] pre {
   height: 500px;
 

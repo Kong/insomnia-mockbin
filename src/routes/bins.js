@@ -255,10 +255,10 @@ Bins.prototype.routes = {
         throw err
       }
 
-      res.view = 'redirect';
-      res.status(200).location(util.format('/bin/%s', req.params.uuid));
-      next();
-    });
+      res.view = 'redirect'
+      res.status(200).location(util.format('/bin/%s', req.params.uuid))
+      next()
+    })
   }
 }
 

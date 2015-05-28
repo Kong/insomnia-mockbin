@@ -27,12 +27,12 @@ module.exports = function (options, callback) {
   app.use(methodOverride('X-HTTP-Method-Override'))
   app.use('/static', express.static(__dirname + '/src/static'))
 
-  // magic starts here
-  app.use('/', router(options))
-
   if (options.quiet !== true) {
     app.use(morgan('dev'))
   }
+
+  // magic starts here
+  app.use('/', router(options))
 
   app.listen(options.port)
 

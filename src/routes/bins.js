@@ -39,7 +39,7 @@ var Bins = function (dsn_str) {
 
   router.get('/:uuid/log', mw.errorHandler, mw.bodyParser, this.routes.log.bind(this), mw.cors, mw.negotiateContent)
 
-  router.all('/:uuid*', mw.errorHandler, mw.bodyParser, this.routes.send.bind(this), mw.cors, mw.negotiateContent)
+  router.all('/:uuid*', mw.errorHandler, mw.bodyParser, this.routes.run.bind(this), mw.cors, mw.negotiateContent)
 
   return router
 }
@@ -172,7 +172,38 @@ Bins.prototype.routes = {
     })
   },
 
-  send: function (req, res, next) {
+  log: function (req, res, next) {
+    res.view = 'bin/log'
+
+    this.client.lrange('log:' + req.params.uuid, 0, -1, function (err, history) {
+      if (err) {
+        debug(err)
+
+        throw err
+      }
+
+      res.body = {
+        log: {
+          version: '1.2',
+          creator: {
+            name: 'mockbin.com',
+            version: pkg.version
+          },
+          entries: []
+        }
+      }
+
+      if (history.length) {
+        res.body.log.entries = history.map(function (request) {
+          return JSON.parse(request)
+        })
+      }
+
+      next()
+    })
+  },
+
+  run: function (req, res, next) {
     this.client.get('bin:' + req.params.uuid, function (err, value) {
       if (err) {
         debug(err)
@@ -212,37 +243,6 @@ Bins.prototype.routes = {
 
       next()
     }.bind(this))
-  },
-
-  log: function (req, res, next) {
-    res.view = 'bin/log'
-
-    this.client.lrange('log:' + req.params.uuid, 0, -1, function (err, history) {
-      if (err) {
-        debug(err)
-
-        throw err
-      }
-
-      res.body = {
-        log: {
-          version: '1.2',
-          creator: {
-            name: 'mockbin.com',
-            version: pkg.version
-          },
-          entries: []
-        }
-      }
-
-      if (history.length) {
-        res.body.log.entries = history.map(function (request) {
-          return JSON.parse(request)
-        })
-      }
-
-      next()
-    })
   }
 }
 

@@ -5,8 +5,8 @@
   "author": "Ahmad Nassri <ahmad@mashape.com> (https://www.mashape.com/)",
   "homepage": "https://mockbin.org/",
   "license": "MIT",
-  "main": "./src/index.js",
-  "bin": "./bin/mockbin",
+  "main": "src/index.js",
+  "bin": "bin/mockbin",
   "keywords": [
     "api",
     "bin",
@@ -42,39 +42,48 @@
     "quiet": false
   },
   "scripts": {
-    "test": "standard && mocha --recursive --reporter spec",
-    "coverage": "istanbul cover ./node_modules/mocha/bin/_mocha -- --fgrep 'Request Validation' --invert",
+    "pretest": "standard && echint",
+    "test": "mocha --recursive",
+    "posttest": "npm run coverage",
+    "coverage": "istanbul cover --dir coverage _mocha -- --fgrep 'Request Validation' --invert --reporter dot",
     "codeclimate": "codeclimate < coverage/lcov.info"
+  },
+  "echint": {
+    "ignore": [
+      "CONTRIBUTING.md",
+      "coverage/**"
+    ]
   },
   "devDependencies": {
     "codeclimate-test-reporter": "0.0.4",
-    "istanbul": "^0.3.13",
-    "mocha": "^2.2.3",
-    "should": "^5.2.0",
-    "standard": "^3.3.2",
-    "unirest": "^0.4.0"
+    "echint": "^1.1.1",
+    "istanbul": "^0.3.14",
+    "mocha": "^2.2.5",
+    "should": "^6.0.3",
+    "standard": "^3.11.1",
+    "unirest": "^0.4.2"
   },
   "dependencies": {
     "change-case": "^2.3.0",
-    "commander": "^2.7.1",
-    "compression": "^1.4.3",
-    "cookie-parser": "^1.3.4",
-    "debug": "^2.1.3",
+    "commander": "^2.8.1",
+    "compression": "^1.4.4",
+    "cookie-parser": "^1.3.5",
+    "debug": "^2.2.0",
     "dicer": "^0.2.4",
     "dotenv": "^1.1.0",
-    "express": "^4.12.3",
-    "har-validator": "^1.6.1",
-    "jade": "^1.9.2",
+    "express": "^4.12.4",
+    "har-validator": "^1.7.1",
+    "jade": "^1.10.0",
     "marked": "^0.3.3",
     "media-typer": "^0.3.0",
-    "method-override": "^2.3.2",
-    "moment": "^2.10.0",
-    "morgan": "^1.5.2",
+    "method-override": "^2.3.3",
+    "moment": "^2.10.3",
+    "morgan": "^1.5.3",
     "node-uuid": "^1.4.3",
-    "qs": "^2.4.1",
+    "qs": "^3.1.0",
     "redis": "^0.12.1",
     "require-directory": "^2.1.0",
-    "xmlbuilder": "^2.6.2",
-    "yamljs": "^0.2.1"
+    "xmlbuilder": "^2.6.4",
+    "yamljs": "^0.2.3"
   }
 }

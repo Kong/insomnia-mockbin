@@ -2,7 +2,7 @@
   "name": "mockbin",
   "description": "Test, mock, and track HTTP requests & responses between libraries, sockets and APIs",
   "repository": "https://github.com/Mashape/mockbin",
-  "website": "http://mockbin.com/",
+  "website": "http://mockbin.org/",
   "success_url": "/",
   "addons": [
     "openredis"

@@ -708,4 +708,3 @@ Identical to [`/echo`](#echo) but with forced compression on response body *(ret
 > ```
 
 ----
-

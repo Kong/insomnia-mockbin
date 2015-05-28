@@ -2,7 +2,7 @@
 
 'use strict'
 
-var status = require('../../src/routes/status')
+var status = require('../../lib/routes/status')
 
 require('should')
 

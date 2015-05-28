@@ -2,7 +2,7 @@
 
 'use strict'
 
-var redirect = require('../../src/routes/redirect')
+var redirect = require('../../lib/routes/redirect')
 
 require('should')
 

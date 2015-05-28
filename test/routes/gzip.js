@@ -2,7 +2,7 @@
 
 'use strict'
 
-var gzip = require('../../src/routes/gzip')
+var gzip = require('../../lib/routes/gzip')
 
 require('should')
 

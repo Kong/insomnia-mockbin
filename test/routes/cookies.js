@@ -2,7 +2,7 @@
 
 'use strict'
 
-var cookies = require('../../src/routes/cookies')
+var cookies = require('../../lib/routes/cookies')
 
 require('should')
 

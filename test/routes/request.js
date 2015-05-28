@@ -2,7 +2,7 @@
 
 'use strict'
 
-var request = require('../../src/routes/request')
+var request = require('../../lib/routes/request')
 
 require('should')
 

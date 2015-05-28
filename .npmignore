@@ -1,4 +1,6 @@
+.editorconfig
+.env
 .jshintrc
 .travis.yml
-.editorconfig
+app.json
 test

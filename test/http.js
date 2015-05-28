@@ -4,7 +4,7 @@
 
 var cookieParser = require('cookie-parser')
 var express = require('express')
-var mockbin = require('../src')
+var mockbin = require('../lib')
 var unirest = require('unirest')
 
 require('should')

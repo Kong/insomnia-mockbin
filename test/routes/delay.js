@@ -2,7 +2,7 @@
 
 'use strict'
 
-var delay = require('../../src/routes/delay')
+var delay = require('../../lib/routes/delay')
 
 require('should')
 

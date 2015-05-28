@@ -2,7 +2,7 @@
 
 'use strict'
 
-var har = require('../../src/routes/har')
+var har = require('../../lib/routes/har')
 
 require('should')
 

@@ -14,7 +14,6 @@
 - [Documentation](#documentation) 
 - [Bugs and feature requests](#bugs-and-feature-requests)
 - [Contributing](#contributing)
-- [Versioning](#versioning)
 - [License](#license)
 
 ## Features
@@ -105,22 +104,6 @@ Please read through our [contributing guidelines](CONTRIBUTING.md). Included are
 More over, if your pull request contains JavaScript patches or features, you must include relevant unit tests.
 
 Editor preferences are available in the [editor config](.editorconfig) for easy use in common text editors. Read more and download plugins at <http://editorconfig.org>.
-
-## Versioning
-
-For transparency into our release cycle and in striving to maintain backward compatibility, this project is maintained under the Semantic Versioning guidelines. Sometimes we screw up, but we'll adhere to these rules whenever possible.
-
-Releases will be numbered with the following format:
-
-`<major>.<minor>.<patch>`
-
-And constructed with the following guidelines:
-
-- Breaking backward compatibility **bumps the major** while resetting minor and patch
-- New additions without breaking backward compatibility **bumps the minor** while resetting the patch
-- Bug fixes and misc changes **bumps only the patch**
-
-For more information on SemVer, please visit <http://semver.org/>.
 
 ## License
 

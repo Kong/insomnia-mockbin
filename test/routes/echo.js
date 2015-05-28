@@ -2,7 +2,7 @@
 
 'use strict'
 
-var echo = require('../../src/routes/echo')
+var echo = require('../../lib/routes/echo')
 
 require('should')
 

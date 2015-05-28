@@ -1,21 +1,17 @@
 #!/usr/bin/env node
+
 'use strict'
 
-var pkg = require('../package.json')
+var cluster = require('../cluster')
 var cmd = require('commander')
-var app = require('../app')
+var pkg = require('../package.json')
 
 cmd
-  .version(pkg.version)
+  .version(process.env.npm_package_version)
   .option('-p, --port <port>', 'HTTP server port', pkg.config.port)
-  .option('-r, --redis [dsn]', 'redis dsn', pkg.config.redis)
   .option('-q, --quiet', 'disable console logging', pkg.config.quiet)
+  .option('-r, --redis [dsn]', 'redis dsn', pkg.config.redis)
+  .option('-w, --workers <count>', 'number of cluster workers', pkg.config.workers)
   .parse(process.argv)
 
-if (!cmd.port) {
-  cmd.help()
-}
-
-app(cmd, function () {
-  console.info('started server on port: %d', cmd.port)
-})
+cluster(cmd)

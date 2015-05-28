@@ -3,7 +3,7 @@
 'use strict'
 
 var pkg = require('../package.json')
-var utils = require('../src/utils')
+var utils = require('../lib/utils')
 
 require('should')
 

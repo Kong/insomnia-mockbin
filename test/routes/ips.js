@@ -2,7 +2,7 @@
 
 'use strict'
 
-var ips = require('../../src/routes/ips')
+var ips = require('../../lib/routes/ips')
 
 require('should')
 

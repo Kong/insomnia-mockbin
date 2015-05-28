@@ -2,7 +2,7 @@
 
 'use strict'
 
-var hello = require('../../src/routes/hello')
+var hello = require('../../lib/routes/hello')
 
 require('should')
 

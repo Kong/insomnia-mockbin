@@ -2,7 +2,7 @@
 
 'use strict'
 
-var stream = require('../../src/routes/stream')
+var stream = require('../../lib/routes/stream')
 
 require('should')
 

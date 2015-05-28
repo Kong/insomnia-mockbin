@@ -4,6 +4,7 @@
   "description": "Test, mock, and track HTTP requests & responses between libraries, sockets and APIs",
   "author": "Ahmad Nassri <ahmad@mashape.com> (https://www.mashape.com/)",
   "homepage": "https://mockbin.org/",
+  "repository": "Mashape/mockbin",
   "license": "MIT",
   "main": "src/index.js",
   "bin": "bin/mockbin",
@@ -25,14 +26,11 @@
     "bin",
     "docs",
     "src",
+    "lib",
     "Procfile",
-    "app.js",
+    "cluster.js",
     "server.js"
   ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Mashape/mockbin"
-  },
   "bugs": {
     "url": "https://github.com/Mashape/mockbin/issues"
   },

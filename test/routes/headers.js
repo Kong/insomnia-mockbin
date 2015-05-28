@@ -2,7 +2,7 @@
 
 'use strict'
 
-var headers = require('../../src/routes/headers')
+var headers = require('../../lib/routes/headers')
 
 require('should')
 

@@ -18,6 +18,9 @@ var fixture = {
   rawBody: '',
   hostname: 'mockbin.com',
   originalUrl: '/',
+  forwarded: {
+    proto: 'http'
+  },
   headers: {
     foo: 'bar'
   }

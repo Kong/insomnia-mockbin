@@ -43,7 +43,7 @@
     "pretest": "standard && echint",
     "test": "mocha --recursive",
     "posttest": "npm run coverage",
-    "coverage": "istanbul cover --dir coverage _mocha -- --fgrep 'Request Validation' --invert --reporter dot",
+    "coverage": "istanbul cover --dir coverage _mocha -- --recursive --fgrep 'Request Validation' --invert --reporter dot",
     "codeclimate": "codeclimate < coverage/lcov.info"
   },
   "echint": {
@@ -54,7 +54,7 @@
   },
   "devDependencies": {
     "codeclimate-test-reporter": "0.0.4",
-    "echint": "^1.1.1",
+    "echint": "^1.1.2",
     "istanbul": "^0.3.14",
     "mocha": "^2.2.5",
     "should": "^6.0.3",
@@ -70,6 +70,7 @@
     "dicer": "^0.2.4",
     "dotenv": "^1.1.0",
     "express": "^4.12.4",
+    "forwarded-http": "^0.3.0",
     "har-validator": "^1.7.1",
     "jade": "^1.10.0",
     "marked": "^0.3.3",
@@ -80,8 +81,8 @@
     "node-uuid": "^1.4.3",
     "qs": "^3.1.0",
     "redis": "^0.12.1",
-    "require-directory": "^2.1.0",
-    "xmlbuilder": "^2.6.4",
+    "require-directory": "^2.1.1",
+    "simple-xml": "0.0.9",
     "yamljs": "^0.2.3"
   }
 }

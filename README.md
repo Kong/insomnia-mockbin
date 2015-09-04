@@ -7,6 +7,8 @@
 [![Dependencies][david-image]][david-url]
 [![Gitter][gitter-image]][gitter-url]
 
+Check out getkong.org as OSS API Gateway and APIanalytics.com 
+
 ## Table of contents
 - [Features](#features) 
 - [Installation](#installation) 

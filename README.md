@@ -7,6 +7,9 @@
 [![Dependencies][david-image]][david-url]
 [![Gitter][gitter-image]][gitter-url]
 
+Mockbin is used internally and maintained by [Mashape](https://github.com/Mashape), who also maintain the open-source API Gateway [Kong](https://github.com/Mashape/kong). 
+
+
 ## Table of contents
 - [Features](#features) 
 - [Installation](#installation) 

@@ -11,7 +11,13 @@ block content
     div.btn-group.pull-right.hidden-xs
       a(href= '/bin/' + req.params.uuid + '/view').btn.btn-primary View Details
 
-    h3 Bin History: #[code= req.params.uuid]
+    h3
+      | Bin History: #[code= req.params.uuid]
+      label(for='clear_log').btn.btn-xs.btn-default
+        span.glyphicon.glyphicon-trash
+        | Clear History
+      form(method="POST", action='/bin/' + req.params.uuid + '/log/clear').hidden
+        button(type='submit', id='clear_log').btn.btn-xs
 
     div.visible-xs
       a(href= '/bin/' + req.params.uuid + '/view').btn.btn-block.btn-primary View Details
@@ -68,6 +74,12 @@ block content
 block scripts
   script.
     $(function() {
+      $('#clear_log').click(function (e) {
+        if (!confirm('Are you sure you want to clear the log?')) {
+          e.preventDefault();
+        }
+      });
+
       $('tr[data-id] td, button[data-id]').on('click', function (e) {
         var id = $(this).data('id')
 

@@ -74,7 +74,7 @@
     "qs": "^2.4.1",
     "redis": "^0.12.1",
     "require-directory": "^2.1.0",
-    "xmlbuilder": "^2.6.2",
+    "xmlbuilder": "^4.2.1",
     "yamljs": "^0.2.1"
   }
 }

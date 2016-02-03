@@ -27,7 +27,7 @@ module.exports = function (req, res, next) {
   }
 
   function XMLResponse () {
-    res.send(XML.create(res.bodyXmlObj || res.body).end({
+    res.send(XML.create(res.bodyXmlObj || res.body, {allowSurrogateChars: true}).end({
       pretty: spaces ? true : false,
       indent: new Array(spaces).join(' '),
       newline: '\n'
@@ -36,7 +36,7 @@ module.exports = function (req, res, next) {
 
   function HTMLResponse () {
     req.app.locals.moment = moment
-
+    XML.create(res.bodyXmlObj, {allowSurrogateChars: true});
     res.render(res.view || 'default', {
       req: req,
       res: res,
@@ -46,7 +46,7 @@ module.exports = function (req, res, next) {
 
         json: JSON.stringify(res.body, null, 2),
 
-        xml: XML.create(res.bodyXmlObj || res.body).end({
+        xml: XML.create(res.bodyXmlObj || res.body, {allowSurrogateChars: true}).end({
           pretty: true,
           indent: '    ',
           newline: '\n'

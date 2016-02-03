@@ -28,7 +28,7 @@ module.exports = function (req, res, next) {
 
   function XMLResponse () {
     res.send(XML.create(res.bodyXmlObj || res.body).end({
-      pretty: spaces ? true : false,
+      pretty: !!spaces,
       indent: new Array(spaces).join(' '),
       newline: '\n'
     }))

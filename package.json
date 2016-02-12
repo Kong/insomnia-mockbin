@@ -85,7 +85,7 @@
     "node-uuid": "^1.4.3",
     "redis": "^0.12.1",
     "require-directory": "^2.1.1",
-    "simple-xml": "0.0.9",
+    "xmlbuilder": "^4.2.1",
     "yamljs": "^0.2.3"
   }
 }

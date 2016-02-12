@@ -1,5 +1,4 @@
 {
-  "version": "1.5.0",
   "name": "mockbin",
   "description": "Test, mock, and track HTTP requests & responses between libraries, sockets and APIs",
   "author": "Ahmad Nassri <ahmad@mashape.com> (https://www.mashape.com/)",

@@ -2,7 +2,7 @@
 
 var compression = require('compression')
 var cookieParser = require('cookie-parser')
-var debug = require('debug')('mockbin')
+var debug = require('debug-log')('mockbin')
 var express = require('express')
 var methodOverride = require('method-override')
 var morgan = require('morgan')
@@ -22,7 +22,7 @@ module.exports = function (options, done) {
   app.enable('view cache')
   app.enable('trust proxy')
   app.set('view engine', 'jade')
-  app.set('views', path.join(__dirname, '/views'))
+  app.set('views', path.join(__dirname, 'views'))
   app.set('jsonp callback name', '__callback')
 
   // add 3rd party middlewares

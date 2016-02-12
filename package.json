@@ -49,7 +49,7 @@
     "test": "mocha --recursive",
     "pretest": "standard && echint",
     "coverage": "istanbul cover --dir coverage _mocha -- --recursive --fgrep 'Request Validation' --invert --reporter dot",
-    "codeclimate": "codeclimate < coverage/lcov.info",
+    "codeclimate": "codeclimate-test-reporter < coverage/lcov.info",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
   "echint": {

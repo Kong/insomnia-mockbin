@@ -9,7 +9,7 @@
     "url": "git+https://github.com/Mashape/mockbin.git"
   },
   "license": "MIT",
-  "main": "src/index",
+  "main": "lib/index",
   "bin": "bin/mockbin",
   "keywords": [
     "api",

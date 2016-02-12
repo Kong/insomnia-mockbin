@@ -4,7 +4,10 @@
   "description": "Test, mock, and track HTTP requests & responses between libraries, sockets and APIs",
   "author": "Ahmad Nassri <ahmad@mashape.com> (https://www.mashape.com/)",
   "homepage": "https://mockbin.org/",
-  "repository": "Mashape/mockbin",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mashape/mockbin.git"
+  },
   "license": "MIT",
   "main": "src/index",
   "bin": "bin/mockbin",

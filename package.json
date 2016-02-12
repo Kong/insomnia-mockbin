@@ -46,7 +46,8 @@
     "test": "mocha --recursive",
     "pretest": "standard && echint",
     "coverage": "istanbul cover --dir coverage _mocha -- --recursive --fgrep 'Request Validation' --invert --reporter dot",
-    "codeclimate": "codeclimate < coverage/lcov.info"
+    "codeclimate": "codeclimate < coverage/lcov.info",
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
   "echint": {
     "ignore": [
@@ -61,7 +62,8 @@
     "mocha": "^2.2.5",
     "should": "^6.0.3",
     "standard": "^3.11.1",
-    "unirest": "^0.4.2"
+    "unirest": "^0.4.2",
+    "semantic-release": "^4.3.5"
   },
   "dependencies": {
     "change-case": "^2.3.0",

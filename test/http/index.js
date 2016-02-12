@@ -4,7 +4,8 @@
 
 var cookieParser = require('cookie-parser')
 var express = require('express')
-var mockbin = require('../lib')
+var mockbin = require('../../lib')
+var path = require('path')
 var unirest = require('unirest')
 
 require('should')
@@ -14,7 +15,7 @@ describe('HTTP', function () {
   var app = express()
   app.enable('trust proxy')
   app.set('view engine', 'jade')
-  app.set('views', __dirname + '/../src/views')
+  app.set('views', path.join(__dirname, '..', '..', 'src', 'views'))
 
   app.use(cookieParser())
 

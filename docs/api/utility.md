@@ -6,7 +6,7 @@
 
 > ##### `POST /echo`
 
-Returns a response with identical `Body` and `Content-Type` to what's in teh request.
+Returns a response with identical `Body` and `Content-Type` to what's in the request.
 
 ###### Request
 
@@ -33,7 +33,7 @@ Returns a response with identical `Body` and `Content-Type` to what's in teh req
 
 > ##### `* /request/:path?`
 
-Returns back all the info sent through your request in [HAR Request Obejct](http://www.softwareishard.com/blog/har-12-spec/#request) format.
+Returns back all the info sent through your request in [HAR Request Object](http://www.softwareishard.com/blog/har-12-spec/#request) format.
 
 ###### Request
 
@@ -130,7 +130,7 @@ Returns back all the info sent through your request in [HAR Request Obejct](http
 
 > ##### `* /har/:path?`
 
-Returns back all the info sent through your request in [HAR Obejct](http://www.softwareishard.com/blog/har-12-spec/) format.
+Returns back all the info sent through your request in [HAR Object](http://www.softwareishard.com/blog/har-12-spec/) format.
 
 ###### Request
 
@@ -269,7 +269,7 @@ Returns Origin IP.
 
 > ##### `GET /ips`
 
-Parses the "X-Forwarded-For" ip address list and return an array. Otherwise, an empty array is returned.
+Parses the "X-Forwarded-For" ip address list and returns an array. Otherwise, an empty array is returned.
 
 ###### Request
 

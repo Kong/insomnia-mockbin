@@ -42,7 +42,7 @@ curl mockbin.org/request -H "Accept: text/html"
 
 ### JSONP Callbacks
 
-You can recieve a JSONP response by adding the query string `__callback`:
+You can receive a JSONP response by adding the query string `__callback`:
 
 ```shell
 curl mockbin.org/request?__callback=myfunc -H "Accept: application/json"

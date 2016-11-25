@@ -25,16 +25,14 @@ describe('/ips', function () {
   it('should response with all address', function (done) {
     var res = {}
     var req = {
-      forwarded: {
-        ips: [
-          '0.0.0.0',
-          '1.1.1.1'
-        ]
-      }
+      ips: [
+        '0.0.0.0',
+        '1.1.1.1'
+      ]
     }
 
     ips.all(req, res, function () {
-      res.body.should.equal(req.forwarded.ips)
+      res.body.should.equal(req.ips)
 
       done()
     })

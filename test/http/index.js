@@ -77,7 +77,7 @@ describe('HTTP', function () {
     })
 
     req.end(function (res) {
-      res.body.should.be.an.Array
+      res.body.should.be.an.Array()
       res.body.should.containDeep(['10.10.10.1', '10.10.10.2', '10.10.10.3'])
 
       done()

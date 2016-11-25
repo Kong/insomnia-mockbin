@@ -1,4 +1,7 @@
-FROM node:0.10-onbuild
+FROM node:0.12-onbuild
 
-RUN npm config set mockbin:redis redis://redis:6379
+ENV MOCKBIN_PORT=8080
+ENV MOCKBIN_QUIET=false
+ENV MOCKBIN_REDIS=redis://redis:6379
+
 EXPOSE 8080

@@ -4,32 +4,13 @@
 - [Redis](http://redis.io/)
 - npm modules *listed in [package.json](package.json)*
 
-## Install from source
-
-```shell
-git clone https://github.com/Mashape/mockbin.git ./mockbin
-cd mockbin
-```
-
-## Install with [npm](https://www.npmjs.com/):
-
-```shell
-npm install mockbin
-```
 
 ## Install with [Docker](https://www.docker.com/)
 
 ### Building the docker image
 
 ```shell
-docker build -t mockbin .
+docker-compose up -d --build
 ```
 
-### Running the docker container
-
-To run, this image needs to be linked to a Redis container:
-
-```shell
-docker run -d --name mockbin_redis redis
-docker run -d -p 8080:8080 --link mockbin_redis:redis mashape/mockbin
-```
+### Please note: if you changed redis container name, you will need to update it in `package.json` in config section.

@@ -1,0 +1,23 @@
+version: '2'
+
+services:
+
+    redis:
+        container_name: mockbinredis
+        image: redis
+        ports:
+          - "6379:6379"
+          
+    mockbin:
+        image: "node:8"
+        user: "node"
+        working_dir: /home/node/app
+        volumes:
+          - ./:/home/node/app
+        expose:
+          - "8080"
+        ports:
+          - "8099:8080"
+        command: "bash run.sh"
+        links:
+          - "redis:mockbinredis"

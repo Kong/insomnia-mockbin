@@ -21,3 +21,5 @@ services:
         command: "bash run.sh"
         links:
           - "redis:mockbinredis"
+        environment:
+          MOCKBIN_REDIS: redis://mockbinredis:6379

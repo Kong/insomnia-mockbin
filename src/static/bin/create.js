@@ -31,7 +31,7 @@ var sample = {
     cookies: [],
     content: {
       mimeType: 'application/json',
-      text: '{\n    "foo": "Hello Word"\n}'
+      text: '{\n    "foo": "Hello World"\n}'
     }
   },
 
@@ -48,7 +48,7 @@ var sample = {
     cookies: [],
     content: {
       mimeType: 'application/javascript',
-      text: 'callback({\n    "foo": "Hello Word"\n})'
+      text: 'callback({\n    "foo": "Hello World"\n})'
     }
   },
 

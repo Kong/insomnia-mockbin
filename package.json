@@ -46,6 +46,7 @@
   },
   "scripts": {
     "start": "node bin/mockbin",
+    "develop": "supervisor -e 'js|jsx|jade|css' bin/mockbin",
     "test": "mocha --recursive",
     "pretest": "standard && echint",
     "coverage": "istanbul cover --dir coverage _mocha -- --recursive --fgrep 'Request Validation' --invert --reporter dot",
@@ -62,10 +63,11 @@
     "cz-conventional-changelog": "^1.1.5",
     "echint": "^1.5.2",
     "mocha": "^2.4.5",
+    "semantic-release": "^6.2.0",
     "should": "^8.2.2",
     "standard": "^6.0.4",
-    "unirest": "^0.4.2",
-    "semantic-release": "^6.2.0"
+    "supervisor": "^0.12.0",
+    "unirest": "^0.4.2"
   },
   "dependencies": {
     "change-case": "^2.3.1",

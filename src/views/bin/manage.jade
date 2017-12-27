@@ -1,0 +1,64 @@
+extends ../layout.jade
+
+mixin method (method)
+  - var mapping = { GET: 'success', POST: 'primary', PUT: 'info', PATCH: 'warning' , DELETE: 'danger' }
+  - var className = mapping[method] ? mapping[method] : 'default'
+
+  span(class='label-#{className}').label= method
+
+block content
+  div(data-page="bin/manage").container
+
+    h3 Manage Bins #[code= '']
+
+    div.visible-xs
+      a(href= '/bin/manage').btn.btn-block.btn-primary View Details
+
+    hr
+
+    div.alert.alert-warning.visible-xs
+      strong Warning &nbsp;
+      span Best viewed on a desktop screen, with minimum #[code 800px] width.
+
+    table.table.table-hover
+      thead
+        tr
+          th(width='5%')
+          th(width='30%') Id
+          th(width='30%') Description
+          th(width='15%') Used
+          th(width='3%') Lock
+          th(width='10%').text-right Actions
+
+      tbody
+        for entry, id in data.raw.bin.entries
+          tr(data-id= id)
+            td
+              div.btn-group.btn-group-sm
+                a.btn.btn-default(href='/bin/#{entry.id}/view' target='_blank'): i.fa.fa-link
+
+            td.id= entry.id
+
+            td= entry.description || 'Description not set'
+
+            td.date= entry.startedDateTime
+
+            td
+              div.btn-group
+                // should clicking these change the lock status?
+                //+or should this take the user to the edit page?
+                if entry.locked
+                  i.fa.fa-lock
+                else
+                  i.fa.fa-unlock-alt
+
+            td.action.text-right
+              div.btn-group.btn-group-sm
+                // push these into the action button
+                a.btn.btn-default(href='/bin/#{entry.id}/edit'): i.fa.fa-pencil-square
+                a.btn.btn-default(href='/bin/#{entry.id}/delete?redir'): i.fa.fa-trash
+                button.btn.btn-default(data-id= id): i.fa.fa-chevron-down
+
+
+block scripts
+  script(type='text/javascript', src='/static/bin/manage.js')

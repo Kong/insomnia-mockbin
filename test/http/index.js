@@ -68,6 +68,7 @@ describe('HTTP', function () {
     })
   })
 
+  /* TODO: Fix */
   it('GET /ips should return proxied IPs', function (done) {
     var req = unirest.get('http://localhost:3000/ips')
 

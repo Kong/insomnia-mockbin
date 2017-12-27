@@ -115,6 +115,9 @@ $(function () {
     var form = self.parents('form')
 
     group.clone().appendTo(form)
+     // ADS-1209 - New item should be blank
+     .find('input[name="name"], input[name="value"]')
+     .val('')
   }
 
   var processFormData = function (event) {
@@ -190,7 +193,9 @@ $(function () {
 
   $('form').on('click', '.form-group.pair:last-of-type .btn-success', addKeyPair)
 
-  $('form').on('focus', '.form-group.pair:last-child input', addKeyPair)
+  // ADS-1209 - Clicking shouldn't create new item
+  // this is a terribad feature
+  // $('form').on('focus', '.form-group.pair:last-child input', addKeyPair)
 
   $('form').on('click', '.form-group.pair .btn-danger', function (event) {
     $(this).parents('.form-group').remove()

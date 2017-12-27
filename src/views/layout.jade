@@ -35,7 +35,7 @@ html
 
           div#navbar.collapse.navbar-collapse
             ul.nav.navbar-nav.navbar-right
-              for link, name in [{name: 'Create Bin', href: '/bin/create'}, {name: 'Docs', href: 'https://github.com/Mashape/mockbin/tree/master/docs'}, {name: 'Github', href: 'https://github.com/Mashape/mockbin'}]
+              for link, name in [{name: 'Create Bin', href: '/bin/create'}, {name: 'Manage Bins', href: '/bin/manage'}, {name: 'Docs', href: 'https://github.com/Mashape/mockbin/tree/master/docs'}, {name: 'Github', href: 'https://github.com/Mashape/mockbin'}]
                 li(class={active: req.originalUrl === link.href}): a(href= link.href)= link.name
 
     block content

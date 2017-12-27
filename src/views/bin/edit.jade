@@ -1,0 +1,110 @@
+extends ../layout.jade
+
+// data.raw.mock
+/*
+"{\"status\":200, \"statusText\":\"OK\", \"httpVersion\":\"HTTP/1.1\", \"headers\":[ {\"name\":\"Content-Type\",\"value\":\"application/json\"}], \"cookies\":[],\"content\":{ \"mimeType\":\"application/json\", \"text\":\"{\\n    \\\"foo\\\": \\\"Hello Word\\\"\\n}\",\"size\":0}, \"redirectURL\":\"\", \"bodySize\":0, \"headersSize\":0}"
+*/
+
+block content
+  div(data-page="bin/edit").container
+    - var entry = data.raw.bin.entry
+    - var headers = Array.isArray(entry.headers) && entry.headers.length > 0 ? entry.headers : [{ 'name': '', 'value': '' }]
+    - var cookies = Array.isArray(entry.cookies) && entry.cookies.length > 0 ? entry.cookies : [{ 'name': '', 'value': '' }]
+    div.panel.panel-default
+      div.panel-heading: h4 Bin Builder
+      div.panel-body
+        div.row
+          div.col-sm-6
+            form(name='status')
+              h4 Status
+
+              div.form-group
+                div.input-group.multi
+                  span.input-group-addon Code
+
+                  input.form-control(type='number', name='status', value='#{entry.status}', placeholder='200', required='')
+                  input.form-control(type='text', name='statusText', value='OK', placeholder='#{entry.statusText}', required='')
+
+            form.form-inline(name='headers')
+              h4 Headers
+
+              div.form-group.pair
+                div.input-group.multi
+                  span.input-group-addon Header
+
+                  for header, id in headers
+                    input.form-control(type='text', name='name', placeholder='name', value='#{header.name}' required='')
+                    input.form-control(type='text', name='value', placeholder='value', value='#{header.value}')
+
+                    span.input-group-btn
+                      button(type='button', tabindex='-1').btn.btn-success: i.glyphicon.glyphicon-plus
+                      button(type='button', tabindex='-1').btn.btn-danger: i.glyphicon.glyphicon-remove
+
+            form.form-inline(name='cookies')
+              h4 Cookies
+
+              for cookie, id in cookies
+                div.form-group.pair
+                  div.input-group.multi
+                    span.input-group-addon Cookie
+
+                    input.form-control(type='text', name='name', placeholder='name', value='#{cookie.name}', required='')
+                    input.form-control(type='text', name='value', placeholder='value', value='#{cookie.value}')
+
+                    span.input-group-btn
+                      button(type='button', tabindex='-1').btn.btn-success: i.glyphicon.glyphicon-plus
+                      button(type='button', tabindex='-1').btn.btn-danger: i.glyphicon.glyphicon-remove
+
+            form.form-horizontal(name='content')
+              h4 Body
+
+              div.form-group
+                div.col-sm-12: textarea(rows=5, name='text', value='', placeholder='body content').form-control
+                  !{entry.content.text}
+
+              div.form-group
+                div.col-sm-12
+                  div.input-group
+                    span.input-group-addon mimeType
+                    input.form-control(type='text', name='mimeType', value='#{entry.content.mimeType}', placeholder='multipart/form-data', required='')
+
+          div.col-sm-6
+            h4 Preview
+
+            div#preview
+              pre: code
+
+      div.panel-footer
+        div.row
+          div.col-sm-4
+            div.input-group
+              span.input-group-addon Example
+              select(name='example').form-control
+                option(value='') Select ...
+                option(value='json') JSON
+                option(value='xml') XML
+                option(value='jsonp') JSONP
+                option(value='text') Plain text
+
+          div.col-sm-5
+            div.input-group
+              span.input-group-addon Load File
+              input(type='file').form-control
+
+          form(name='lock-status')
+            div.form-group.col-sm-1
+              input.form-control(type='hidden', name='locked', value='#{entry.locked}')
+              button(type='button', id='locked').lock-status.btn.btn-group
+                if entry.locked == 'true'  
+                  i.fa.fa-lock
+                else
+                  i.fa.fa-unlock
+
+          div.col-sm-2
+            form(method="POST", action="/bin/#{data.raw.bin.id}/edit")
+              input(type='hidden', name='response', value='')
+              button(type='submit').btn.btn-primary.btn-block Update Bin
+
+block scripts
+  script(type='text/javascript', src='/static/bin/create.js')
+  script(type='text/javascript', src='/static/bin/edit.js')

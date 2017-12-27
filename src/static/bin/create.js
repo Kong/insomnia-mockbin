@@ -127,7 +127,8 @@ $(function () {
       content: {
         mimeType: '',
         text: ''
-      }
+      },
+      locked: false
     }
 
     $('.has-error').removeClass('has-error')
@@ -136,11 +137,16 @@ $(function () {
       $(this).parents('.form-group').addClass('has-error')
     })
 
-    var forms = [{form: 'status', parent: response}, {form: 'content', parent: response.content}]
+    var forms = [{form: 'status', parent: response}, 
+                 {form: 'content', parent: response.content},
+                 {form: 'lock-status', parent: response}]
 
     forms.forEach(function (item) {
+      console.log("Processing",item.form)
       $('form[name="' + item.form + '"] div.form-group:not(.pair) .form-control').each(function () {
         var self = $(this)
+
+        console.log("Updating", self.attr('name'), self.val() )
 
         item.parent[self.attr('name')] = self.val()
       })

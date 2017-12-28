@@ -13,7 +13,7 @@ $(function () {
 
   $('#warning-edit').on('click', function () {
     $('#locked_warning').modal('hide')
-    updateButtonLockStatus($('#locked'))
+    $('#locked').click()
   })
 
   $('#warning-cancel').on('click', function () {

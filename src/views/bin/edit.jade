@@ -1,10 +1,5 @@
 extends ../layout.jade
 
-// data.raw.mock
-/*
-"{\"status\":200, \"statusText\":\"OK\", \"httpVersion\":\"HTTP/1.1\", \"headers\":[ {\"name\":\"Content-Type\",\"value\":\"application/json\"}], \"cookies\":[],\"content\":{ \"mimeType\":\"application/json\", \"text\":\"{\\n    \\\"foo\\\": \\\"Hello Word\\\"\\n}\",\"size\":0}, \"redirectURL\":\"\", \"bodySize\":0, \"headersSize\":0}"
-*/
-
 block content
   div(data-page="bin/edit").container
     - var entry = data.raw.bin.entry
@@ -95,7 +90,7 @@ block content
             div.form-group.col-sm-1
               input.form-control(type='hidden', name='locked', value='#{entry.locked}')
               button(type='button', id='locked').lock-status.btn.btn-group
-                if entry.locked == 'true'  
+                if entry.locked == 'true'
                   i.fa.fa-lock
                 else
                   i.fa.fa-unlock

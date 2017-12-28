@@ -140,9 +140,7 @@ $(function () {
       $(this).parents('.form-group').addClass('has-error')
     })
 
-    var forms = [{form: 'status', parent: response},
-                 {form: 'content', parent: response.content},
-                 {form: 'lock-status', parent: response}]
+    var forms = [{form: 'status', parent: response}, {form: 'content', parent: response.content}, {form: 'lock-status', parent: response}]
 
     forms.forEach(function (item) {
       $('form[name="' + item.form + '"] div.form-group:not(.pair) .form-control').each(function () {

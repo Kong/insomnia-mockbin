@@ -2,7 +2,29 @@
 
 $(function () {
   $('.lock-status').on('click', function (event) {
-    var $button = $(this)
+    updateButtonLockStatus($(this))
+  })
+
+  $(window).on('load', function () {
+    if (getButtonLockStatus($('#locked'))) {
+      $('#locked_warning').modal('show')
+    }
+  })
+
+  $('#warning-edit').on('click', function () {
+    $('#locked_warning').modal('hide')
+    updateButtonLockStatus($('#locked'))
+  })
+
+  $('#warning-cancel').on('click', function () {
+    window.location = '/bin/' + $('#update-bin').attr('uuid') + '/view'
+  })
+
+  $(document).ready(function () {
+
+  })
+
+  function updateButtonLockStatus ($button) {
     var $input = $button.siblings('input[name=' + $button.attr('id') + ']')
     var curr, next
 
@@ -17,7 +39,10 @@ $(function () {
     // toggle a hidden element with the lock status
     $input.val(next === 'fa-lock' ? 'true' : 'false')
     $button.find('i').removeClass(curr).addClass(next)
-  })
+  }
 
-  $(document).ready(function () { })
+  function getButtonLockStatus ($button) {
+    var $input = $button.siblings('input[name=' + $button.attr('id') + ']')
+    return $input.val() === 'true'
+  }
 })

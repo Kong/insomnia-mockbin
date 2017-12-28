@@ -115,9 +115,9 @@ $(function () {
     var form = self.parents('form')
 
     group.clone().appendTo(form)
-     // ADS-1209 - New item should be blank
-     .find('input[name="name"], input[name="value"]')
-     .val('')
+      // ADS-1209 - New item should be blank
+      .find('input[name="name"], input[name="value"]')
+      .val('')
   }
 
   var processFormData = function (event) {

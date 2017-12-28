@@ -55,7 +55,7 @@ block content
 
               div.form-group
                 div.col-sm-12: textarea(rows=5, name='text', value='', placeholder='body content').form-control
-                  !{entry.content.text}
+                  !{ entry.content.text }
 
               div.form-group
                 div.col-sm-12
@@ -96,9 +96,26 @@ block content
                   i.fa.fa-unlock
 
           div.col-sm-2
-            form(method="POST", action="/bin/#{data.raw.bin.id}/edit")
+            form(method="POST", action="/bin/#{data.raw.bin.id}/edit", uuid="#{data.raw.bin.id}", id="update-bin")
               input(type='hidden', name='response', value='')
               button(type='submit').btn.btn-primary.btn-block Update Bin
+
+      div.modal.fade.in(role='dialog',id='locked_warning')
+        div.modal-dialog
+          div.modal-content
+            div.modal-header
+              h3.modal-title
+                strong Are you sure you want to edit?
+            div.modal-body.text-center
+              h2.text-danger
+                strong Locked!
+              div &nbsp;
+              h4 Changing can break tests using this mock!
+            div.modal-footer
+              div.col-sm-6.text-left
+                button(type='button', id='warning-edit').btn.btn-danger Edit
+              div.col-sm-6.text.right
+                button(type='button', id='warning-cancel').btn.btn-primary Cancel
 
 block scripts
   script(type='text/javascript', src='/static/bin/create.js')

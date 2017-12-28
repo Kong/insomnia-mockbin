@@ -47,7 +47,7 @@ block content
               div.btn-group
                 // should clicking these change the lock status?
                 //+or should this take the user to the edit page?
-                if entry.locked
+                if entry.locked == 'true'
                   i.fa.fa-lock
                 else
                   i.fa.fa-unlock-alt

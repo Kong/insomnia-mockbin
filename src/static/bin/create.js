@@ -115,6 +115,9 @@ $(function () {
     var form = self.parents('form')
 
     group.clone().appendTo(form)
+     // ADS-1209 - New item should be blank
+     .find('input[name="name"], input[name="value"]')
+     .val('')
   }
 
   var processFormData = function (event) {
@@ -127,7 +130,8 @@ $(function () {
       content: {
         mimeType: '',
         text: ''
-      }
+      },
+      locked: false
     }
 
     $('.has-error').removeClass('has-error')
@@ -136,12 +140,11 @@ $(function () {
       $(this).parents('.form-group').addClass('has-error')
     })
 
-    var forms = [{form: 'status', parent: response}, {form: 'content', parent: response.content}]
+    var forms = [{form: 'status', parent: response}, {form: 'content', parent: response.content}, {form: 'lock-status', parent: response}]
 
     forms.forEach(function (item) {
       $('form[name="' + item.form + '"] div.form-group:not(.pair) .form-control').each(function () {
         var self = $(this)
-
         item.parent[self.attr('name')] = self.val()
       })
     })
@@ -151,7 +154,11 @@ $(function () {
     groups.forEach(function (pair) {
       var params = []
 
-      $('form[name="' + pair + '"] .pair input[name="name"]').slice(0, -1).each(function (index, header) {
+      $('form[name="' + pair + '"] .pair input[name="name"]')
+      .filter(function (header) {
+        return /^[\w\d]+$/.test($(header).siblings('input[name="name"]').val())
+      })
+      .each(function (index, header) {
         var value = $(header).val()
 
         if (value.trim() !== '') {
@@ -159,7 +166,11 @@ $(function () {
         }
       })
 
-      $('form[name="' + pair + '"] .pair input[name="value"]').slice(0, -1).each(function (index, header) {
+      $('form[name="' + pair + '"] .pair input[name="value"]')
+      .filter(function (header) {
+        return /^[\w\d]+$/.test($(header).siblings('input[name="name"]').val())
+      })
+      .each(function (index, header) {
         if (params[index]) {
           params[index].value = $(header).val()
         }
@@ -184,7 +195,9 @@ $(function () {
 
   $('form').on('click', '.form-group.pair:last-of-type .btn-success', addKeyPair)
 
-  $('form').on('focus', '.form-group.pair:last-child input', addKeyPair)
+  // ADS-1209 - Clicking shouldn't create new item
+  // this is a terribad feature
+  // $('form').on('focus', '.form-group.pair:last-child input', addKeyPair)
 
   $('form').on('click', '.form-group.pair .btn-danger', function (event) {
     $(this).parents('.form-group').remove()

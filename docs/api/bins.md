@@ -95,7 +95,7 @@ Responds with a `Location` header with the newly created **Bin**, e.g. `Location
 
 > ##### `GET /bin/:id/view`
 
-Respondes with the [HAR Response Object](http://www.softwareishard.com/blog/har-12-spec/#response) sent at time of [creation](#create-bin).
+Responds with the [HAR Response Object](http://www.softwareishard.com/blog/har-12-spec/#response) sent at time of [creation](#create-bin).
 
 ###### Request
 

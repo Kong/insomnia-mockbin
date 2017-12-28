@@ -7,7 +7,7 @@ var ips = require('../../lib/routes/ips')
 require('should')
 
 describe('/ip', function () {
-  it('should response with ip address', function (done) {
+  it('should respond with ip address', function (done) {
     var res = {}
     var req = {
       ip: '0.0.0.0'
@@ -22,7 +22,7 @@ describe('/ip', function () {
 })
 
 describe('/ips', function () {
-  it('should response with all address', function (done) {
+  it('should respond with all address', function (done) {
     var res = {}
     var req = {
       forwarded: {

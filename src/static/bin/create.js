@@ -156,7 +156,11 @@ $(function () {
     groups.forEach(function (pair) {
       var params = []
 
-      $('form[name="' + pair + '"] .pair input[name="name"]').slice(0, -1).each(function (index, header) {
+      $('form[name="' + pair + '"] .pair input[name="name"]')
+      .filter(function (header) {
+        return /^[\w\d]+$/.test($(header).siblings('input[name="name"]').val())
+      })
+      .each(function (index, header) {
         var value = $(header).val()
 
         if (value.trim() !== '') {
@@ -164,7 +168,11 @@ $(function () {
         }
       })
 
-      $('form[name="' + pair + '"] .pair input[name="value"]').slice(0, -1).each(function (index, header) {
+      $('form[name="' + pair + '"] .pair input[name="value"]')
+      .filter(function (header) {
+        return /^[\w\d]+$/.test($(header).siblings('input[name="name"]').val())
+      })
+      .each(function (index, header) {
         if (params[index]) {
           params[index].value = $(header).val()
         }

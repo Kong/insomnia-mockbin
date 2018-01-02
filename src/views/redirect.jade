@@ -1,7 +1,8 @@
 doctype html
 html
+  -var appendView= !/[\/]\w+$/.test(res._headers.location)
   head
-    meta(http-equiv='refresh', content='0; url=#{res._headers.location}/view')
+    meta(http-equiv='refresh', content='0; url=#{res._headers.location}#{ appendView ? "/view" : "" }')
 
   body
-    p Redirecting to #[a(href=res._headers.location)= res._headers.location + '/view']
+    p Redirecting to #[a(href=res._headers.location)= res._headers.location + (appendView ? '/view' : '') ]

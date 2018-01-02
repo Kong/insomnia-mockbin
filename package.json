@@ -44,8 +44,15 @@
       "path": "./node_modules/cz-conventional-changelog"
     }
   },
+  "nodemonConfig": {
+    "ignore": [ "test/*", "docs/*" ],
+    "watch": [ "src", "lib" ],
+    "ext": "css, jade, js, json, jsx",
+    "delay": "1000"
+  },
   "scripts": {
     "start": "node bin/mockbin",
+    "develop": "nodemon bin/mockbin",
     "test": "mocha --recursive",
     "pretest": "standard && echint",
     "coverage": "istanbul cover --dir coverage _mocha -- --recursive --fgrep 'Request Validation' --invert --reporter dot",
@@ -62,10 +69,11 @@
     "cz-conventional-changelog": "^1.1.5",
     "echint": "^1.5.2",
     "mocha": "^2.4.5",
+    "nodemon": "^1.14.7",
+    "semantic-release": "^6.2.0",
     "should": "^8.2.2",
     "standard": "^6.0.4",
-    "unirest": "^0.4.2",
-    "semantic-release": "^6.2.0"
+    "unirest": "^0.4.2"
   },
   "dependencies": {
     "change-case": "^2.3.1",

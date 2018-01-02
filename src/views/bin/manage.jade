@@ -1,0 +1,79 @@
+extends ../layout.jade
+
+mixin method (method)
+  - var mapping = { GET: 'success', POST: 'primary', PUT: 'info', PATCH: 'warning' , DELETE: 'danger' }
+  - var className = mapping[method] ? mapping[method] : 'default'
+
+  span(class='label-#{className}').label= method
+
+block content
+  div(data-page="bin/manage").container
+
+    h3 Manage Bins #[code= '']
+
+    div.visible-xs
+      a(href= '/bin/manage').btn.btn-block.btn-primary View Details
+
+    hr
+
+    div.alert.alert-warning.visible-xs
+      strong Warning &nbsp;
+      span Best viewed on a desktop screen, with minimum #[code 800px] width.
+
+    table.table.table-hover
+      thead
+        tr
+          th(width='5%')
+          th(width='30%') Id
+          th(width='30%') Description
+          th(width='15%') Used
+          th(width='3%') Lock
+          th(width='10%').text-right Actions
+
+      tbody
+        for entry, id in data.raw.bin.entries
+          tr(data-id= id)
+            td
+              div.btn-group.btn-group-sm
+                a.btn.btn-default(href='/bin/#{entry.id}/view', title='View'): i.fa.fa-eye
+
+            td.id= entry.id
+
+            td= entry.description || 'Description not set'
+
+            td.date= entry.startedDateTime
+
+            td
+              div.btn-group
+                // should clicking these change the lock status?
+                //+or should this take the user to the edit page?
+                if entry.locked == 'true'
+                  i.fa.lock-status.fa-lock
+                else
+                  i.fa.lock-status.fa-unlock-alt
+
+            td.action.text-right
+              div.btn-group.btn-group-sm
+                a(href='/bin/#{entry.id}/log', title='Log').btn.btn-default: i.fa.fa-clock-o
+                a(href='/bin/#{entry.id}/edit', title='Edit').btn.btn-default: i.fa.fa-pencil-square
+                i(data-src='/bin/#{entry.id}/delete?redir', title='Delete').btn.btn-default.delete: i.fa.fa-trash
+
+      div.modal.fade.in(role='dialog', id='locked_warning', aria-labelledby='modal-title', aria-hidden='true')
+        div.modal-dialog(role='document')
+          div.modal-content
+            div.modal-header
+              h3.modal-title
+                strong Are you sure you want to delete?
+            div.modal-body.text-center
+              h2.text-danger
+                strong Locked!
+              div &nbsp;
+              h4 Deleting can break tests using this mock!
+            div.modal-footer
+              div.col-sm-6.text-left
+                a(id='warning-delete',href='').btn.btn-danger Delete
+              div.col-sm-6.text.right
+                button(type='button', id='warning-cancel', data-dismiss='modal').btn.btn-primary Cancel
+
+block scripts
+  script(type='text/javascript', src='/static/bin/manage.js')

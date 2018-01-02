@@ -35,7 +35,7 @@ block content
           tr(data-id= id)
             td
               div.btn-group.btn-group-sm
-                a.btn.btn-default(href='/bin/#{entry.id}/view' target='_blank'): i.fa.fa-link
+                a.btn.btn-default(href='/bin/#{entry.id}/view', title='View'): i.fa.fa-eye
 
             td.id= entry.id
 
@@ -48,17 +48,32 @@ block content
                 // should clicking these change the lock status?
                 //+or should this take the user to the edit page?
                 if entry.locked == 'true'
-                  i.fa.fa-lock
+                  i.fa.lock-status.fa-lock
                 else
-                  i.fa.fa-unlock-alt
+                  i.fa.lock-status.fa-unlock-alt
 
             td.action.text-right
               div.btn-group.btn-group-sm
-                // push these into the action button
-                a.btn.btn-default(href='/bin/#{entry.id}/edit'): i.fa.fa-pencil-square
-                a.btn.btn-default(href='/bin/#{entry.id}/delete?redir'): i.fa.fa-trash
-                button.btn.btn-default(data-id= id): i.fa.fa-chevron-down
+                a(href='/bin/#{entry.id}/log', title='Log').btn.btn-default: i.fa.fa-clock-o
+                a(href='/bin/#{entry.id}/edit', title='Edit').btn.btn-default: i.fa.fa-pencil-square
+                i(data-src='/bin/#{entry.id}/delete?redir', title='Delete').btn.btn-default.delete: i.fa.fa-trash
 
+      div.modal.fade.in(role='dialog', id='locked_warning', aria-labelledby='modal-title', aria-hidden='true')
+        div.modal-dialog(role='document')
+          div.modal-content
+            div.modal-header
+              h3.modal-title
+                strong Are you sure you want to delete?
+            div.modal-body.text-center
+              h2.text-danger
+                strong Locked!
+              div &nbsp;
+              h4 Deleting can break tests using this mock!
+            div.modal-footer
+              div.col-sm-6.text-left
+                a(id='warning-delete',href='').btn.btn-danger Delete
+              div.col-sm-6.text.right
+                button(type='button', id='warning-cancel', data-dismiss='modal').btn.btn-primary Cancel
 
 block scripts
   script(type='text/javascript', src='/static/bin/manage.js')

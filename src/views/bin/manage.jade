@@ -35,7 +35,7 @@ block content
           tr(data-id= id)
             td
               div.btn-group.btn-group-sm
-                a.btn.btn-default(href='/bin/#{entry.id}/view', title='View'): i.fa.fa-link
+                a.btn.btn-default(href='/bin/#{entry.id}/view', title='View'): i.fa.fa-eye
 
             td.id= entry.id
 
@@ -54,7 +54,7 @@ block content
 
             td.action.text-right
               div.btn-group.btn-group-sm
-                a(href='/bin/#{entry.id}/log', title='Log').btn.btn-default: i.fa.fa-bitbucket
+                a(href='/bin/#{entry.id}/log', title='Log').btn.btn-default: i.fa.fa-clock-o
                 a(href='/bin/#{entry.id}/edit', title='Edit').btn.btn-default: i.fa.fa-pencil-square
                 i(data-src='/bin/#{entry.id}/delete?redir', title='Delete').btn.btn-default.delete: i.fa.fa-trash
 

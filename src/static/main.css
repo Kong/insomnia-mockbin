@@ -151,7 +151,7 @@ div[data-page="bin/create"] .input-group.multi > .form-control:last-of-type, div
   margin-left: -1px;
 }
 
-div[data-page="bin/create"] .pair:first-child:nth-last-child(1) .btn-danger, div[data-page="bin/edit"] .pair:first-of-type:last-of-type .btn-danger {
+div[data-page="bin/create"] .pair:first-of-type:last-of-type .btn-danger, div[data-page="bin/edit"] .pair:first-of-type:last-of-type .btn-danger {
   display: none;
 }
 

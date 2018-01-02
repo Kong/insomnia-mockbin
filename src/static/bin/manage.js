@@ -6,23 +6,21 @@ $(function () {
     console.log('Loaded the manage page')
 
     // all button delete icons
-    $('i.delete').each(function(item) {
+    $('i.delete').each(function (count, item) {
       var $elem = $(item)
-      var $locked = $elem.parent().parent().siblings('td div i.fa.lock').find('div i.fa.lock')
-      $elem.on('click',function(event) {
-debugger
+      var $locked = $elem.parent().parent().siblings('td').find('div.btn-group i.fa.lock-status')
+      var src = $elem.attr('data-src')
+      $elem.on('click', function (event) {
         // If I'm locked display the modal
         // if not delete with redir
-        if( $locked.hasClass('fa-lock') ) {
-          // set the button target to 
-          // $elem.src
-          $('#locked_warning').find('#warning-delete').attr('href',$elem.src)
+        if ($locked.hasClass('fa-lock')) {
+          $('#locked_warning').find('#warning-delete').attr('href', src)
           $('#locked_warning').modal('show')
         } else {
-          alert('Deleting!!', $elem.src)
-          // document.location= $elem.src
+          document.location = src
         }
-      }.bind($elem))
+      })
+      $elem = undefined
     })
   })
 })

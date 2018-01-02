@@ -10,6 +10,13 @@ block content
       div.panel-body
         div.row
           div.col-sm-6
+            form(name='description')
+              h4 Description 
+                i.fa.fa-edit(tgt='input[name="description"]') 
+              
+              div.form-group
+                input.form-control(type='description', name='description', value='#{entry.description||""}', placeholder='Please enter a description for bin', readonly=ro, required='')
+
             form(name='status')
               h4 Status
 

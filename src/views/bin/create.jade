@@ -7,6 +7,12 @@ block content
       div.panel-body
         div.row
           div.col-sm-6
+            form(name='description')
+              h4 Description
+
+              div.form-group
+                input.form-control(type='description', name='description', placeholder='Please enter a description for bin', required='')
+
             form(name='status')
               h4 Status
 

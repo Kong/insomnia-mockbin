@@ -20,6 +20,10 @@ $(function () {
     window.location = '/bin/' + $('#update-bin').attr('uuid') + '/view'
   })
 
+  $('i.fa.fa-edit').on('click', function () {
+    $($(this).attr('tgt')).removeAttr('readonly')
+  })
+
   $(document).ready(function () {
 
   })
@@ -30,9 +34,9 @@ $(function () {
 
     if ($input.val() === 'true') {
       curr = 'fa-lock'
-      next = 'fa-unlock'
+      next = 'fa-unlock-alt'
     } else {
-      curr = 'fa-unlock'
+      curr = 'fa-unlock-alt'
       next = 'fa-lock'
     }
 

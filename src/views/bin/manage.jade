@@ -32,6 +32,7 @@ block content
 
       tbody
         for entry, id in data.raw.bin.entries
+          <!-- !{ JSON.stringify( entry, 2) } -->
           tr(data-id= id)
             td
               div.btn-group.btn-group-sm
@@ -39,15 +40,13 @@ block content
 
             td.id= entry.id
 
-            td= entry.description || 'Description not set'
+            td= entry.entity.description || 'Description not set'
 
             td.date= entry.startedDateTime
 
             td
               div.btn-group
-                // should clicking these change the lock status?
-                //+or should this take the user to the edit page?
-                if entry.locked == 'true'
+                if entry.entity.locked === 'true'
                   i.fa.lock-status.fa-lock
                 else
                   i.fa.lock-status.fa-unlock-alt

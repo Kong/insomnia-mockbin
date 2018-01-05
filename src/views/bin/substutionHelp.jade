@@ -1,0 +1,30 @@
+
+block content
+  h4 Help
+
+  div
+    div.panel.panel-default(style="max-height:250px;horizontal-scroll:auto;overflow-y:scroll")
+      div.panel-heading
+        | Substution
+      div.panel-body
+        | Sometimes values from the request need to be inserted into the response.
+        br
+        | To faciliate this there is a macro format that can be used to retrieve and replace
+        | the necessary values from the request
+        pre
+          #&lt;location&gt;:&lt;key|search&gt;:[&lt;encoding&gt;,...]
+        ul
+          li| location - single character value to source the key from
+            ul
+              li| h - headers
+              li| c - cookies
+              li| s - scheme (protocol)
+              li| d - domain (host)
+              li| p - url path
+              li| q - query string
+              li| b - request body
+          li| key|search - a string (or regular expresion) for matching against fields when looking through the location
+          li| encoding - a comma delimited list of encoding types
+            ul
+              li| json - value will be json encoded
+              li| % - value will be 'percent encoded' (urlencode)

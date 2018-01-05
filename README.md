@@ -77,6 +77,12 @@ After installing the `npm` package you can now start the server like so:
 npm start
 ```
 
+For an agent that watches for file changes and then reloads do the following:
+
+```shell
+npm run develop
+```
+
 ## Usage
 
 ```shell

@@ -164,7 +164,7 @@ div[data-page="bin/create"] .pair:not(:last-of-type) .btn-success, div[data-page
   display: none;
 }
 
-div[data-page="bin/create"] code,div[data-page="bin/edit"] code {
+div[data-page="bin/create"] code, div[data-page="bin/edit"] code {
   min-height: 400px;
 }
 

@@ -31,11 +31,11 @@ block content
             form.form-inline(name='headers')
               h4 Headers
 
-              div.form-group.pair
-                div.input-group.multi
-                  span.input-group-addon Header
+              for header, id in headers
+                div.form-group.pair
+                  div.input-group.multi
+                    span.input-group-addon Header
 
-                  for header, id in headers
                     input.form-control(type='text', name='name', placeholder='name', value='#{header.name}' required='')
                     input.form-control(type='text', name='value', placeholder='value', value='#{header.value}')
 
@@ -62,8 +62,9 @@ block content
               h4 Body
 
               div.form-group
-                div.col-sm-12: textarea(rows=5, name='text', value='', placeholder='body content').form-control
-                  !{ entry.content.text }
+                div.col-sm-12
+                  textarea(rows=5, name='text', value='', placeholder='body content').form-control
+                    !{entry.content.text}
 
               div.form-group
                 div.col-sm-12

@@ -19,6 +19,7 @@ module.exports = function (options, done) {
   // setup ExpressJS
   var app = express()
 
+  app.locals.options = options // expose app options to views
   app.enable('view cache')
   app.enable('trust proxy')
   app.set('view engine', 'jade')

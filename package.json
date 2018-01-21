@@ -40,6 +40,7 @@
     "port": 8080,
     "quiet": false,
     "redis": "redis://127.0.0.1:6379",
+    "apiEmbed": "api.apiembed.com",
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }

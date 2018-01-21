@@ -9,7 +9,8 @@ var pkg = require('../package')
 var options = {
   port: process.env.MOCKBIN_PORT || process.env.npm_package_config_port,
   quiet: process.env.MOCKBIN_QUIET || process.env.npm_package_config_quiet,
-  redis: process.env.MOCKBIN_REDIS || process.env.npm_package_config_redis
+  redis: process.env.MOCKBIN_REDIS || process.env.npm_package_config_redis,
+  apiembed: process.env.MOCKBIN_APIEMBED || process.env.npm_package_config_apiEmbed
 }
 
 cmd
@@ -17,8 +18,12 @@ cmd
   .option('-p, --port <port>', 'HTTP server port', options.port)
   .option('-q, --quiet', 'disable console logging', options.quiet)
   .option('-r, --redis [dsn]', 'redis dsn', options.redis)
+  .option('-a, --api-embed [host{:port}]', 'hostname/port providing apiembed service', options.apiEmbed)
   .parse(process.argv)
 
 app(cmd, function () {
+  if (cmd.apiEmbed != options.apiembed) {
+    console.info('API embed site over-ridden - now provided by: %s', cmd.apiEmbed)
+  }
   console.info('starting server on port: %d', cmd.port)
 })

@@ -10,20 +10,18 @@ Mockbin is used internally and maintained by [Kong](https://github.com/Kong), wh
 
 ## Table of contents
 
-- [Mockbin [![version][npm-version]][npm-url] [![License][npm-license]][license-url]](#mockbin-versionnpm-versionnpm-url-licensenpm-licenselicense-url)
-  - [Table of contents](#table-of-contents)
-  - [Features](#features)
-  - [Installation](#installation)
-    - [Heroku](#heroku)
-    - [Docker](#docker)
-    - [Requirements](#requirements)
-    - [Configuration](#configuration)
-    - [Running](#running)
-  - [Usage](#usage)
-  - [Documentation](#documentation)
-  - [Bugs and feature requests](#bugs-and-feature-requests)
-  - [Contributing](#contributing)
-  - [License](#license)
+- [Features](#features)
+- [Installation](#installation)
+  - [Heroku](#heroku)
+  - [Docker](#docker)
+  - [Requirements](#requirements)
+  - [Configuration](#configuration)
+  - [Running](#running)
+- [Usage](#usage)
+- [Documentation](#documentation)
+- [Bugs and feature requests](#bugs-and-feature-requests)
+- [Contributing](#contributing)
+- [License](#license)
 
 ## Features
 

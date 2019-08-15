@@ -544,7 +544,7 @@ Start a redirects loop using the redirect custom status code: `status`, looping 
 ###### Request
 
 > ```http
-> GET /redirect/308?to=https://www.mashape.com/ HTTP/1.1
+> GET /redirect/308?to=https://www.konghq.com/ HTTP/1.1
 > Host: mockbin.org
 >
 > ```
@@ -553,12 +553,12 @@ Start a redirects loop using the redirect custom status code: `status`, looping 
 
 > ```http
 > HTTP/1.1 308 Permanent Redirect
-> Location: https://www.mashape.com/
+> Location: https://www.konghq.com/
 > Content-Type: text/plain; charset=utf-8
 > Content-Length: 59
 > 
 
-> Permanent Redirect. Redirecting to https://www.mashape.com/
+> Permanent Redirect. Redirecting to https://www.konghq.com/
 > ```
 
 #### Redirect Loop

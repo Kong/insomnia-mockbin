@@ -3,7 +3,7 @@ html
   head
     meta(charset='utf-8')
 
-    title Mockbin by Mashape
+    title Mockbin by Kong
 
     meta(name='viewport', content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no')
 
@@ -35,7 +35,7 @@ html
 
           div#navbar.collapse.navbar-collapse
             ul.nav.navbar-nav.navbar-right
-              for link, name in [{name: 'Create Bin', href: '/bin/create'}, {name: 'Docs', href: 'https://github.com/Mashape/mockbin/tree/master/docs'}, {name: 'Github', href: 'https://github.com/Mashape/mockbin'}]
+              for link, name in [{name: 'Create Bin', href: '/bin/create'}, {name: 'Docs', href: 'https://github.com/Kong/mockbin/tree/master/docs'}, {name: 'Github', href: 'https://github.com/Kong/mockbin'}]
                 li(class={active: req.originalUrl === link.href}): a(href= link.href)= link.name
 
     block content

@@ -2,11 +2,11 @@
   "version": "1.6.2",
   "name": "mockbin",
   "description": "Test, mock, and track HTTP requests & responses between libraries, sockets and APIs",
-  "author": "Ahmad Nassri <ahmad@mashape.com> (https://www.mashape.com/)",
+  "author": "Kong (https://www.konghq.com/)",
   "homepage": "https://mockbin.org/",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Mashape/mockbin.git"
+    "url": "git+https://github.com/Kong/mockbin.git"
   },
   "license": "MIT",
   "main": "lib/index",
@@ -34,7 +34,7 @@
     "server.js"
   ],
   "bugs": {
-    "url": "https://github.com/Mashape/mockbin/issues"
+    "url": "https://github.com/Kong/mockbin/issues"
   },
   "config": {
     "port": 8080,

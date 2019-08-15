@@ -7,7 +7,7 @@
 ## Install from source
 
 ```shell
-git clone https://github.com/Mashape/mockbin.git ./mockbin
+git clone https://github.com/Kong/mockbin.git ./mockbin
 cd mockbin
 ```
 

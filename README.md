@@ -2,8 +2,6 @@
 
 [![Build Status][travis-image]][travis-url]
 [![Downloads][npm-downloads]][npm-url]
-[![Code Climate][codeclimate-quality]][codeclimate-url]
-[![Coverage Status][codeclimate-coverage]][codeclimate-url]
 [![Dependencies][david-image]][david-url]
 [![Gitter][gitter-image]][gitter-url]
 
@@ -11,6 +9,7 @@ Mockbin is used internally and maintained by [Kong](https://github.com/Kong), wh
 
 
 ## Table of contents
+
 - [Mockbin [![version][npm-version]][npm-url] [![License][npm-license]][license-url]](#mockbin-versionnpm-versionnpm-url-licensenpm-licenselicense-url)
   - [Table of contents](#table-of-contents)
   - [Features](#features)

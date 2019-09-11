@@ -1,0 +1,46 @@
+
+> mockbin@1.6.2 start /home/clegg/mockbin
+> node bin/mockbin
+
+internal/modules/cjs/loader.js:775
+    throw err;
+    ^
+
+Error: Cannot find module 'casual'
+Require stack:
+- /home/clegg/mockbin/lib/routes/bins/view_graphql.js
+- /home/clegg/mockbin/lib/routes/bins/index.js
+- /home/clegg/mockbin/lib/routes/index.js
+- /home/clegg/mockbin/lib/index.js
+- /home/clegg/mockbin/src/index.js
+- /home/clegg/mockbin/bin/mockbin
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:772:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:677:27)
+    at Module.require (internal/modules/cjs/loader.js:830:19)
+    at require (internal/modules/cjs/helpers.js:68:18)
+    at Object.<anonymous> (/home/clegg/mockbin/lib/routes/bins/view_graphql.js:8:14)
+    at Module._compile (internal/modules/cjs/loader.js:936:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:947:10)
+    at Module.load (internal/modules/cjs/loader.js:790:32)
+    at Function.Module._load (internal/modules/cjs/loader.js:703:12)
+    at Module.require (internal/modules/cjs/loader.js:830:19) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    '/home/clegg/mockbin/lib/routes/bins/view_graphql.js',
+    '/home/clegg/mockbin/lib/routes/bins/index.js',
+    '/home/clegg/mockbin/lib/routes/index.js',
+    '/home/clegg/mockbin/lib/index.js',
+    '/home/clegg/mockbin/src/index.js',
+    '/home/clegg/mockbin/bin/mockbin'
+  ]
+}
+npm ERR! code ELIFECYCLE
+npm ERR! errno 1
+npm ERR! mockbin@1.6.2 start: `node bin/mockbin`
+npm ERR! Exit status 1
+npm ERR! 
+npm ERR! Failed at the mockbin@1.6.2 start script.
+npm ERR! This is probably not a problem with npm. There is likely additional logging output above.
+
+npm ERR! A complete log of this run can be found in:
+npm ERR!     /home/clegg/.npm/_logs/2019-09-11T19_31_30_388Z-debug.log

@@ -14,7 +14,7 @@ describe('HTTP', function () {
   // express setup
   var app = express()
   app.enable('trust proxy')
-  app.set('view engine', 'jade')
+  app.set('view engine', 'pug')
   app.set('views', path.join(__dirname, '..', '..', 'src', 'views'))
 
   app.use(cookieParser())

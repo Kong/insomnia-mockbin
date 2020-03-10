@@ -85,7 +85,7 @@ describe('HTTP', function () {
     })
 
     req.end(function (res) {
-      res.body.should.be.an.Object
+      res.body.should.be.an.Object()
       res.body.should.have.properties('10.10.10.1', '10.10.10.2', '10.10.10.3')
 
       done()
@@ -168,7 +168,7 @@ describe('HTTP', function () {
     })
 
     req.end(function (res) {
-      res.body.headers.should.containEql({name: 'x-custom-header', value: 'ALL YOUR BASE ARE BELONG TO US'})
+      res.body.headers.should.containEql({ name: 'x-custom-header', value: 'ALL YOUR BASE ARE BELONG TO US' })
 
       done()
     })
@@ -198,7 +198,7 @@ describe('HTTP', function () {
     })
 
     req.end(function (res) {
-      res.body.should.containEql({name: 'my-cookie', value: 'ALL YOUR BASE ARE BELONG TO US'})
+      res.body.should.containEql({ name: 'my-cookie', value: 'ALL YOUR BASE ARE BELONG TO US' })
 
       done()
     })
@@ -268,7 +268,7 @@ describe('HTTP', function () {
 
     req.end(function (res) {
       res.status.should.equal(308)
-      res.headers.should.containEql({location: 'http://mockbin.com/'})
+      res.headers.should.containEql({ location: 'http://mockbin.com/' })
 
       done()
     })

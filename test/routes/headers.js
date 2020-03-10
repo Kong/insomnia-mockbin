@@ -53,7 +53,7 @@ describe('/header/:name', function () {
     }
 
     headers.one(req, res, function () {
-      res.body.should.be.false
+      res.body.should.be.false()
 
       done()
     })
@@ -68,7 +68,7 @@ describe('/header/:name', function () {
     }
 
     headers.one(req, res, function () {
-      res.body.should.be.false
+      res.body.should.be.false()
 
       done()
     })

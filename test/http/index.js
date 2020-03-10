@@ -1,4 +1,4 @@
-/* global describe, it */
+/* global describe, it, before, after */
 
 'use strict'
 
@@ -8,19 +8,27 @@ var mockbin = require('../../lib')
 var path = require('path')
 var unirest = require('unirest')
 
+var app = express()
+var server = null
+
 require('should')
 
 describe('HTTP', function () {
-  // express setup
-  var app = express()
-  app.enable('trust proxy')
-  app.set('view engine', 'pug')
-  app.set('views', path.join(__dirname, '..', '..', 'src', 'views'))
+  before(function (done) {
+    // express setup
+    app.enable('trust proxy')
+    app.set('view engine', 'pug')
+    app.set('views', path.join(__dirname, '..', '..', 'src', 'views'))
 
-  app.use(cookieParser())
+    app.use(cookieParser())
 
-  app.use('/', mockbin())
-  app.listen(3000)
+    app.use('/', mockbin())
+    server = app.listen(3000, function () { done() })
+  })
+
+  after(function () {
+    server.close()
+  })
 
   it('home page responds with html content', function (done) {
     var req = unirest.get('http://localhost:3000/')
@@ -77,8 +85,8 @@ describe('HTTP', function () {
     })
 
     req.end(function (res) {
-      res.body.should.be.an.Array
-      res.body.should.containDeep(['10.10.10.1', '10.10.10.2', '10.10.10.3'])
+      res.body.should.be.an.Object
+      res.body.should.have.properties('10.10.10.1', '10.10.10.2', '10.10.10.3')
 
       done()
     })

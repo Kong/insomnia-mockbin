@@ -26,15 +26,15 @@ describe('/ips', function () {
     var res = {}
     var req = {
       forwarded: {
-        ips: [
-          '0.0.0.0',
-          '1.1.1.1'
-        ]
+        for: {
+          '0.0.0.0': -1,
+          '1.1.1.1': -1
+        }
       }
     }
 
     ips.all(req, res, function () {
-      res.body.should.equal(req.forwarded.ips)
+      res.body.should.equal(req.forwarded.for)
 
       done()
     })

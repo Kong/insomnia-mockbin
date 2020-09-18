@@ -136,7 +136,7 @@ $(function () {
       $(this).parents('.form-group').addClass('has-error')
     })
 
-    var forms = [{form: 'status', parent: response}, {form: 'content', parent: response.content}]
+    var forms = [{ form: 'status', parent: response }, { form: 'content', parent: response.content }]
 
     forms.forEach(function (item) {
       $('form[name="' + item.form + '"] div.form-group:not(.pair) .form-control').each(function () {
@@ -155,7 +155,7 @@ $(function () {
         var value = $(header).val()
 
         if (value.trim() !== '') {
-          params.push({name: value})
+          params.push({ name: value })
         }
       })
 

@@ -72,7 +72,6 @@
     "commander": "^8.0.0",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.4",
-    "debug-log": "^2.0.0",
     "dicer": "^0.3.0",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",

@@ -2,7 +2,8 @@
 
 const compression = require('compression')
 const cookieParser = require('cookie-parser')
-const debug = require('debug-log')('mockbin')
+const util = require('util')
+const debug = util.debuglog('mockbin')
 const express = require('express')
 const methodOverride = require('method-override')
 const morgan = require('morgan')

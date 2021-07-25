@@ -2,13 +2,13 @@
 
 'use strict'
 
-var hello = require('../../lib/routes/hello')
+const hello = require('../../lib/routes/hello')
 
 require('should')
 
 describe('/', function () {
   it('should respond with Hello World', function (done) {
-    var res = {}
+    const res = {}
 
     hello(null, res, function () {
       res.body.should.equal('Hello World!')

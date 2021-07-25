@@ -2,11 +2,11 @@
 
 'use strict'
 
-var echo = require('../../lib/routes/echo')
+const echo = require('../../lib/routes/echo')
 
 require('should')
 
-var res = {
+const res = {
   headers: {},
 
   type: function (type) {
@@ -20,7 +20,7 @@ var res = {
 
 describe('/echo', function () {
   it('should respond with request body and content-type header', function (done) {
-    var req = {
+    const req = {
       body: 'foo',
       headers: {
         'content-type': 'text/plain'
@@ -37,7 +37,7 @@ describe('/echo', function () {
   })
 
   it('should respond with default values', function (done) {
-    var req = {
+    const req = {
       headers: {}
     }
 

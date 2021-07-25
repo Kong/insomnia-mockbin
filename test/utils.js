@@ -2,12 +2,12 @@
 
 'use strict'
 
-var pkg = require('../package.json')
-var utils = require('../lib/utils')
+const pkg = require('../package.json')
+const utils = require('../lib/utils')
 
 require('should')
 
-var fixture = {
+const fixture = {
   method: 'POST',
   url: 'http://mockbin.com/',
   protocol: 'http',
@@ -29,7 +29,7 @@ var fixture = {
 describe('Utils', function () {
   describe('ObjectToArray', function () {
     it('should return blank array on undefined', function (done) {
-      var result = utils.objectToArray(undefined)
+      const result = utils.objectToArray(undefined)
 
       result.should.be.an.Array()
       result.length.should.be.equal(0)
@@ -38,7 +38,7 @@ describe('Utils', function () {
     })
 
     it('should return blank array on invalid type', function (done) {
-      var result = utils.objectToArray('foo')
+      const result = utils.objectToArray('foo')
 
       result.should.be.an.Array()
       result.length.should.be.equal(0)
@@ -47,7 +47,7 @@ describe('Utils', function () {
     })
 
     it('should convert to name/value pair', function (done) {
-      var result = utils.objectToArray(fixture.headers)
+      const result = utils.objectToArray(fixture.headers)
 
       result.should.be.an.Array()
       result.should.be.eql([{
@@ -61,7 +61,7 @@ describe('Utils', function () {
 
   describe('getReqHeaderSize', function () {
     it('should calculate header size', function (done) {
-      var result = utils.getReqHeaderSize(fixture)
+      const result = utils.getReqHeaderSize(fixture)
 
       result.should.be.a.Number()
       result.should.be.equal(47)
@@ -71,7 +71,7 @@ describe('Utils', function () {
   })
 
   describe('createHar', function () {
-    var result = utils.createHar(fixture)
+    const result = utils.createHar(fixture)
 
     result.log.entries[0].startedDateTime = 'now'
 

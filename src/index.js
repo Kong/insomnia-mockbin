@@ -17,7 +17,7 @@ module.exports = function (options, done) {
   debug('system started with options: %j', options)
 
   // setup ExpressJS
-  let app = express()
+  const app = express()
 
   app.enable('view cache')
   app.enable('trust proxy')

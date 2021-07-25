@@ -1,13 +1,13 @@
 'use strict'
 
-var compression = require('compression')
-var cookieParser = require('cookie-parser')
-var debug = require('debug-log')('mockbin')
-var express = require('express')
-var methodOverride = require('method-override')
-var morgan = require('morgan')
-var path = require('path')
-var router = require('../lib')
+const compression = require('compression')
+const cookieParser = require('cookie-parser')
+const debug = require('debug-log')('mockbin')
+const express = require('express')
+const methodOverride = require('method-override')
+const morgan = require('morgan')
+const path = require('path')
+const router = require('../lib')
 
 module.exports = function (options, done) {
   if (!options) {
@@ -17,7 +17,7 @@ module.exports = function (options, done) {
   debug('system started with options: %j', options)
 
   // setup ExpressJS
-  var app = express()
+  let app = express()
 
   app.enable('view cache')
   app.enable('trust proxy')

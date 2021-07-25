@@ -74,7 +74,7 @@
     "cookie-parser": "^1.4.4",
     "debug-log": "^2.0.0",
     "dicer": "^0.3.0",
-    "dotenv": "^8.2.0",
+    "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "forwarded-http": "^0.3.0",
     "har-validator": "^5.1.3",

@@ -84,10 +84,10 @@
     "method-override": "^3.0.0",
     "moment": "^2.24.0",
     "morgan": "^1.9.1",
-    "node-uuid": "^1.4.8",
     "pug": "^3.0.2",
     "redis": "^3.0.2",
     "require-directory": "^2.1.1",
+    "uuid": "^8.3.2",
     "xmlbuilder": "^15.0.0",
     "yamljs": "^0.3.0"
   },

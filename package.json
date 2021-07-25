@@ -47,7 +47,6 @@
   "scripts": {
     "start": "node bin/mockbin",
     "test": "mocha --recursive",
-    "lint": "standard --fix",
     "pretest": "standard && echint",
     "coverage": "istanbul cover --dir coverage _mocha -- --recursive --fgrep 'Request Validation' --invert --reporter dot",
     "codeclimate": "codeclimate-test-reporter < coverage/lcov.info",

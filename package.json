@@ -89,8 +89,5 @@
     "uuid": "^8.3.2",
     "xmlbuilder": "^15.0.0",
     "yamljs": "^0.3.0"
-  },
-  "optionalDependencies": {
-    "fsevents": "^2.3.2"
   }
 }

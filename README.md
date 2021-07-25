@@ -118,7 +118,7 @@ Editor preferences are available in the [editor config](.editorconfig) for easy 
 
 [license-url]: https://github.com/Kong/mockbin/blob/master/LICENSE
 
-[travis-url]: https://travis-ci.org/Kong/mockbin
+[travis-url]: https://travis-ci.com/Kong/mockbin
 [travis-image]: https://img.shields.io/travis/Kong/mockbin.svg?style=flat-square
 
 [npm-url]: https://www.npmjs.com/package/mockbin

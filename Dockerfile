@@ -1,4 +1,12 @@
-FROM node:9.11.2-onbuild
+FROM node:16-alpine
 
-RUN npm config set mockbin:redis redis://redis:6379
+# Create app directory
+WORKDIR /mockbin
+
+COPY package*.json ./
+RUN npm ci --only=production
+COPY . .
+
+ENV MOCKBIN_REDIS "redis://redis:6379"
 EXPOSE 8080
+CMD ["npm", "start"]

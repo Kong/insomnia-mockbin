@@ -71,7 +71,7 @@ describe('HTTP', function () {
     req.headers('Accept', 'text/plain')
 
     req.end(function (res) {
-      res.body.should.match(/127\.0\.0\.1/)
+      res.body.should.match(/127\.0\.0\.1|::1/)
       done()
     })
   })

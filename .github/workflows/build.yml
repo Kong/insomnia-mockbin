@@ -23,7 +23,7 @@ jobs:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ matrix.node-version }}-${{ hashFiles('**/package.json') }}
           restore-keys: |
-            ${{ runner.os }}-node-${{ matrix.node-version }}
+            ${{ runner.os }}-node-${{ matrix.node-version }}-
       - name: Install
         run: |
           npm ci

@@ -30,9 +30,7 @@ jobs:
       - name: Coverage
         run: |
           npm run coverage
-      - name: Codeclimate
-        run: |
-          npm run codeclimate
       - name: semantic-release
+        if: github.ref == 'refs/heads/master'
         run: |
           npm run semantic-release

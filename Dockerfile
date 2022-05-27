@@ -1,10 +1,12 @@
-FROM node:16-alpine
+FROM node:18-alpine
 
 # Create app directory
 WORKDIR /mockbin
 
-COPY package*.json ./
-RUN npm ci --only=production
+RUN npm update -g npm
+
+COPY package.json ./
+RUN npm i --omit=dev
 COPY . .
 
 ENV MOCKBIN_REDIS "redis://redis:6379"

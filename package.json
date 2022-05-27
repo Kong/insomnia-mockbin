@@ -39,19 +39,36 @@
   "config": {
     "port": 8080,
     "quiet": false,
-    "redis": "redis://127.0.0.1:6379",
+    "redis": "//redis:6379",
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
   },
+  "watch": {
+    "start": {
+      "patterns": [
+        "src",
+        "test",
+        "lib",
+        "."
+      ],
+      "extensions": "js,jsx,pug,md",
+      "ignore": "src/vendor/external.min.js",
+      "quiet": true,
+      "legacyWatch": true,
+      "delay": 2500,
+      "runOnChangeOnly": false
+    }
+  },
   "scripts": {
-    "start": "node bin/mockbin",
+    "start": "node --trace-deprecation bin/mockbin",
     "dev": "node server.js",
     "test": "mocha --recursive",
     "pretest": "standard && echint",
     "coverage": "istanbul cover --dir coverage _mocha -- --recursive --fgrep 'Request Validation' --invert --reporter dot",
     "codeclimate": "codeclimate-test-reporter < coverage/lcov.info",
-    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post",
+    "watch": "npm-watch"
   },
   "echint": {
     "ignore": [
@@ -63,32 +80,32 @@
     "cz-conventional-changelog": "^3.1.0",
     "echint": "^4.0.2",
     "mocha": "^7.1.0",
+    "semantic-release": "^17.0.4",
     "should": "^13.2.3",
     "standard": "^14.3.1",
-    "unirest": "^0.6.0",
-    "semantic-release": "^17.0.4"
+    "unirest": "^0.6.0"
   },
   "dependencies": {
     "change-case": "^4.1.1",
     "commander": "^4.1.1",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.4",
-    "debug-log": "^2.0.0",
+    "debug": "^4.3.4",
     "dicer": "^0.3.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "forwarded-http": "^0.3.0",
     "har-validator": "^5.1.3",
-    "istanbul": "^0.4.5",
-    "pug": "^2.0.4",
-    "jstransformer-marked": "^1.0.3",
+    "jstransformer-marked": "^1.1.0",
     "media-typer": "^1.1.0",
     "method-override": "^3.0.0",
     "moment": "^2.24.0",
     "morgan": "^1.9.1",
-    "node-uuid": "^1.4.8",
+    "nyc": "^15.1.0",
+    "pug": "^2.0.4",
     "redis": "^3.0.2",
     "require-directory": "^2.1.1",
+    "uuid": "^8.3.2",
     "xmlbuilder": "^15.0.0",
     "yamljs": "^0.3.0"
   }

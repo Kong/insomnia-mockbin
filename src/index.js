@@ -2,7 +2,7 @@
 
 var compression = require('compression')
 var cookieParser = require('cookie-parser')
-var debug = require('debug-log')('mockbin')
+var debug = require('debug')('mockbin')
 var express = require('express')
 var methodOverride = require('method-override')
 var morgan = require('morgan')

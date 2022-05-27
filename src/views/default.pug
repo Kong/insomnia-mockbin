@@ -10,13 +10,13 @@ block content
         header
           ul.nav.nav-tabs
             for key in ['json', 'yaml', 'xml']
-              li: a(href='##{key}', data-toggle='tab')= key.toUpperCase()
+              li: a(href=`#${key}`, data-toggle='tab')= key.toUpperCase()
 
         div.tab-content
           for key in ['json', 'yaml', 'xml']
             div(id= key).tab-pane.active.fade.in
               button(data-clipboard-target='#{key}-code').btn.btn-default.btn-xs.btn-clipboard #[i.fa.fa-copy] #[span Copy to Clipboard]
-              pre: code(id='#{key}-code')= data[key]
+              pre: code(id=`${key}-code`)= data[key]
 
     br
 

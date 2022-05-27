@@ -1,0 +1,13 @@
+services:
+  app:
+    build: .
+    environment:
+      REALM: prod
+      REDIS_URL: "//redis:6379"
+    links:
+      - redis
+    ports:
+      - "8080:8080"
+
+  redis:
+    image: redis

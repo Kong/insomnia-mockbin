@@ -65,7 +65,7 @@
     "should": "^13.2.3",
     "standard": "^14.3.1",
     "unirest": "^0.6.0",
-    "semantic-release": "^17.0.4"
+    "semantic-release": "^19.0.3"
   },
   "dependencies": {
     "change-case": "^4.1.1",

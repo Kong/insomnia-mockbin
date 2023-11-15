@@ -5,8 +5,7 @@
 [![Dependencies][david-image]][david-url]
 [![Gitter][gitter-image]][gitter-url]
 
-Mockbin is used internally and maintained by [Kong](https://github.com/Kong), who also maintain the open-source API Gateway [Kong](https://github.com/Kong/kong). 
-
+Mockbin is used internally and maintained by [Kong](https://github.com/Kong), who also maintain the open-source API Gateway [Kong](https://github.com/Kong/kong).
 
 ## Table of contents
 
@@ -65,7 +64,7 @@ you will need to tell *mockbin* where Redis is:
 npm config set mockbin:redis redis://127.0.0.1:6379
 ```
 
-By Default the server will run on port `8080`, you can customize the port like so: 
+By Default the server will run on port `8080`, you can customize the port like so:
 
 ```shell
 npm config set mockbin:port 8001
@@ -79,6 +78,7 @@ After installing the `npm` package you can now start the server like so:
 
 ```shell
 npm start
+NODE_DEBUG=mockbin npm dev
 ```
 
 ## Usage
@@ -125,10 +125,6 @@ Editor preferences are available in the [editor config](.editorconfig) for easy 
 [npm-license]: https://img.shields.io/npm/l/mockbin.svg?style=flat-square
 [npm-version]: https://img.shields.io/npm/v/mockbin.svg?style=flat-square
 [npm-downloads]: https://img.shields.io/npm/dm/mockbin.svg?style=flat-square
-
-[codeclimate-url]: https://codeclimate.com/github/Kong/mockbin
-[codeclimate-quality]: https://img.shields.io/codeclimate/github/Kong/mockbin.svg?style=flat-square
-[codeclimate-coverage]: https://img.shields.io/codeclimate/coverage/github/Kong/mockbin.svg?style=flat-square
 
 [david-url]: https://david-dm.org/Kong/mockbin
 [david-image]: https://img.shields.io/david/Kong/mockbin.svg?style=flat-square

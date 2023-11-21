@@ -46,10 +46,10 @@ block content
             td.ip= entry.clientIPAddress
             td.action.text-right
               div.btn-group.btn-group-sm
-                a.btn.btn-default(href='#entry-#{id}'): i.fa.fa-link
+                a.btn.btn-default(href='#entry-' + id): i.fa.fa-link
                 button.btn.btn-default(data-id= id): i.fa.fa-chevron-down
 
-          tr.data(id='entry-#{id}')
+          tr.data(id='entry-' + id)
             td(colspan= 6)
               div.row
                 div.col-sm-6

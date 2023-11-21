@@ -1,7 +1,8 @@
 doctype html
 html
   head
-    meta(http-equiv='refresh', content='0; url=#{res._headers.location}/view')
+    meta(http-equiv='refresh', content='0; url=' + res._headers.location + '/view')
 
   body
-    p Redirecting to #[a(href=res._headers.location)= res._headers.location + '/view']
+    p Redirecting to
+      a(href=res._headers.location + '/view') #{res._headers.location}/view

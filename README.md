@@ -78,7 +78,7 @@ After installing the `npm` package you can now start the server like so:
 
 ```shell
 npm start
-NODE_DEBUG=mockbin npm dev
+NODE_DEBUG=mockbin npm run dev
 ```
 
 ## Usage

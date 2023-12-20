@@ -234,4 +234,22 @@ List all requests made to this Bin, using [HAR](http://www.softwareishard.com/bl
 > }
 > ```
 
+#### Delete Bin
+
+> ##### `DELETE /bin/:id/delete`
+
+Deletes the bin and all of its logs
+
+###### Request
+
+> ```http
+> GET /bin/3c149e20-bc9c-4c68-8614-048e6023a108/view HTTP/1.1
+> ```
+
+###### Response
+
+> ```http
+> HTTP/1.1 200 OK
+> ```
+
 ----

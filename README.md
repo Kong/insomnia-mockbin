@@ -2,19 +2,22 @@
 
 [![Build Status][travis-image]][travis-url]
 [![Downloads][npm-downloads]][npm-url]
-[![Code Climate][codeclimate-quality]][codeclimate-url]
-[![Coverage Status][codeclimate-coverage]][codeclimate-url]
 [![Dependencies][david-image]][david-url]
 [![Gitter][gitter-image]][gitter-url]
 
-Mockbin is used internally and maintained by [Mashape](https://github.com/Mashape), who also maintain the open-source API Gateway [Kong](https://github.com/Mashape/kong). 
-
+Mockbin is used internally and maintained by [Kong](https://github.com/Kong), who also maintain the open-source API Gateway [Kong](https://github.com/Kong/kong).
 
 ## Table of contents
-- [Features](#features) 
-- [Installation](#installation) 
-- [Usage](#usage) 
-- [Documentation](#documentation) 
+
+- [Features](#features)
+- [Installation](#installation)
+  - [Heroku](#heroku)
+  - [Docker](#docker)
+  - [Requirements](#requirements)
+  - [Configuration](#configuration)
+  - [Running](#running)
+- [Usage](#usage)
+- [Documentation](#documentation)
 - [Bugs and feature requests](#bugs-and-feature-requests)
 - [Contributing](#contributing)
 - [License](#license)
@@ -61,7 +64,7 @@ you will need to tell *mockbin* where Redis is:
 npm config set mockbin:redis redis://127.0.0.1:6379
 ```
 
-By Default the server will run on port `8080`, you can customize the port like so: 
+By Default the server will run on port `8080`, you can customize the port like so:
 
 ```shell
 npm config set mockbin:port 8001
@@ -75,6 +78,7 @@ After installing the `npm` package you can now start the server like so:
 
 ```shell
 npm start
+NODE_DEBUG=mockbin npm run dev
 ```
 
 ## Usage
@@ -94,7 +98,7 @@ npm start
 
 ## Documentation
 
-Read the full API documentation, please review the [API Docs](https://github.com/Mashape/mockbin/tree/master/docs).
+Read the full API documentation, please review the [API Docs](https://github.com/Kong/mockbin/tree/master/docs).
 
 ## Bugs and feature requests
 
@@ -110,28 +114,24 @@ Editor preferences are available in the [editor config](.editorconfig) for easy 
 
 ## License
 
-[MIT](LICENSE) &copy; [Mashape](https://www.mashape.com)
+[MIT](LICENSE) &copy; [Kong](https://www.konghq.com)
 
-[license-url]: https://github.com/Mashape/mockbin/blob/master/LICENSE
+[license-url]: https://github.com/Kong/mockbin/blob/master/LICENSE
 
-[travis-url]: https://travis-ci.org/Mashape/mockbin
-[travis-image]: https://img.shields.io/travis/Mashape/mockbin.svg?style=flat-square
+[travis-url]: https://travis-ci.org/Kong/mockbin
+[travis-image]: https://img.shields.io/travis/Kong/mockbin.svg?style=flat-square
 
 [npm-url]: https://www.npmjs.com/package/mockbin
 [npm-license]: https://img.shields.io/npm/l/mockbin.svg?style=flat-square
 [npm-version]: https://img.shields.io/npm/v/mockbin.svg?style=flat-square
 [npm-downloads]: https://img.shields.io/npm/dm/mockbin.svg?style=flat-square
 
-[codeclimate-url]: https://codeclimate.com/github/Mashape/mockbin
-[codeclimate-quality]: https://img.shields.io/codeclimate/github/Mashape/mockbin.svg?style=flat-square
-[codeclimate-coverage]: https://img.shields.io/codeclimate/coverage/github/Mashape/mockbin.svg?style=flat-square
-
-[david-url]: https://david-dm.org/Mashape/mockbin
-[david-image]: https://img.shields.io/david/Mashape/mockbin.svg?style=flat-square
+[david-url]: https://david-dm.org/Kong/mockbin
+[david-image]: https://img.shields.io/david/Kong/mockbin.svg?style=flat-square
 
 [docker-image]: https://www.herokucdn.com/deploy/button.svg
-[docker-url]: https://heroku.com/deploy?template=https://github.com/Mashape/mockbin
+[docker-url]: https://heroku.com/deploy?template=https://github.com/Kong/mockbin
 [docker-logo]: https://d3oypxn00j2a10.cloudfront.net/0.16.0/images/pages/brand_guidelines/small_h.png
 
-[gitter-url]: https://gitter.im/Mashape/mockbin
+[gitter-url]: https://gitter.im/Kong/mockbin
 [gitter-image]: https://img.shields.io/badge/Gitter-Join%20Chat-blue.svg?style=flat-square

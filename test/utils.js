@@ -31,7 +31,7 @@ describe('Utils', function () {
     it('should return blank array on undefined', function (done) {
       var result = utils.objectToArray(undefined)
 
-      result.should.be.an.Array
+      result.should.be.an.Array()
       result.length.should.be.equal(0)
 
       done()
@@ -40,7 +40,7 @@ describe('Utils', function () {
     it('should return blank array on invalid type', function (done) {
       var result = utils.objectToArray('foo')
 
-      result.should.be.an.Array
+      result.should.be.an.Array()
       result.length.should.be.equal(0)
 
       done()
@@ -49,7 +49,7 @@ describe('Utils', function () {
     it('should convert to name/value pair', function (done) {
       var result = utils.objectToArray(fixture.headers)
 
-      result.should.be.an.Array
+      result.should.be.an.Array()
       result.should.be.eql([{
         name: 'foo',
         value: 'bar'
@@ -63,7 +63,7 @@ describe('Utils', function () {
     it('should calculate header size', function (done) {
       var result = utils.getReqHeaderSize(fixture)
 
-      result.should.be.a.Number
+      result.should.be.a.Number()
       result.should.be.equal(47)
 
       done()
@@ -75,7 +75,7 @@ describe('Utils', function () {
 
     result.log.entries[0].startedDateTime = 'now'
 
-    result.should.be.an.Object
+    result.should.be.an.Object()
     result.should.eql({
       log: {
         version: '1.2',

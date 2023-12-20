@@ -35,7 +35,7 @@ describe('/cookie/:name', function () {
     }
 
     cookies.one(req, res, function () {
-      res.body.should.be.false
+      res.body.should.be.false()
 
       done()
     })
@@ -50,7 +50,7 @@ describe('/cookie/:name', function () {
     }
 
     cookies.one(req, res, function () {
-      res.body.should.be.false
+      res.body.should.be.false()
 
       done()
     })

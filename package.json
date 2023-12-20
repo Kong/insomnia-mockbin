@@ -1,5 +1,5 @@
 {
-  "version": "1.6.2",
+  "version": "2.0.0",
   "name": "mockbin",
   "description": "Test, mock, and track HTTP requests & responses between libraries, sockets and APIs",
   "author": "Kong (https://www.konghq.com/)",
@@ -23,7 +23,7 @@
     "testing"
   ],
   "engines": {
-    "node": ">=0.10"
+    "node": ">=16"
   },
   "files": [
     "bin",
@@ -50,18 +50,10 @@
     "test": "mocha --recursive",
     "pretest": "standard && echint",
     "coverage": "istanbul cover --dir coverage _mocha -- --recursive --fgrep 'Request Validation' --invert --reporter dot",
-    "codeclimate": "codeclimate-test-reporter < coverage/lcov.info",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
-  "echint": {
-    "ignore": [
-      "CONTRIBUTING.md"
-    ]
-  },
   "devDependencies": {
-    "codeclimate-test-reporter": "0.5.1",
     "cz-conventional-changelog": "^3.1.0",
-    "echint": "^4.0.2",
     "mocha": "^7.1.0",
     "should": "^13.2.3",
     "standard": "^14.3.1",

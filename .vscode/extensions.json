@@ -1,8 +1,14 @@
 {
   "recommendations": [
-    "standard.vscode-standard"
+    // "ryanluker.vscode-coverage-gutters",
+    // "hbenl.vscode-test-explorer",
+    // "hbenl.vscode-mocha-test-adapter",
+    // "dbaeumer.vscode-eslint",
+    "gruntfuggly.todo-tree",
+    "editorconfig.editorconfig",
+    "biomejs.biome"
   ],
   "[javascript]": {
-    "editor.defaultFormatter": "vscode.typescript-language-features"
-  }
+    "editor.defaultFormatter": "biomejs.biome"
+}
 }

@@ -1,8 +1,8 @@
 /* global describe, it */
 
-const ips = require("../../lib/routes/ips");
+import { all, one } from "../../lib/routes/ips.js";
 
-require("should");
+import "should";
 
 describe("/ip", () => {
 	it("should response with ip address", (done) => {
@@ -11,7 +11,7 @@ describe("/ip", () => {
 			ip: "0.0.0.0",
 		};
 
-		ips.one(req, res, () => {
+		one(req, res, () => {
 			res.body.should.equal(req.ip);
 
 			done();
@@ -31,7 +31,7 @@ describe("/ips", () => {
 			},
 		};
 
-		ips.all(req, res, () => {
+		all(req, res, () => {
 			res.body.should.equal(req.forwarded.for);
 
 			done();

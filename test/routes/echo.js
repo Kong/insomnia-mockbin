@@ -1,6 +1,6 @@
 /* global describe, it */
 
-import echo from "../../lib/routes/echo";
+import echo from "../../lib/routes/echo.js";
 
 import "should";
 

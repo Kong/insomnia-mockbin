@@ -1,7 +1,7 @@
 /* global describe, it */
 
-import utils from "../lib/utils";
-import { version as _version } from "../package.json" assert { type: "json" };
+import utils from "../lib/utils.js";
+import pkg from "../package.json" assert { type: "json" };
 
 import "should";
 
@@ -81,7 +81,7 @@ describe("Utils", () => {
 				version: "1.2",
 				creator: {
 					name: "mockbin.com",
-					version: _version,
+					version: pkg.version,
 				},
 
 				entries: [

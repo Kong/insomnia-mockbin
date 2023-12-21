@@ -1,13 +1,14 @@
 /* global describe, it, before, after */
 
-import { join } from "path";
+import path, { join } from "path";
+import { fileURLToPath } from "url";
 import cookieParser from "cookie-parser";
 import express from "express";
+import "should";
 import unirest from "unirest";
 import mockbin from "../../lib/index.js";
-
-import "should";
-
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const app = express();
 let server = null;
 

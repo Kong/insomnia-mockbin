@@ -1,8 +1,8 @@
 /* global describe, it */
 
-const gzip = require("../../lib/routes/gzip");
+import gzip from "../../lib/routes/gzip.js";
 
-require("should");
+import "should";
 
 describe("/gzip/*", () => {
 	// not much to test here, mostly compression middleware's job

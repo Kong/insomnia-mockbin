@@ -1,6 +1,6 @@
 /* global describe, it */
 
-import stream from "../../lib/routes/stream";
+import stream from "../../lib/routes/stream.js";
 
 import "should";
 

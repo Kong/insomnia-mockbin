@@ -1,8 +1,8 @@
 /* global describe, it */
 
-const hello = require("../../lib/routes/hello");
+import hello from "../../lib/routes/hello.js";
 
-require("should");
+import "should";
 
 describe("/", () => {
 	it("should respond with Hello World", (done) => {

@@ -1,6 +1,6 @@
 /* global describe, it */
 
-import status from "../../lib/routes/status";
+import status from "../../lib/routes/status.js";
 
 import "should";
 

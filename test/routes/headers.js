@@ -1,8 +1,8 @@
 /* global describe, it */
 
-const headers = require("../../lib/routes/headers");
+import { agent, all, one } from "../../lib/routes/headers.js";
 
-require("should");
+import "should";
 
 describe("/agent", () => {
 	it("should response with user-agent header", (done) => {
@@ -14,7 +14,7 @@ describe("/agent", () => {
 			},
 		};
 
-		headers.agent(req, res, () => {
+		agent(req, res, () => {
 			res.body.should.equal(req.headers["user-agent"]);
 
 			done();
@@ -34,7 +34,7 @@ describe("/header/:name", () => {
 			},
 		};
 
-		headers.one(req, res, () => {
+		one(req, res, () => {
 			res.body.should.equal(req.headers.foo);
 
 			done();
@@ -50,7 +50,7 @@ describe("/header/:name", () => {
 			headers: {},
 		};
 
-		headers.one(req, res, () => {
+		one(req, res, () => {
 			res.body.should.be.false();
 
 			done();
@@ -65,7 +65,7 @@ describe("/header/:name", () => {
 			},
 		};
 
-		headers.one(req, res, () => {
+		one(req, res, () => {
 			res.body.should.be.false();
 
 			done();
@@ -91,7 +91,7 @@ describe("/header/:name", () => {
 			},
 		};
 
-		headers.all(req, res, () => {
+		all(req, res, () => {
 			res.body.should.eql(req.har.log.entries[0].request);
 
 			done();

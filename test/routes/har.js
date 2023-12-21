@@ -1,8 +1,8 @@
 /* global describe, it */
 
-const har = require("../../lib/routes/har");
+import har from "../../lib/routes/har.js";
 
-require("should");
+import "should";
 
 describe("/har", () => {
 	// not much to test here, actual endpoint logic is tested elsewhere

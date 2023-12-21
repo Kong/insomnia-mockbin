@@ -1,6 +1,6 @@
 /* global describe, it */
 
-import request from "../../lib/routes/request";
+import request from "../../lib/routes/request.js";
 
 import "should";
 

@@ -1,6 +1,6 @@
 /* global describe, it */
 
-import redirect from "../../lib/routes/redirect";
+import redirect from "../../lib/routes/redirect.js";
 
 import "should";
 

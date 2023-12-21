@@ -10,7 +10,7 @@ describe("/stream/:chunks", () => {
 			params: {},
 		};
 
-		var res = {
+		const res = {
 			body: "",
 
 			set: (headers) => {
@@ -30,7 +30,7 @@ describe("/stream/:chunks", () => {
 					.and.equal("chunked");
 
 				res.body.should.equal(
-					[
+					`${[
 						'{"type":"stream","chunk":1}',
 						'{"type":"stream","chunk":2}',
 						'{"type":"stream","chunk":3}',
@@ -41,7 +41,7 @@ describe("/stream/:chunks", () => {
 						'{"type":"stream","chunk":8}',
 						'{"type":"stream","chunk":9}',
 						'{"type":"stream","chunk":10}',
-					].join("\n") + "\n",
+					].join("\n")}\n`,
 				);
 
 				done();
@@ -58,7 +58,7 @@ describe("/stream/:chunks", () => {
 			},
 		};
 
-		var res = {
+		const res = {
 			body: "",
 
 			set: (headers) => {
@@ -78,11 +78,11 @@ describe("/stream/:chunks", () => {
 					.and.equal("chunked");
 
 				res.body.should.equal(
-					[
+					`${[
 						'{"type":"stream","chunk":1}',
 						'{"type":"stream","chunk":2}',
 						'{"type":"stream","chunk":3}',
-					].join("\n") + "\n",
+					].join("\n")}\n`,
 				);
 
 				done();

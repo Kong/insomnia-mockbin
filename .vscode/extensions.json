@@ -8,7 +8,7 @@
     "editorconfig.editorconfig",
     "biomejs.biome"
   ],
-  "[javascript]": {
-    "editor.defaultFormatter": "biomejs.biome"
-}
+  "editor.codeActionsOnSave": {
+    "quickfix.biome": true
+  }
 }

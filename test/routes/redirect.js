@@ -4,7 +4,7 @@ import redirect from "../../lib/routes/redirect.js";
 
 import "should";
 
-var res = {
+const res = {
 	redirect: (status, target) => {
 		res.status = status;
 		res.target = target;

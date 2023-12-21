@@ -4,7 +4,7 @@ import echo from "../../lib/routes/echo.js";
 
 import "should";
 
-var res = {
+const res = {
 	headers: {},
 
 	type: (type) => {

@@ -92,7 +92,7 @@ $(() => {
 
 		reader.onload = (e) => {
 			try {
-				var data = JSON.parse(e.target.result);
+				const data = JSON.parse(e.target.result);
 			} catch (e) {
 				console.log(e);
 			}
@@ -143,9 +143,7 @@ $(() => {
 
 		forms.forEach((item) => {
 			$(
-				'form[name="' +
-					item.form +
-					'"] div.form-group:not(.pair) .form-control',
+				`form[name="${item.form}"] div.form-group:not(.pair) .form-control`,
 			).each(function () {
 				const self = $(this);
 
@@ -158,7 +156,7 @@ $(() => {
 		groups.forEach((pair) => {
 			const params = [];
 
-			$('form[name="' + pair + '"] .pair input[name="name"]')
+			$(`form[name="${pair}"] .pair input[name="name"]`)
 				.slice(0, -1)
 				.each((index, header) => {
 					const value = $(header).val();
@@ -168,7 +166,7 @@ $(() => {
 					}
 				});
 
-			$('form[name="' + pair + '"] .pair input[name="value"]')
+			$(`form[name="${pair}"] .pair input[name="value"]`)
 				.slice(0, -1)
 				.each((index, header) => {
 					if (params[index]) {

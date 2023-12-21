@@ -48,6 +48,7 @@
     "test": "mocha --recursive"
   },
   "devDependencies": {
+    "@biomejs/biome": "1.4.1",
     "cz-conventional-changelog": "^3.3.0",
     "mocha": "^10.2.0",
     "should": "^13.2.3",

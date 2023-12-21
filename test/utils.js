@@ -5,7 +5,7 @@ import pkg from "../package.json" assert { type: "json" };
 
 import "should";
 
-var fixture = {
+const fixture = {
 	method: "POST",
 	url: "http://mockbin.com/",
 	protocol: "http",
@@ -27,7 +27,7 @@ var fixture = {
 describe("Utils", () => {
 	describe("ObjectToArray", () => {
 		it("should return blank array on undefined", (done) => {
-			var result = utils.objectToArray(undefined);
+			const result = utils.objectToArray(undefined);
 
 			result.should.be.an.Array();
 			result.length.should.be.equal(0);
@@ -36,7 +36,7 @@ describe("Utils", () => {
 		});
 
 		it("should return blank array on invalid type", (done) => {
-			var result = utils.objectToArray("foo");
+			const result = utils.objectToArray("foo");
 
 			result.should.be.an.Array();
 			result.length.should.be.equal(0);
@@ -45,7 +45,7 @@ describe("Utils", () => {
 		});
 
 		it("should convert to name/value pair", (done) => {
-			var result = utils.objectToArray(fixture.headers);
+			const result = utils.objectToArray(fixture.headers);
 
 			result.should.be.an.Array();
 			result.should.be.eql([
@@ -61,7 +61,7 @@ describe("Utils", () => {
 
 	describe("getReqHeaderSize", () => {
 		it("should calculate header size", (done) => {
-			var result = utils.getReqHeaderSize(fixture);
+			const result = utils.getReqHeaderSize(fixture);
 
 			result.should.be.a.Number();
 			result.should.be.equal(47);
@@ -71,7 +71,7 @@ describe("Utils", () => {
 	});
 
 	describe("createHar", () => {
-		var result = utils.createHar(fixture);
+		const result = utils.createHar(fixture);
 
 		result.log.entries[0].startedDateTime = "now";
 

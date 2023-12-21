@@ -57,7 +57,6 @@
     "unirest": "^0.6.0"
   },
   "dependencies": {
-    "change-case": "^4.1.1",
     "commander": "^4.1.1",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.4",
@@ -75,7 +74,6 @@
     "morgan": "^1.9.1",
     "node-uuid": "^1.4.8",
     "redis": "^3.0.2",
-    "require-directory": "^2.1.1",
     "xmlbuilder": "^15.0.0",
     "yamljs": "^0.3.0"
   }

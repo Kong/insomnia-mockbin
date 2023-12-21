@@ -47,8 +47,7 @@
   "scripts": {
     "start": "node bin/mockbin",
     "dev": "node server.js",
-    "test": "mocha --recursive",
-    "pretest": "standard && echint",
+    "test": "standard && mocha --recursive",
     "coverage": "istanbul cover --dir coverage _mocha -- --recursive --fgrep 'Request Validation' --invert --reporter dot"
   },
   "devDependencies": {

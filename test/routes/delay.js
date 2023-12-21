@@ -2,7 +2,7 @@
 
 'use strict'
 
-var delay = require('../../lib/routes/delay')
+const delay = require('../../lib/routes/delay')
 
 require('should')
 
@@ -10,8 +10,8 @@ describe('/delay/:ms', function () {
   this.timeout(210)
 
   it('should not timeout', function (done) {
-    var res = {}
-    var req = {
+    const res = {}
+    const req = {
       params: {
         ms: 10
       }
@@ -27,8 +27,8 @@ describe('/delay/:ms', function () {
   })
 
   it('should default to 200ms', function (done) {
-    var res = {}
-    var req = {
+    const res = {}
+    const req = {
       params: {}
     }
 

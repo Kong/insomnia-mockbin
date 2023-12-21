@@ -2,14 +2,14 @@
 
 'use strict'
 
-var headers = require('../../lib/routes/headers')
+const headers = require('../../lib/routes/headers')
 
 require('should')
 
 describe('/agent', function () {
   it('should response with user-agent header', function (done) {
-    var res = {}
-    var req = {
+    const res = {}
+    const req = {
       params: {},
       headers: {
         'user-agent': 'foo'
@@ -26,8 +26,8 @@ describe('/agent', function () {
 
 describe('/header/:name', function () {
   it('should response with one header', function (done) {
-    var res = {}
-    var req = {
+    const res = {}
+    const req = {
       params: {
         name: 'foo'
       },
@@ -44,8 +44,8 @@ describe('/header/:name', function () {
   })
 
   it('should response with false when no headers are defined', function (done) {
-    var res = {}
-    var req = {
+    const res = {}
+    const req = {
       params: {
         name: 'foo'
       },
@@ -60,8 +60,8 @@ describe('/header/:name', function () {
   })
 
   it('should response with false when no match', function (done) {
-    var res = {}
-    var req = {
+    const res = {}
+    const req = {
       params: {
         name: 'foo'
       }
@@ -77,8 +77,8 @@ describe('/header/:name', function () {
 
 describe('/header/:name', function () {
   it('should response with all headers', function (done) {
-    var res = {}
-    var req = {
+    const res = {}
+    const req = {
       har: {
         log: {
           entries: [

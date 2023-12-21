@@ -2,13 +2,13 @@
 
 'use strict'
 
-var stream = require('../../lib/routes/stream')
+const stream = require('../../lib/routes/stream')
 
 require('should')
 
 describe('/stream/:chunks', function () {
   it('should respond with streamed chunks using default values', function (done) {
-    var req = {
+    const req = {
       params: {}
     }
 
@@ -48,7 +48,7 @@ describe('/stream/:chunks', function () {
   })
 
   it('should respond with streamed chunks using specified chunks count', function (done) {
-    var req = {
+    const req = {
       params: {
         chunks: 3
       }

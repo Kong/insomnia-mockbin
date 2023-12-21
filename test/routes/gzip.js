@@ -2,14 +2,14 @@
 
 'use strict'
 
-var gzip = require('../../lib/routes/gzip')
+const gzip = require('../../lib/routes/gzip')
 
 require('should')
 
 describe('/gzip/*', function () {
   // not much to test here, mostly compression middleware's job
   it('should force accept-encoding header', function (done) {
-    var req = {
+    const req = {
       headers: {}
     }
 

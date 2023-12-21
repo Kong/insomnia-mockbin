@@ -2,14 +2,14 @@
 
 'use strict'
 
-var cookies = require('../../lib/routes/cookies')
+const cookies = require('../../lib/routes/cookies')
 
 require('should')
 
 describe('/cookie/:name', function () {
   it('should response with one cookie', function (done) {
-    var res = {}
-    var req = {
+    const res = {}
+    const req = {
       params: {
         name: 'foo'
       },
@@ -26,8 +26,8 @@ describe('/cookie/:name', function () {
   })
 
   it('should response with false when no cookies are defined', function (done) {
-    var res = {}
-    var req = {
+    const res = {}
+    const req = {
       params: {
         name: 'foo'
       },
@@ -42,8 +42,8 @@ describe('/cookie/:name', function () {
   })
 
   it('should response with false when no match', function (done) {
-    var res = {}
-    var req = {
+    const res = {}
+    const req = {
       params: {
         name: 'foo'
       }
@@ -59,8 +59,8 @@ describe('/cookie/:name', function () {
 
 describe('/cookie/:name', function () {
   it('should response with all cookies', function (done) {
-    var res = {}
-    var req = {
+    const res = {}
+    const req = {
       har: {
         log: {
           entries: [

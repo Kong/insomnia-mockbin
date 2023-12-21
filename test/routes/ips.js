@@ -2,14 +2,14 @@
 
 'use strict'
 
-var ips = require('../../lib/routes/ips')
+const ips = require('../../lib/routes/ips')
 
 require('should')
 
 describe('/ip', function () {
   it('should response with ip address', function (done) {
-    var res = {}
-    var req = {
+    const res = {}
+    const req = {
       ip: '0.0.0.0'
     }
 
@@ -23,8 +23,8 @@ describe('/ip', function () {
 
 describe('/ips', function () {
   it('should response with all address', function (done) {
-    var res = {}
-    var req = {
+    const res = {}
+    const req = {
       forwarded: {
         for: {
           '0.0.0.0': -1,

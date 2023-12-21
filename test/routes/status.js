@@ -2,17 +2,17 @@
 
 'use strict'
 
-var status = require('../../lib/routes/status')
+const status = require('../../lib/routes/status')
 
 require('should')
 
 describe('/status/:code/:reason', function () {
   it('should use defaults', function (done) {
-    var req = {
+    const req = {
       params: {}
     }
 
-    var res = {}
+    const res = {}
 
     status(req, res, function () {
       res.statusCode.should.equal(200)
@@ -26,14 +26,14 @@ describe('/status/:code/:reason', function () {
   })
 
   it('should use params', function (done) {
-    var req = {
+    const req = {
       params: {
         code: 300,
         reason: 'foo'
       }
     }
 
-    var res = {}
+    const res = {}
 
     status(req, res, function () {
       res.statusCode.should.equal(300)
@@ -46,14 +46,14 @@ describe('/status/:code/:reason', function () {
   })
 
   it('should replace + with spaces', function (done) {
-    var req = {
+    const req = {
       params: {
         code: 300,
         reason: 'foo+bar'
       }
     }
 
-    var res = {}
+    const res = {}
 
     status(req, res, function () {
       res.statusCode.should.equal(300)

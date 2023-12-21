@@ -5,7 +5,7 @@ import { config } from 'dotenv'
 
 config({ silent: true })
 
-var options = {
+const options = {
   port: process.env.MOCKBIN_PORT,
   quiet: process.env.MOCKBIN_QUIET,
   redis: process.env.MOCKBIN_REDIS

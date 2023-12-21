@@ -2,7 +2,7 @@
 
 'use strict'
 
-var redirect = require('../../lib/routes/redirect')
+const redirect = require('../../lib/routes/redirect')
 
 require('should')
 
@@ -15,7 +15,7 @@ var res = {
 
 describe('/redirect/:status_code/:count', function () {
   it('should use default values', function (done) {
-    var req = {
+    const req = {
       query: {},
       params: {}
     }
@@ -28,7 +28,7 @@ describe('/redirect/:status_code/:count', function () {
   })
 
   it('should use redirect x times', function (done) {
-    var req = {
+    const req = {
       query: {},
 
       params: {
@@ -44,7 +44,7 @@ describe('/redirect/:status_code/:count', function () {
   })
 
   it('should use redirect with custom status', function (done) {
-    var req = {
+    const req = {
       query: {},
 
       params: {
@@ -61,7 +61,7 @@ describe('/redirect/:status_code/:count', function () {
   })
 
   it('should use redirect to custom target eventually', function (done) {
-    var req = {
+    const req = {
       query: {
         to: 'http://mockbin.org'
       },
@@ -80,7 +80,7 @@ describe('/redirect/:status_code/:count', function () {
   })
 
   it('should use redirect to custom target', function (done) {
-    var req = {
+    const req = {
       query: {
         to: 'http://mockbin.org'
       },
@@ -99,7 +99,7 @@ describe('/redirect/:status_code/:count', function () {
   })
 
   it('should reject invalid redirect status code', function (done) {
-    var req = {
+    const req = {
       params: {
         status_code: 400
       }
@@ -113,7 +113,7 @@ describe('/redirect/:status_code/:count', function () {
   })
 
   it('should finish redirecting', function (done) {
-    var req = {
+    const req = {
       query: {},
       params: {
         count: '0'

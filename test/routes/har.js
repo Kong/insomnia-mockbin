@@ -2,15 +2,15 @@
 
 'use strict'
 
-var har = require('../../lib/routes/har')
+const har = require('../../lib/routes/har')
 
 require('should')
 
 describe('/har', function () {
   // not much to test here, actual endpoint logic is tested elsewhere
   it('should return object', function (done) {
-    var res = {}
-    var req = {
+    const res = {}
+    const req = {
       har: 'foo'
     }
 

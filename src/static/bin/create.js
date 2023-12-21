@@ -1,6 +1,6 @@
 /* globals $, hljs, FileReader */
 
-var sample = {
+const sample = {
   text: {
     status: 200,
     statusText: 'OK',
@@ -72,7 +72,7 @@ var sample = {
 
 $(function () {
   $('select[name="example"]').on('change', function (e) {
-    var data = sample[$(this).val()]
+    const data = sample[$(this).val()]
 
     if (data) {
       $('input[name="response"]').val(JSON.stringify(data))
@@ -82,13 +82,13 @@ $(function () {
   })
 
   $('input[type="file"]').on('change', function (e) {
-    var file = e.target.files[0]
+    const file = e.target.files[0]
 
     if (!file) {
       return
     }
 
-    var reader = new FileReader()
+    const reader = new FileReader()
 
     reader.onload = function (e) {
       try {
@@ -108,17 +108,17 @@ $(function () {
     reader.readAsText(file)
   })
 
-  var addKeyPair = function (event) {
-    var self = $(this)
+  const addKeyPair = function (event) {
+    const self = $(this)
 
-    var group = self.parents('.form-group')
-    var form = self.parents('form')
+    const group = self.parents('.form-group')
+    const form = self.parents('form')
 
     group.clone().appendTo(form)
   }
 
-  var processFormData = function (event) {
-    var response = {
+  const processFormData = function (event) {
+    const response = {
       status: '',
       statusText: '',
       httpVersion: 'HTTP/1.1',
@@ -136,23 +136,23 @@ $(function () {
       $(this).parents('.form-group').addClass('has-error')
     })
 
-    var forms = [{ form: 'status', parent: response }, { form: 'content', parent: response.content }]
+    const forms = [{ form: 'status', parent: response }, { form: 'content', parent: response.content }]
 
     forms.forEach(function (item) {
       $('form[name="' + item.form + '"] div.form-group:not(.pair) .form-control').each(function () {
-        var self = $(this)
+        const self = $(this)
 
         item.parent[self.attr('name')] = self.val()
       })
     })
 
-    var groups = ['headers', 'cookies']
+    const groups = ['headers', 'cookies']
 
     groups.forEach(function (pair) {
-      var params = []
+      const params = []
 
       $('form[name="' + pair + '"] .pair input[name="name"]').slice(0, -1).each(function (index, header) {
-        var value = $(header).val()
+        const value = $(header).val()
 
         if (value.trim() !== '') {
           params.push({ name: value })

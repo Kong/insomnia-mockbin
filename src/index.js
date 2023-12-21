@@ -3,17 +3,16 @@
 import compression from 'compression'
 import cookieParser from 'cookie-parser'
 import debugLog from 'debug-log'
-var debug = debugLog('mockbin')
 import express from 'express'
 import methodOverride from 'method-override'
 import morgan from 'morgan'
-import { join } from 'path'
+import path, { join } from 'path'
 import router from '../lib/index.js'
-import path from 'path';
-import { fileURLToPath } from 'url';
+import { fileURLToPath } from 'url'
+const debug = debugLog('mockbin')
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 export default function (options, done) {
   if (!options) {
     throw Error('missing options')
@@ -22,7 +21,7 @@ export default function (options, done) {
   debug('system started with options: %j', options)
 
   // setup ExpressJS
-  var app = express()
+  const app = express()
 
   app.enable('view cache')
   app.enable('trust proxy')

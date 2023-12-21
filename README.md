@@ -61,13 +61,13 @@ other than the dependencies listed in [package.json](package.json) The following
 you will need to tell *mockbin* where Redis is:
 
 ```shell
-npm config set mockbin:redis redis://127.0.0.1:6379
+export MOCKBIN_REDIS=redis://127.0.0.1:6379
 ```
 
 By Default the server will run on port `8080`, you can customize the port like so:
 
 ```shell
-npm config set mockbin:port 8001
+export MOCKBIN_PORT=8001
 ```
 
 *read more on [Configuration](docs/config.md)*.

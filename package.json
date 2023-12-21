@@ -38,9 +38,6 @@
     "url": "https://github.com/Kong/mockbin/issues"
   },
   "config": {
-    "port": 8080,
-    "quiet": false,
-    "redis": "redis://127.0.0.1:6379",
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }

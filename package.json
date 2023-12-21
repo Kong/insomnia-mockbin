@@ -23,7 +23,7 @@
     "testing"
   ],
   "engines": {
-    "node": ">=16"
+    "node": ">=21"
   },
   "files": [
     "bin",

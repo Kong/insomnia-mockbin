@@ -1,10 +1,10 @@
 'use strict'
 
-var app = require('./src')
-var dotenv = require('dotenv')
-var pkg = require('./package')
+import app from './src/index.js'
+import { config } from 'dotenv'
+import pkg from './package.json' assert { type: "json" };
 
-dotenv.config({ silent: true })
+config({ silent: true })
 
 var options = {
   port: process.env.MOCKBIN_PORT || pkg.config.port,

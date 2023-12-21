@@ -1,15 +1,20 @@
 'use strict'
 
-var compression = require('compression')
-var cookieParser = require('cookie-parser')
-var debug = require('debug-log')('mockbin')
-var express = require('express')
-var methodOverride = require('method-override')
-var morgan = require('morgan')
-var path = require('path')
-var router = require('../lib')
+import compression from 'compression'
+import cookieParser from 'cookie-parser'
+import debugLog from 'debug-log'
+var debug = debugLog('mockbin')
+import express from 'express'
+import methodOverride from 'method-override'
+import morgan from 'morgan'
+import { join } from 'path'
+import router from '../lib/index.js'
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-module.exports = function (options, done) {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+export default function (options, done) {
   if (!options) {
     throw Error('missing options')
   }
@@ -22,7 +27,7 @@ module.exports = function (options, done) {
   app.enable('view cache')
   app.enable('trust proxy')
   app.set('view engine', 'pug')
-  app.set('views', path.join(__dirname, 'views'))
+  app.set('views', join(__dirname, 'views'))
   app.set('jsonp callback name', '__callback')
 
   // add 3rd party middlewares
@@ -30,7 +35,7 @@ module.exports = function (options, done) {
   app.use(cookieParser())
   app.use(methodOverride('__method'))
   app.use(methodOverride('X-HTTP-Method-Override'))
-  app.use('/static', express.static(path.join(__dirname, 'static')))
+  app.use('/static', express.static(join(__dirname, 'static')))
 
   if (options.quiet !== true) {
     app.use(morgan('dev'))

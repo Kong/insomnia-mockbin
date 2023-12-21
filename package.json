@@ -8,6 +8,7 @@
     "type": "git",
     "url": "git+https://github.com/Kong/mockbin.git"
   },
+  "type": "module",
   "license": "MIT",
   "main": "lib/index",
   "bin": "bin/mockbin",

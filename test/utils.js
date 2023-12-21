@@ -1,11 +1,9 @@
 /* global describe, it */
 
-'use strict'
+import { version as _version } from '../package.json' assert { type: "json" };
+import utils from '../lib/utils'
 
-var pkg = require('../package.json')
-var utils = require('../lib/utils')
-
-require('should')
+import 'should'
 
 var fixture = {
   method: 'POST',
@@ -81,7 +79,7 @@ describe('Utils', function () {
         version: '1.2',
         creator: {
           name: 'mockbin.com',
-          version: pkg.version
+          version: _version
         },
 
         entries: [{

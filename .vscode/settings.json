@@ -1,5 +1,5 @@
 {
 	"editor.codeActionsOnSave": {
-		"quickfix.biome": true
+		"quickfix.biome": "explicit"
 	}
 }

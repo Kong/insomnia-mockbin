@@ -83,6 +83,7 @@ describe("HTTP", () => {
 
 		req.end((res) => {
 			res.body.should.match(/127\.0\.0\.1/);
+			// res.body.should.equal('::1')
 			done();
 		});
 	});

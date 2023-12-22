@@ -140,8 +140,7 @@ $(() => {
 			{ form: "status", parent: response },
 			{ form: "content", parent: response.content },
 		];
-
-		forms.forEach((item) => {
+		for (const item of forms) {
 			$(
 				`form[name="${item.form}"] div.form-group:not(.pair) .form-control`,
 			).each(function () {
@@ -149,11 +148,10 @@ $(() => {
 
 				item.parent[self.attr("name")] = self.val();
 			});
-		});
+		}
 
 		const groups = ["headers", "cookies"];
-
-		groups.forEach((pair) => {
+		for (const pair of groups) {
 			const params = [];
 
 			$(`form[name="${pair}"] .pair input[name="name"]`)
@@ -175,7 +173,7 @@ $(() => {
 				});
 
 			response[pair] = params;
-		});
+		}
 
 		// fix type issues
 		response.status = parseInt(response.status, 10);

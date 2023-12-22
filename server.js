@@ -1,17 +1,14 @@
-'use strict'
+import { config } from "dotenv";
+import app from "./src/index.js";
 
-var app = require('./src')
-var dotenv = require('dotenv')
-var pkg = require('./package')
+config({ silent: false });
 
-dotenv.config({ silent: true })
+const options = {
+	port: process.env.MOCKBIN_PORT,
+	quiet: process.env.MOCKBIN_QUIET,
+	redis: process.env.MOCKBIN_REDIS,
+};
 
-var options = {
-  port: process.env.MOCKBIN_PORT || pkg.config.port,
-  quiet: process.env.MOCKBIN_QUIET || pkg.config.quiet,
-  redis: process.env.MOCKBIN_REDIS || pkg.config.redis
-}
-
-app(options, function () {
-  console.info('starting server on port: %d', options.port)
-})
+app(options, () => {
+	console.info("starting server on port: %d", options.port);
+});

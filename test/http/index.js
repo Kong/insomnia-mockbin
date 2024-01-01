@@ -1,5 +1,6 @@
 /* global describe, it, before, after */
 
+import { after, before, describe, it } from "node:test";
 import path, { join } from "path";
 import { fileURLToPath } from "url";
 import cookieParser from "cookie-parser";
@@ -13,7 +14,7 @@ const app = express();
 let server = null;
 
 describe("HTTP", () => {
-	before((done) => {
+	before((t, done) => {
 		// express setup
 		app.enable("trust proxy");
 		app.set("view engine", "pug");
@@ -31,7 +32,7 @@ describe("HTTP", () => {
 		server.close();
 	});
 
-	it("home page responds with html content", (done) => {
+	it("home page responds with html content", (t, done) => {
 		const req = unirest.get("http://localhost:3000/");
 
 		req.headers("Accept", "text/html");
@@ -45,7 +46,7 @@ describe("HTTP", () => {
 		});
 	});
 
-	it("should send CORS headers", (done) => {
+	it("should send CORS headers", (t, done) => {
 		const req = unirest.options("http://localhost:3000/request");
 
 		req.end((res) => {
@@ -62,7 +63,7 @@ describe("HTTP", () => {
 		});
 	});
 
-	it("GET / responds with hello message", (done) => {
+	it("GET / responds with hello message", (t, done) => {
 		const req = unirest.get("http://localhost:3000/");
 
 		req.headers("Accept", "text/plain");
@@ -76,19 +77,19 @@ describe("HTTP", () => {
 		});
 	});
 
-	it("GET /ip should return local ip", (done) => {
+	it("GET /ip should return local ip", (t, done) => {
 		const req = unirest.get("http://localhost:3000/ip");
 
 		req.headers("Accept", "text/plain");
 
 		req.end((res) => {
-			res.body.should.match(/127\.0\.0\.1/);
-			// res.body.should.equal('::1')
+			// res.body.should.match(/127\.0\.0\.1/);
+			res.body.should.equal("::1");
 			done();
 		});
 	});
 
-	it("GET /ips should return proxied IPs", (done) => {
+	it("GET /ips should return proxied IPs", (t, done) => {
 		const req = unirest.get("http://localhost:3000/ips");
 
 		req.headers({
@@ -104,7 +105,7 @@ describe("HTTP", () => {
 		});
 	});
 
-	it("GET /agent should return user-agent string", (done) => {
+	it("GET /agent should return user-agent string", (t, done) => {
 		const req = unirest.get("http://localhost:3000/agent");
 
 		req.headers({
@@ -119,7 +120,7 @@ describe("HTTP", () => {
 		});
 	});
 
-	it("GET /status/:code should return custom status code", (done) => {
+	it("GET /status/:code should return custom status code", (t, done) => {
 		const req = unirest.get("http://localhost:3000/status/900");
 
 		req.headers("Accept", "application/json");
@@ -132,7 +133,7 @@ describe("HTTP", () => {
 		});
 	});
 
-	it("GET /status/:code/:reason should return custom status code + reason", (done) => {
+	it("GET /status/:code/:reason should return custom status code + reason", (t, done) => {
 		const req = unirest.get("http://localhost:3000/status/900/reason");
 
 		req.headers("Accept", "application/json");
@@ -145,7 +146,7 @@ describe("HTTP", () => {
 		});
 	});
 
-	it("GET /status/:code/:reason should allow spaces in reason text", (done) => {
+	it("GET /status/:code/:reason should allow spaces in reason text", (t, done) => {
 		const req = unirest.get(
 			"http://localhost:3000/status/900/because of reasons",
 		);
@@ -160,7 +161,7 @@ describe("HTTP", () => {
 		});
 	});
 
-	it("GET /status/:code/:reason should replace plus signs in reason text with spaces", (done) => {
+	it("GET /status/:code/:reason should replace plus signs in reason text with spaces", (t, done) => {
 		const req = unirest.get(
 			"http://localhost:3000/status/900/because+of+reasons",
 		);
@@ -175,7 +176,7 @@ describe("HTTP", () => {
 		});
 	});
 
-	it("GET /headers should return all headers", (done) => {
+	it("GET /headers should return all headers", (t, done) => {
 		const req = unirest.get("http://localhost:3000/headers");
 
 		req.headers({
@@ -193,7 +194,7 @@ describe("HTTP", () => {
 		});
 	});
 
-	it("GET /header/:name should return specific headers", (done) => {
+	it("GET /header/:name should return specific headers", (t, done) => {
 		const req = unirest.get("http://localhost:3000/header/X-Custom-Header");
 
 		req.headers({
@@ -208,7 +209,7 @@ describe("HTTP", () => {
 		});
 	});
 
-	it("GET /cookies should return all cookies", (done) => {
+	it("GET /cookies should return all cookies", (t, done) => {
 		const req = unirest.get("http://localhost:3000/cookies");
 
 		req.headers({
@@ -226,7 +227,7 @@ describe("HTTP", () => {
 		});
 	});
 
-	it("GET /cookie/:name should return specific cookie", (done) => {
+	it("GET /cookie/:name should return specific cookie", (t, done) => {
 		const req = unirest.get("http://localhost:3000/cookie/my-cookie");
 
 		req.headers({
@@ -241,7 +242,7 @@ describe("HTTP", () => {
 		});
 	});
 
-	it("GET /redirect/:status should redirect 1 time using :status", (done) => {
+	it("GET /redirect/:status should redirect 1 time using :status", (t, done) => {
 		const req = unirest.get("http://localhost:3000/redirect/303");
 
 		req.followRedirect(true);
@@ -259,7 +260,7 @@ describe("HTTP", () => {
 		});
 	});
 
-	it("GET /redirect/:status/:n should redirect :n times using :status", (done) => {
+	it("GET /redirect/:status/:n should redirect :n times using :status", (t, done) => {
 		const req = unirest.get("http://localhost:3000/redirect/302/3");
 
 		req.followRedirect(true);
@@ -273,7 +274,7 @@ describe("HTTP", () => {
 		});
 	});
 
-	it("GET /redirect/:status/:n should redirect :n times using :status (verify count)", (done) => {
+	it("GET /redirect/:status/:n should redirect :n times using :status (verify count)", (t, done) => {
 		const req = unirest.get("http://localhost:3000/redirect/302/3");
 
 		req.followRedirect(true);
@@ -291,7 +292,7 @@ describe("HTTP", () => {
 		});
 	});
 
-	it("GET /redirect/:status?to=URL should redirect to URL", (done) => {
+	it("GET /redirect/:status?to=URL should redirect to URL", (t, done) => {
 		const req = unirest.get(
 			"http://localhost:3000/redirect/308?to=http://mockbin.com/",
 		);

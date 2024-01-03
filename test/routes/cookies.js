@@ -1,81 +1,83 @@
 /* global describe, it */
 
-import { all, one } from "../../lib/routes/cookies.js";
+'use strict'
 
-import "should";
+var cookies = require('../../lib/routes/cookies')
 
-describe("/cookie/:name", () => {
-	it("should response with one cookie", (done) => {
-		const res = {};
-		const req = {
-			params: {
-				name: "foo",
-			},
-			cookies: {
-				foo: "bar",
-			},
-		};
+require('should')
 
-		one(req, res, () => {
-			res.body.should.equal(req.cookies.foo);
+describe('/cookie/:name', function () {
+  it('should response with one cookie', function (done) {
+    var res = {}
+    var req = {
+      params: {
+        name: 'foo'
+      },
+      cookies: {
+        foo: 'bar'
+      }
+    }
 
-			done();
-		});
-	});
+    cookies.one(req, res, function () {
+      res.body.should.equal(req.cookies.foo)
 
-	it("should response with false when no cookies are defined", (done) => {
-		const res = {};
-		const req = {
-			params: {
-				name: "foo",
-			},
-			cookies: {},
-		};
+      done()
+    })
+  })
 
-		one(req, res, () => {
-			res.body.should.be.false();
+  it('should response with false when no cookies are defined', function (done) {
+    var res = {}
+    var req = {
+      params: {
+        name: 'foo'
+      },
+      cookies: {}
+    }
 
-			done();
-		});
-	});
+    cookies.one(req, res, function () {
+      res.body.should.be.false()
 
-	it("should response with false when no match", (done) => {
-		const res = {};
-		const req = {
-			params: {
-				name: "foo",
-			},
-		};
+      done()
+    })
+  })
 
-		one(req, res, () => {
-			res.body.should.be.false();
+  it('should response with false when no match', function (done) {
+    var res = {}
+    var req = {
+      params: {
+        name: 'foo'
+      }
+    }
 
-			done();
-		});
-	});
-});
+    cookies.one(req, res, function () {
+      res.body.should.be.false()
 
-describe("/cookie/:name", () => {
-	it("should response with all cookies", (done) => {
-		const res = {};
-		const req = {
-			har: {
-				log: {
-					entries: [
-						{
-							request: {
-								cookies: ["test"],
-							},
-						},
-					],
-				},
-			},
-		};
+      done()
+    })
+  })
+})
 
-		all(req, res, () => {
-			res.body.should.equal(req.har.log.entries[0].request.cookies);
+describe('/cookie/:name', function () {
+  it('should response with all cookies', function (done) {
+    var res = {}
+    var req = {
+      har: {
+        log: {
+          entries: [
+            {
+              request: {
+                cookies: ['test']
+              }
+            }
+          ]
+        }
+      }
+    }
 
-			done();
-		});
-	});
-});
+    cookies.all(req, res, function () {
+      res.body.should.equal(req.har.log.entries[0].request.cookies)
+
+      done()
+    })
+  })
+})

@@ -1,21 +1,23 @@
 /* global describe, it */
 
-import gzip from "../../lib/routes/gzip.js";
+'use strict'
 
-import "should";
+var gzip = require('../../lib/routes/gzip')
 
-describe("/gzip/*", () => {
-	// not much to test here, mostly compression middleware's job
-	it("should force accept-encoding header", (done) => {
-		const req = {
-			headers: {},
-		};
+require('should')
 
-		gzip(req, {}, () => {
-			req.headers.should.have.property("accept-encoding");
-			req.headers["accept-encoding"].should.equal("gzip");
+describe('/gzip/*', function () {
+  // not much to test here, mostly compression middleware's job
+  it('should force accept-encoding header', function (done) {
+    var req = {
+      headers: {}
+    }
 
-			done();
-		});
-	});
-});
+    gzip(req, {}, function () {
+      req.headers.should.have.property('accept-encoding')
+      req.headers['accept-encoding'].should.equal('gzip')
+
+      done()
+    })
+  })
+})

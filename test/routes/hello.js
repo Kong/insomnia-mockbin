@@ -1,17 +1,19 @@
 /* global describe, it */
 
-import hello from "../../lib/routes/hello.js";
+'use strict'
 
-import "should";
+var hello = require('../../lib/routes/hello')
 
-describe("/", () => {
-	it("should respond with Hello World", (done) => {
-		const res = {};
+require('should')
 
-		hello(null, res, () => {
-			res.body.should.equal("Hello World!");
+describe('/', function () {
+  it('should respond with Hello World', function (done) {
+    var res = {}
 
-			done();
-		});
-	});
-});
+    hello(null, res, function () {
+      res.body.should.equal('Hello World!')
+
+      done()
+    })
+  })
+})

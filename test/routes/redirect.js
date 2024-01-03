@@ -1,128 +1,128 @@
 /* global describe, it */
 
-import redirect from "../../lib/routes/redirect.js";
+'use strict'
 
-import "should";
+var redirect = require('../../lib/routes/redirect')
 
-const res = {
-	redirect: (status, target) => {
-		res.status = status;
-		res.target = target;
-	},
-};
+require('should')
 
-describe("/redirect/:status_code/:count", () => {
-	it("should use default values", (done) => {
-		const req = {
-			query: {},
-			params: {},
-		};
+var res = {
+  redirect: function (status, target) {
+    res.status = status
+    res.target = target
+  }
+}
 
-		redirect(req, res);
-		res.status.should.equal(302);
-		res.target.should.equal("/redirect/302/0");
+describe('/redirect/:status_code/:count', function () {
+  it('should use default values', function (done) {
+    var req = {
+      query: {},
+      params: {}
+    }
 
-		done();
-	});
+    redirect(req, res)
+    res.status.should.equal(302)
+    res.target.should.equal('/redirect/302/0')
 
-	it("should use redirect x times", (done) => {
-		const req = {
-			query: {},
+    done()
+  })
 
-			params: {
-				count: 3,
-			},
-		};
+  it('should use redirect x times', function (done) {
+    var req = {
+      query: {},
 
-		redirect(req, res);
-		res.status.should.equal(302);
-		res.target.should.equal("/redirect/302/2");
+      params: {
+        count: 3
+      }
+    }
 
-		done();
-	});
+    redirect(req, res)
+    res.status.should.equal(302)
+    res.target.should.equal('/redirect/302/2')
 
-	it("should use redirect with custom status", (done) => {
-		const req = {
-			query: {},
+    done()
+  })
 
-			params: {
-				count: 3,
-				status_code: 308,
-			},
-		};
+  it('should use redirect with custom status', function (done) {
+    var req = {
+      query: {},
 
-		redirect(req, res);
-		res.status.should.equal(308);
-		res.target.should.equal("/redirect/308/2");
+      params: {
+        count: 3,
+        status_code: 308
+      }
+    }
 
-		done();
-	});
+    redirect(req, res)
+    res.status.should.equal(308)
+    res.target.should.equal('/redirect/308/2')
 
-	it("should use redirect to custom target eventually", (done) => {
-		const req = {
-			query: {
-				to: "http://mockbin.org",
-			},
+    done()
+  })
 
-			params: {
-				count: 3,
-				status_code: 308,
-			},
-		};
+  it('should use redirect to custom target eventually', function (done) {
+    var req = {
+      query: {
+        to: 'http://mockbin.org'
+      },
 
-		redirect(req, res);
-		res.status.should.equal(308);
-		res.target.should.equal("/redirect/308/2?to=http://mockbin.org");
+      params: {
+        count: 3,
+        status_code: 308
+      }
+    }
 
-		done();
-	});
+    redirect(req, res)
+    res.status.should.equal(308)
+    res.target.should.equal('/redirect/308/2?to=http://mockbin.org')
 
-	it("should use redirect to custom target", (done) => {
-		const req = {
-			query: {
-				to: "http://mockbin.org",
-			},
+    done()
+  })
 
-			params: {
-				count: 1,
-				status_code: 308,
-			},
-		};
+  it('should use redirect to custom target', function (done) {
+    var req = {
+      query: {
+        to: 'http://mockbin.org'
+      },
 
-		redirect(req, res);
-		res.status.should.equal(308);
-		res.target.should.equal("http://mockbin.org");
+      params: {
+        count: 1,
+        status_code: 308
+      }
+    }
 
-		done();
-	});
+    redirect(req, res)
+    res.status.should.equal(308)
+    res.target.should.equal('http://mockbin.org')
 
-	it("should reject invalid redirect status code", (done) => {
-		const req = {
-			params: {
-				status_code: 400,
-			},
-		};
+    done()
+  })
 
-		redirect(req, res, () => {
-			res.body.should.have.property("error");
-			res.body.error.should.equal(
-				"invalid status code, must be one of 300,301,302,303,307,308",
-			);
-			done();
-		});
-	});
+  it('should reject invalid redirect status code', function (done) {
+    var req = {
+      params: {
+        status_code: 400
+      }
+    }
 
-	it("should finish redirecting", (done) => {
-		const req = {
-			query: {},
-			params: {
-				count: "0",
-			},
-		};
+    redirect(req, res, function () {
+      res.body.should.have.property('error')
+      res.body.error.should.equal('invalid status code, must be one of 300,301,302,303,307,308')
+      done()
+    })
+  })
 
-		redirect(req, res, () => {
-			res.body.should.equal("redirect finished");
-			done();
-		});
-	});
-});
+  it('should finish redirecting', function (done) {
+    var req = {
+      query: {},
+      params: {
+        count: '0'
+      }
+    }
+
+    redirect(req, res, function () {
+      res.body.should.equal('redirect finished')
+      done()
+    })
+  })
+})

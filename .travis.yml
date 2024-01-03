@@ -1,0 +1,39 @@
+sudo: false
+
+language: node_js
+
+node_js:
+ - 10
+ - 11
+ - 12
+ - 13
+
+cache:
+  directories:
+    - node_modules
+
+before_install:
+  - npm i -g npm@^2.0.0
+
+before_script:
+  - npm prune
+
+after_success:
+  - 'curl -Lo travis_after_all.py https://git.io/travis_after_all'
+  - python travis_after_all.py
+  - 'export $(cat .to_export_back) &> /dev/null'
+  - npm run coverage
+  - npm run codeclimate
+  - npm run semantic-release
+
+branches:
+  except:
+    - "/^v\\d+\\.\\d+\\.\\d+$/"
+
+notifications:
+  webhooks:
+    urls:
+      - https://webhooks.gitter.im/e/c59c50e0fd30dff70a23
+    on_success: always
+    on_failure: always
+    on_start: false

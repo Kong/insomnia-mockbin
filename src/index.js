@@ -1,49 +1,47 @@
-import path, { join } from "path";
-import { fileURLToPath } from "url";
-import compression from "compression";
-import cookieParser from "cookie-parser";
-import debugLog from "debug-log";
-import express from "express";
-import methodOverride from "method-override";
-import morgan from "morgan";
-import router from "../lib/index.js";
-const debug = debugLog("mockbin");
+'use strict'
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-export default function (options, done) {
-	if (!options) {
-		throw Error("missing options");
-	}
+var compression = require('compression')
+var cookieParser = require('cookie-parser')
+var debug = require('debug-log')('mockbin')
+var express = require('express')
+var methodOverride = require('method-override')
+var morgan = require('morgan')
+var path = require('path')
+var router = require('../lib')
 
-	debug("system started with options: %j", options);
+module.exports = function (options, done) {
+  if (!options) {
+    throw Error('missing options')
+  }
 
-	// setup ExpressJS
-	const app = express();
+  debug('system started with options: %j', options)
 
-	app.enable("view cache");
-	app.enable("trust proxy");
-	app.set("view engine", "pug");
-	app.set("views", join(__dirname, "views"));
-	app.set("jsonp callback name", "__callback");
+  // setup ExpressJS
+  var app = express()
 
-	// add 3rd party middlewares
-	app.use(compression());
-	app.use(cookieParser());
-	app.use(methodOverride("__method"));
-	app.use(methodOverride("X-HTTP-Method-Override"));
-	app.use("/static", express.static(join(__dirname, "static")));
+  app.enable('view cache')
+  app.enable('trust proxy')
+  app.set('view engine', 'pug')
+  app.set('views', path.join(__dirname, 'views'))
+  app.set('jsonp callback name', '__callback')
 
-	if (options.quiet !== true) {
-		app.use(morgan("dev"));
-	}
+  // add 3rd party middlewares
+  app.use(compression())
+  app.use(cookieParser())
+  app.use(methodOverride('__method'))
+  app.use(methodOverride('X-HTTP-Method-Override'))
+  app.use('/static', express.static(path.join(__dirname, 'static')))
 
-	// magic starts here
-	app.use("/", router(options));
+  if (options.quiet !== true) {
+    app.use(morgan('dev'))
+  }
 
-	app.listen(options.port);
+  // magic starts here
+  app.use('/', router(options))
 
-	if (typeof done === "function") {
-		done();
-	}
+  app.listen(options.port)
+
+  if (typeof done === 'function') {
+    done()
+  }
 }

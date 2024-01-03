@@ -1,0 +1,24 @@
+#!/usr/bin/env node
+
+'use strict'
+
+var app = require('../src')
+var cmd = require('commander')
+var pkg = require('../package')
+
+var options = {
+  port: process.env.MOCKBIN_PORT || process.env.npm_package_config_port,
+  quiet: process.env.MOCKBIN_QUIET || process.env.npm_package_config_quiet,
+  redis: process.env.MOCKBIN_REDIS || process.env.npm_package_config_redis
+}
+
+cmd
+  .version(pkg.version)
+  .option('-p, --port <port>', 'HTTP server port', options.port)
+  .option('-q, --quiet', 'disable console logging', options.quiet)
+  .option('-r, --redis [dsn]', 'redis dsn', options.redis)
+  .parse(process.argv)
+
+app(cmd, function () {
+  console.info('starting server on port: %d', cmd.port)
+})

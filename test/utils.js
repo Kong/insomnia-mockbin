@@ -1,118 +1,118 @@
 /* global describe, it */
 
-import utils from "../lib/utils.js";
-import pkg from "../package.json" assert { type: "json" };
+'use strict'
 
-import "should";
+var pkg = require('../package.json')
+var utils = require('../lib/utils')
 
-const fixture = {
-	method: "POST",
-	url: "http://mockbin.com/",
-	protocol: "http",
-	versionMajor: "1",
-	versionMinor: "1",
-	ip: "127.0.0.1",
-	body: "",
-	rawBody: "",
-	hostname: "mockbin.com",
-	originalUrl: "/",
-	forwarded: {
-		proto: "http",
-	},
-	headers: {
-		foo: "bar",
-	},
-};
+require('should')
 
-describe("Utils", () => {
-	describe("ObjectToArray", () => {
-		it("should return blank array on undefined", (done) => {
-			const result = utils.objectToArray(undefined);
+var fixture = {
+  method: 'POST',
+  url: 'http://mockbin.com/',
+  protocol: 'http',
+  versionMajor: '1',
+  versionMinor: '1',
+  ip: '127.0.0.1',
+  body: '',
+  rawBody: '',
+  hostname: 'mockbin.com',
+  originalUrl: '/',
+  forwarded: {
+    proto: 'http'
+  },
+  headers: {
+    foo: 'bar'
+  }
+}
 
-			result.should.be.an.Array();
-			result.length.should.be.equal(0);
+describe('Utils', function () {
+  describe('ObjectToArray', function () {
+    it('should return blank array on undefined', function (done) {
+      var result = utils.objectToArray(undefined)
 
-			done();
-		});
+      result.should.be.an.Array()
+      result.length.should.be.equal(0)
 
-		it("should return blank array on invalid type", (done) => {
-			const result = utils.objectToArray("foo");
+      done()
+    })
 
-			result.should.be.an.Array();
-			result.length.should.be.equal(0);
+    it('should return blank array on invalid type', function (done) {
+      var result = utils.objectToArray('foo')
 
-			done();
-		});
+      result.should.be.an.Array()
+      result.length.should.be.equal(0)
 
-		it("should convert to name/value pair", (done) => {
-			const result = utils.objectToArray(fixture.headers);
+      done()
+    })
 
-			result.should.be.an.Array();
-			result.should.be.eql([
-				{
-					name: "foo",
-					value: "bar",
-				},
-			]);
+    it('should convert to name/value pair', function (done) {
+      var result = utils.objectToArray(fixture.headers)
 
-			done();
-		});
-	});
+      result.should.be.an.Array()
+      result.should.be.eql([{
+        name: 'foo',
+        value: 'bar'
+      }])
 
-	describe("getReqHeaderSize", () => {
-		it("should calculate header size", (done) => {
-			const result = utils.getReqHeaderSize(fixture);
+      done()
+    })
+  })
 
-			result.should.be.a.Number();
-			result.should.be.equal(47);
+  describe('getReqHeaderSize', function () {
+    it('should calculate header size', function (done) {
+      var result = utils.getReqHeaderSize(fixture)
 
-			done();
-		});
-	});
+      result.should.be.a.Number()
+      result.should.be.equal(47)
 
-	describe("createHar", () => {
-		const result = utils.createHar(fixture);
+      done()
+    })
+  })
 
-		result.log.entries[0].startedDateTime = "now";
+  describe('createHar', function () {
+    var result = utils.createHar(fixture)
 
-		result.should.be.an.Object();
-		result.should.eql({
-			log: {
-				version: "1.2",
-				creator: {
-					name: "mockbin.com",
-					version: pkg.version,
-				},
+    result.log.entries[0].startedDateTime = 'now'
 
-				entries: [
-					{
-						startedDateTime: "now",
-						clientIPAddress: "127.0.0.1",
-						request: {
-							method: "POST",
-							url: "http://mockbin.com/",
-							httpVersion: "HTTP/1.1",
-							cookies: [],
-							headers: [
-								{
-									name: "foo",
-									value: "bar",
-								},
-							],
-							queryString: [],
-							postData: {
-								mimeType: "application/octet-stream",
-								params: [],
-								text: "",
-							},
-							headersSize: 47,
-							bodySize: 0,
-						},
-					},
-				],
-			},
-		});
-	});
+    result.should.be.an.Object()
+    result.should.eql({
+      log: {
+        version: '1.2',
+        creator: {
+          name: 'mockbin.com',
+          version: pkg.version
+        },
 
-	describe("createSimpleHar", () => {});
-});
+        entries: [{
+          startedDateTime: 'now',
+          clientIPAddress: '127.0.0.1',
+          request: {
+            method: 'POST',
+            url: 'http://mockbin.com/',
+            httpVersion: 'HTTP/1.1',
+            cookies: [],
+            headers: [
+              {
+                name: 'foo',
+                value: 'bar'
+              }
+            ],
+            queryString: [],
+            postData: {
+              mimeType: 'application/octet-stream',
+              params: [],
+              text: ''
+            },
+            headersSize: 47,
+            bodySize: 0
+          }
+        }]
+      }
+    })
+  })
+
+  describe('createSimpleHar', function () {
+
+  })
+})

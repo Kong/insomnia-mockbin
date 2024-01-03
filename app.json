@@ -1,0 +1,21 @@
+{
+  "name": "mockbin",
+  "description": "Test, mock, and track HTTP requests & responses between libraries, sockets and APIs",
+  "repository": "https://github.com/Kong/mockbin",
+  "website": "http://mockbin.org/",
+  "success_url": "/",
+  "addons": [
+    "openredis"
+  ],
+  "keywords": [
+    "api",
+    "bin",
+    "har",
+    "http",
+    "json",
+    "mock",
+    "mocking",
+    "test",
+    "testing"
+  ]
+}

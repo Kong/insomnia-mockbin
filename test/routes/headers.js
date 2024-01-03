@@ -1,100 +1,102 @@
 /* global describe, it */
 
-import { agent, all, one } from "../../lib/routes/headers.js";
+'use strict'
 
-import "should";
+var headers = require('../../lib/routes/headers')
 
-describe("/agent", () => {
-	it("should response with user-agent header", (done) => {
-		const res = {};
-		const req = {
-			params: {},
-			headers: {
-				"user-agent": "foo",
-			},
-		};
+require('should')
 
-		agent(req, res, () => {
-			res.body.should.equal(req.headers["user-agent"]);
+describe('/agent', function () {
+  it('should response with user-agent header', function (done) {
+    var res = {}
+    var req = {
+      params: {},
+      headers: {
+        'user-agent': 'foo'
+      }
+    }
 
-			done();
-		});
-	});
-});
+    headers.agent(req, res, function () {
+      res.body.should.equal(req.headers['user-agent'])
 
-describe("/header/:name", () => {
-	it("should response with one header", (done) => {
-		const res = {};
-		const req = {
-			params: {
-				name: "foo",
-			},
-			headers: {
-				foo: "bar",
-			},
-		};
+      done()
+    })
+  })
+})
 
-		one(req, res, () => {
-			res.body.should.equal(req.headers.foo);
+describe('/header/:name', function () {
+  it('should response with one header', function (done) {
+    var res = {}
+    var req = {
+      params: {
+        name: 'foo'
+      },
+      headers: {
+        foo: 'bar'
+      }
+    }
 
-			done();
-		});
-	});
+    headers.one(req, res, function () {
+      res.body.should.equal(req.headers.foo)
 
-	it("should response with false when no headers are defined", (done) => {
-		const res = {};
-		const req = {
-			params: {
-				name: "foo",
-			},
-			headers: {},
-		};
+      done()
+    })
+  })
 
-		one(req, res, () => {
-			res.body.should.be.false();
+  it('should response with false when no headers are defined', function (done) {
+    var res = {}
+    var req = {
+      params: {
+        name: 'foo'
+      },
+      headers: {}
+    }
 
-			done();
-		});
-	});
+    headers.one(req, res, function () {
+      res.body.should.be.false()
 
-	it("should response with false when no match", (done) => {
-		const res = {};
-		const req = {
-			params: {
-				name: "foo",
-			},
-		};
+      done()
+    })
+  })
 
-		one(req, res, () => {
-			res.body.should.be.false();
+  it('should response with false when no match', function (done) {
+    var res = {}
+    var req = {
+      params: {
+        name: 'foo'
+      }
+    }
 
-			done();
-		});
-	});
-});
+    headers.one(req, res, function () {
+      res.body.should.be.false()
 
-describe("/header/:name", () => {
-	it("should response with all headers", (done) => {
-		const res = {};
-		const req = {
-			har: {
-				log: {
-					entries: [
-						{
-							request: {
-								headers: ["test"],
-								headersSize: 0,
-							},
-						},
-					],
-				},
-			},
-		};
+      done()
+    })
+  })
+})
 
-		all(req, res, () => {
-			res.body.should.eql(req.har.log.entries[0].request);
+describe('/header/:name', function () {
+  it('should response with all headers', function (done) {
+    var res = {}
+    var req = {
+      har: {
+        log: {
+          entries: [
+            {
+              request: {
+                headers: ['test'],
+                headersSize: 0
+              }
+            }
+          ]
+        }
+      }
+    }
 
-			done();
-		});
-	});
-});
+    headers.all(req, res, function () {
+      res.body.should.eql(req.har.log.entries[0].request)
+
+      done()
+    })
+  })
+})

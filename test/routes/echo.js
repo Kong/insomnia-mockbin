@@ -1,50 +1,52 @@
 /* global describe, it */
 
-import echo from "../../lib/routes/echo.js";
+'use strict'
 
-import "should";
+var echo = require('../../lib/routes/echo')
 
-const res = {
-	headers: {},
+require('should')
 
-	type: (type) => {
-		res.headers["content-type"] = type;
-	},
+var res = {
+  headers: {},
 
-	send: (body) => {
-		res.body = body;
-	},
-};
+  type: function (type) {
+    res.headers['content-type'] = type
+  },
 
-describe("/echo", () => {
-	it("should respond with request body and content-type header", (done) => {
-		const req = {
-			body: "foo",
-			headers: {
-				"content-type": "text/plain",
-			},
-		};
+  send: function (body) {
+    res.body = body
+  }
+}
 
-		echo(req, res);
+describe('/echo', function () {
+  it('should respond with request body and content-type header', function (done) {
+    var req = {
+      body: 'foo',
+      headers: {
+        'content-type': 'text/plain'
+      }
+    }
 
-		res.body.should.equal(req.body);
-		res.headers.should.have.property("content-type");
-		res.headers["content-type"].should.equal(req.headers["content-type"]);
+    echo(req, res)
 
-		done();
-	});
+    res.body.should.equal(req.body)
+    res.headers.should.have.property('content-type')
+    res.headers['content-type'].should.equal(req.headers['content-type'])
 
-	it("should respond with default values", (done) => {
-		const req = {
-			headers: {},
-		};
+    done()
+  })
 
-		echo(req, res);
+  it('should respond with default values', function (done) {
+    var req = {
+      headers: {}
+    }
 
-		res.body.should.equal("");
-		res.headers.should.have.property("content-type");
-		res.headers["content-type"].should.equal("text/plain");
+    echo(req, res)
 
-		done();
-	});
-});
+    res.body.should.equal('')
+    res.headers.should.have.property('content-type')
+    res.headers['content-type'].should.equal('text/plain')
+
+    done()
+  })
+})

@@ -303,4 +303,17 @@ describe('HTTP', () => {
       done()
     })
   })
+
+  it('POST /request should accept multipart/form-data requests', function (done) {
+    var number = '123'
+    var req = unirest.post('http://localhost:3000/request')
+    req.headers('content-type', 'multipart/form-data; boundary=----boundary')
+    req.field('number', number)
+
+    req.end(function (res) {
+      res.body.postData.params.number.should.equal(number)
+
+      done()
+    })
+  })
 })

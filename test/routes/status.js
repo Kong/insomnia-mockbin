@@ -1,65 +1,67 @@
 /* global describe, it */
 
-import status from "../../lib/routes/status.js";
+'use strict'
 
-import "should";
+var status = require('../../lib/routes/status')
 
-describe("/status/:code/:reason", () => {
-	it("should use defaults", (done) => {
-		const req = {
-			params: {},
-		};
+require('should')
 
-		const res = {};
+describe('/status/:code/:reason', function () {
+  it('should use defaults', function (done) {
+    var req = {
+      params: {}
+    }
 
-		status(req, res, () => {
-			res.statusCode.should.equal(200);
-			res.statusMessage.should.equal("OK");
+    var res = {}
 
-			res.body.code.should.equal(200);
-			res.body.message.should.equal("OK");
+    status(req, res, function () {
+      res.statusCode.should.equal(200)
+      res.statusMessage.should.equal('OK')
 
-			done();
-		});
-	});
+      res.body.code.should.equal(200)
+      res.body.message.should.equal('OK')
 
-	it("should use params", (done) => {
-		const req = {
-			params: {
-				code: 300,
-				reason: "foo",
-			},
-		};
+      done()
+    })
+  })
 
-		const res = {};
+  it('should use params', function (done) {
+    var req = {
+      params: {
+        code: 300,
+        reason: 'foo'
+      }
+    }
 
-		status(req, res, () => {
-			res.statusCode.should.equal(300);
-			res.statusMessage.should.equal("foo");
+    var res = {}
 
-			res.body.code.should.equal(300);
-			res.body.message.should.equal("foo");
-			done();
-		});
-	});
+    status(req, res, function () {
+      res.statusCode.should.equal(300)
+      res.statusMessage.should.equal('foo')
 
-	it("should replace + with spaces", (done) => {
-		const req = {
-			params: {
-				code: 300,
-				reason: "foo+bar",
-			},
-		};
+      res.body.code.should.equal(300)
+      res.body.message.should.equal('foo')
+      done()
+    })
+  })
 
-		const res = {};
+  it('should replace + with spaces', function (done) {
+    var req = {
+      params: {
+        code: 300,
+        reason: 'foo+bar'
+      }
+    }
 
-		status(req, res, () => {
-			res.statusCode.should.equal(300);
-			res.statusMessage.should.equal("foo bar");
+    var res = {}
 
-			res.body.code.should.equal(300);
-			res.body.message.should.equal("foo bar");
-			done();
-		});
-	});
-});
+    status(req, res, function () {
+      res.statusCode.should.equal(300)
+      res.statusMessage.should.equal('foo bar')
+
+      res.body.code.should.equal(300)
+      res.body.message.should.equal('foo bar')
+      done()
+    })
+  })
+})

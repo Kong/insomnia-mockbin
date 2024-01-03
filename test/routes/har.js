@@ -1,21 +1,23 @@
 /* global describe, it */
 
-import har from "../../lib/routes/har.js";
+'use strict'
 
-import "should";
+var har = require('../../lib/routes/har')
 
-describe("/har", () => {
-	// not much to test here, actual endpoint logic is tested elsewhere
-	it("should return object", (done) => {
-		const res = {};
-		const req = {
-			har: "foo",
-		};
+require('should')
 
-		har(req, res, () => {
-			res.body.should.equal(req.har);
+describe('/har', function () {
+  // not much to test here, actual endpoint logic is tested elsewhere
+  it('should return object', function (done) {
+    var res = {}
+    var req = {
+      har: 'foo'
+    }
 
-			done();
-		});
-	});
-});
+    har(req, res, function () {
+      res.body.should.equal(req.har)
+
+      done()
+    })
+  })
+})

@@ -1,94 +1,84 @@
 /* global describe, it */
 
-import stream from "../../lib/routes/stream.js";
+'use strict'
 
-import "should";
+var stream = require('../../lib/routes/stream')
 
-describe("/stream/:chunks", () => {
-	it("should respond with streamed chunks using default values", (done) => {
-		const req = {
-			params: {},
-		};
+require('should')
 
-		const res = {
-			body: "",
+describe('/stream/:chunks', function () {
+  it('should respond with streamed chunks using default values', function (done) {
+    var req = {
+      params: {}
+    }
 
-			set: (headers) => {
-				res.headers = headers;
-			},
+    var res = {
+      body: '',
 
-			write: (body) => {
-				res.body += body;
-			},
+      set: function (headers) {
+        res.headers = headers
+      },
 
-			end: () => {
-				res.headers.should.have
-					.property("Content-Type")
-					.and.equal("text/plain; charset=utf-8");
-				res.headers.should.have
-					.property("Transfer-Encoding")
-					.and.equal("chunked");
+      write: function (body) {
+        res.body += body
+      },
 
-				res.body.should.equal(
-					`${[
-						'{"type":"stream","chunk":1}',
-						'{"type":"stream","chunk":2}',
-						'{"type":"stream","chunk":3}',
-						'{"type":"stream","chunk":4}',
-						'{"type":"stream","chunk":5}',
-						'{"type":"stream","chunk":6}',
-						'{"type":"stream","chunk":7}',
-						'{"type":"stream","chunk":8}',
-						'{"type":"stream","chunk":9}',
-						'{"type":"stream","chunk":10}',
-					].join("\n")}\n`,
-				);
+      end: function () {
+        res.headers.should.have.property('Content-Type').and.equal('text/plain; charset=utf-8')
+        res.headers.should.have.property('Transfer-Encoding').and.equal('chunked')
 
-				done();
-			},
-		};
+        res.body.should.equal([
+          '{"type":"stream","chunk":1}',
+          '{"type":"stream","chunk":2}',
+          '{"type":"stream","chunk":3}',
+          '{"type":"stream","chunk":4}',
+          '{"type":"stream","chunk":5}',
+          '{"type":"stream","chunk":6}',
+          '{"type":"stream","chunk":7}',
+          '{"type":"stream","chunk":8}',
+          '{"type":"stream","chunk":9}',
+          '{"type":"stream","chunk":10}'
+        ].join('\n') + '\n')
 
-		stream(req, res);
-	});
+        done()
+      }
+    }
 
-	it("should respond with streamed chunks using specified chunks count", (done) => {
-		const req = {
-			params: {
-				chunks: 3,
-			},
-		};
+    stream(req, res)
+  })
 
-		const res = {
-			body: "",
+  it('should respond with streamed chunks using specified chunks count', function (done) {
+    var req = {
+      params: {
+        chunks: 3
+      }
+    }
 
-			set: (headers) => {
-				res.headers = headers;
-			},
+    var res = {
+      body: '',
 
-			write: (body) => {
-				res.body += body;
-			},
+      set: function (headers) {
+        res.headers = headers
+      },
 
-			end: () => {
-				res.headers.should.have
-					.property("Content-Type")
-					.and.equal("text/plain; charset=utf-8");
-				res.headers.should.have
-					.property("Transfer-Encoding")
-					.and.equal("chunked");
+      write: function (body) {
+        res.body += body
+      },
 
-				res.body.should.equal(
-					`${[
-						'{"type":"stream","chunk":1}',
-						'{"type":"stream","chunk":2}',
-						'{"type":"stream","chunk":3}',
-					].join("\n")}\n`,
-				);
+      end: function () {
+        res.headers.should.have.property('Content-Type').and.equal('text/plain; charset=utf-8')
+        res.headers.should.have.property('Transfer-Encoding').and.equal('chunked')
 
-				done();
-			},
-		};
+        res.body.should.equal([
+          '{"type":"stream","chunk":1}',
+          '{"type":"stream","chunk":2}',
+          '{"type":"stream","chunk":3}'
+        ].join('\n') + '\n')
 
-		stream(req, res);
-	});
-});
+        done()
+      }
+    }
+
+    stream(req, res)
+  })
+})

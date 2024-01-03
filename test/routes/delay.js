@@ -1,41 +1,43 @@
 /* global describe, it */
 
-import delay from "../../lib/routes/delay.js";
+'use strict'
 
-import "should";
+var delay = require('../../lib/routes/delay')
 
-describe("/delay/:ms", function () {
-	this.timeout(210);
+require('should')
 
-	it("should not timeout", (done) => {
-		const res = {};
-		const req = {
-			params: {
-				ms: 10,
-			},
-		};
+describe('/delay/:ms', function () {
+  this.timeout(210)
 
-		delay(req, res, () => {
-			res.body.should.eql({
-				delay: req.params.ms,
-			});
+  it('should not timeout', function (done) {
+    var res = {}
+    var req = {
+      params: {
+        ms: 10
+      }
+    }
 
-			done();
-		});
-	});
+    delay(req, res, function () {
+      res.body.should.eql({
+        delay: req.params.ms
+      })
 
-	it("should default to 200ms", (done) => {
-		const res = {};
-		const req = {
-			params: {},
-		};
+      done()
+    })
+  })
 
-		delay(req, res, () => {
-			res.body.should.eql({
-				delay: 200,
-			});
+  it('should default to 200ms', function (done) {
+    var res = {}
+    var req = {
+      params: {}
+    }
 
-			done();
-		});
-	});
-});
+    delay(req, res, function () {
+      res.body.should.eql({
+        delay: 200
+      })
+
+      done()
+    })
+  })
+})

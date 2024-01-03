@@ -1,21 +1,23 @@
 /* global describe, it */
 
-import request from "../../lib/routes/request.js";
+'use strict'
 
-import "should";
+var request = require('../../lib/routes/request')
 
-describe("/request", () => {
-	// not much to test here, actual endpoint logic is tested elsewhere
-	it("should return object", (done) => {
-		const res = {};
-		const req = {
-			simple: "foo",
-		};
+require('should')
 
-		request(req, res, () => {
-			res.body.should.equal(req.simple);
+describe('/request', function () {
+  // not much to test here, actual endpoint logic is tested elsewhere
+  it('should return object', function (done) {
+    var res = {}
+    var req = {
+      simple: 'foo'
+    }
 
-			done();
-		});
-	});
-});
+    request(req, res, function () {
+      res.body.should.equal(req.simple)
+
+      done()
+    })
+  })
+})

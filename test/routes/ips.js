@@ -1,40 +1,42 @@
 /* global describe, it */
 
-import { all, one } from "../../lib/routes/ips.js";
+'use strict'
 
-import "should";
+var ips = require('../../lib/routes/ips')
 
-describe("/ip", () => {
-	it("should response with ip address", (done) => {
-		const res = {};
-		const req = {
-			ip: "0.0.0.0",
-		};
+require('should')
 
-		one(req, res, () => {
-			res.body.should.equal(req.ip);
+describe('/ip', function () {
+  it('should response with ip address', function (done) {
+    var res = {}
+    var req = {
+      ip: '0.0.0.0'
+    }
 
-			done();
-		});
-	});
-});
+    ips.one(req, res, function () {
+      res.body.should.equal(req.ip)
 
-describe("/ips", () => {
-	it("should response with all address", (done) => {
-		const res = {};
-		const req = {
-			forwarded: {
-				for: {
-					"0.0.0.0": -1,
-					"1.1.1.1": -1,
-				},
-			},
-		};
+      done()
+    })
+  })
+})
 
-		all(req, res, () => {
-			res.body.should.equal(req.forwarded.for);
+describe('/ips', function () {
+  it('should response with all address', function (done) {
+    var res = {}
+    var req = {
+      forwarded: {
+        for: {
+          '0.0.0.0': -1,
+          '1.1.1.1': -1
+        }
+      }
+    }
 
-			done();
-		});
-	});
-});
+    ips.all(req, res, function () {
+      res.body.should.equal(req.forwarded.for)
+
+      done()
+    })
+  })
+})

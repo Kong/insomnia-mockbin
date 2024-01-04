@@ -1,47 +1,45 @@
-'use strict'
+const compression = require("compression");
+const cookieParser = require("cookie-parser");
+const debug = require("debug")("mockbin");
+const express = require("express");
+const methodOverride = require("method-override");
+const morgan = require("morgan");
+const path = require("path");
+const router = require("../lib");
 
-var compression = require('compression')
-var cookieParser = require('cookie-parser')
-var debug = require('debug')('mockbin')
-var express = require('express')
-var methodOverride = require('method-override')
-var morgan = require('morgan')
-var path = require('path')
-var router = require('../lib')
+module.exports = (options, done) => {
+	if (!options) {
+		throw Error("missing options");
+	}
 
-module.exports = function (options, done) {
-  if (!options) {
-    throw Error('missing options')
-  }
+	debug("system started with options: %j", options);
 
-  debug('system started with options: %j', options)
+	// setup ExpressJS
+	const app = express();
 
-  // setup ExpressJS
-  var app = express()
+	app.enable("view cache");
+	app.enable("trust proxy");
+	app.set("view engine", "pug");
+	app.set("views", path.join(__dirname, "views"));
+	app.set("jsonp callback name", "__callback");
 
-  app.enable('view cache')
-  app.enable('trust proxy')
-  app.set('view engine', 'pug')
-  app.set('views', path.join(__dirname, 'views'))
-  app.set('jsonp callback name', '__callback')
+	// add 3rd party middlewares
+	app.use(compression());
+	app.use(cookieParser());
+	app.use(methodOverride("__method"));
+	app.use(methodOverride("X-HTTP-Method-Override"));
+	app.use("/static", express.static(path.join(__dirname, "static")));
 
-  // add 3rd party middlewares
-  app.use(compression())
-  app.use(cookieParser())
-  app.use(methodOverride('__method'))
-  app.use(methodOverride('X-HTTP-Method-Override'))
-  app.use('/static', express.static(path.join(__dirname, 'static')))
+	if (options.quiet !== true) {
+		app.use(morgan("dev"));
+	}
 
-  if (options.quiet !== true) {
-    app.use(morgan('dev'))
-  }
+	// magic starts here
+	app.use("/", router(options));
 
-  // magic starts here
-  app.use('/', router(options))
+	app.listen(options.port);
 
-  app.listen(options.port)
-
-  if (typeof done === 'function') {
-    done()
-  }
-}
+	if (typeof done === "function") {
+		done();
+	}
+};

@@ -1,5 +1,5 @@
 {
-  "version": "1.6.2",
+  "version": "1.7.2",
   "name": "mockbin",
   "description": "Test, mock, and track HTTP requests & responses between libraries, sockets and APIs",
   "author": "Kong (https://www.konghq.com/)",
@@ -23,7 +23,7 @@
     "testing"
   ],
   "engines": {
-    "node": ">=0.10"
+    "node": ">=21"
   },
   "files": [
     "bin",

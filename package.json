@@ -52,7 +52,7 @@
 		"start": "node --trace-deprecation bin/mockbin",
 		"dev": "node server.js",
 		"test": "mocha --recursive",
-		"lint": "standard && echint",
+		"check": "biome check .",
 		"coverage": "npx nyc --report-dir coverage npm test",
 		"watch": "npm-watch",
 		"clean": "git clean -fdX"

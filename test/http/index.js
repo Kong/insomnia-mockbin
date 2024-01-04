@@ -174,19 +174,16 @@ describe("HTTP", () => {
 		});
 	});
 
-	it("GET /header/:name should return specific headers", (done) => {
-		const req = unirest.get("http://localhost:3000/header/X-Custom-Header");
-
-		req.headers({
-			Accept: "application/json",
-			"X-Custom-Header": "ALL YOUR BASE ARE BELONG TO US",
+	it("GET /header/:name should return specific headers", async () => {
+		const res = await fetch("http://localhost:3000/header/X-Custom-Header", {
+			headers: {
+				Accept: "application/json",
+				"X-Custom-Header": "ALL YOUR BASE ARE BELONG TO US",
+			},
 		});
 
-		req.end((res) => {
-			res.body.should.equal("ALL YOUR BASE ARE BELONG TO US");
-
-			done();
-		});
+		const body = await res.json();
+		body.should.equal("ALL YOUR BASE ARE BELONG TO US");
 	});
 
 	it("GET /cookies should return all cookies", async () => {

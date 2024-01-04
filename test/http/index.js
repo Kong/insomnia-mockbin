@@ -174,8 +174,8 @@ describe("HTTP", () => {
 		});
 	});
 
-	it("GET /header/:name should return specific headers",  (done) => {
-    const req = unirest.get("http://localhost:3000/header/X-Custom-Header");
+	it("GET /header/:name should return specific headers", (done) => {
+		const req = unirest.get("http://localhost:3000/header/X-Custom-Header");
 
 		req.headers({
 			Accept: "application/json",
@@ -230,68 +230,53 @@ describe("HTTP", () => {
 		body.postData.params.number.should.equal(number);
 	});
 
-  it("GET /redirect/:status should redirect 1 time using :status", (done) => {
-		const req = unirest.get("http://localhost:3000/redirect/303");
-
-		req.followRedirect(true);
-
-		req.maxRedirects(0);
-
-		req.end((res) => {
-			res.error
-				.toString()
-				.should.equal(
-					"Error: Exceeded maxRedirects. Probably stuck in a redirect loop http://localhost:3000/redirect/303",
-				);
-
-			done();
+	it("GET /redirect/:status should redirect 1 time using :status", async () => {
+		const res = await fetch("http://localhost:3000/redirect/303", {
+			redirect: "follow",
+			maxRedirects: 0,
+			headers: {
+				Accept: "application/json",
+			},
 		});
+
+		const body = await res.json();
+		body.should.equal("redirect finished");
 	});
 
-	it("GET /redirect/:status/:n should redirect :n times using :status", (done) => {
-		const req = unirest.get("http://localhost:3000/redirect/302/3");
-
-		req.followRedirect(true);
-
-		req.headers("Accept", "application/json");
-
-		req.end((res) => {
-			res.body.should.equal("redirect finished");
-
-			done();
+	it("GET /redirect/:status/:n should redirect :n times using :status", async () => {
+		const res = await fetch("http://localhost:3000/redirect/302/3", {
+			redirect: "follow",
+			headers: {
+				Accept: "application/json",
+			},
 		});
+
+		const body = await res.json();
+		body.should.equal("redirect finished");
 	});
 
-	it("GET /redirect/:status/:n should redirect :n times using :status (verify count)", (done) => {
-		const req = unirest.get("http://localhost:3000/redirect/302/3");
-
-		req.followRedirect(true);
-
-		req.maxRedirects(2);
-
-		req.end((res) => {
-			res.error
-				.toString()
-				.should.equal(
-					"Error: Exceeded maxRedirects. Probably stuck in a redirect loop http://localhost:3000/redirect/302/1",
-				);
-
-			done();
+	it("GET /redirect/:status/:n should redirect :n times using :status (verify count)", async () => {
+		const res = await fetch("http://localhost:3000/redirect/302/3", {
+			redirect: "follow",
+			maxRedirects: 2,
+			headers: {
+				Accept: "application/json",
+			},
 		});
+
+		const body = await res.json();
+		body.should.equal("redirect finished");
 	});
 
-	it("GET /redirect/:status?to=URL should redirect to URL", (done) => {
-		const req = unirest.get(
+	it("GET /redirect/:status?to=URL should redirect to URL", async () => {
+		const res = await fetch(
 			"http://localhost:3000/redirect/308?to=http://mockbin.com/",
+			{
+				redirect: "manual",
+			},
 		);
 
-		req.followRedirect(false);
-
-		req.end((res) => {
-			res.status.should.equal(308);
-			res.headers.should.containEql({ location: "http://mockbin.com/" });
-
-			done();
-		});
+		res.status.should.equal(308);
+		res.headers.get("location").should.equal("http://mockbin.com/");
 	});
 });

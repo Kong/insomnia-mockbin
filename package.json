@@ -25,40 +25,25 @@
 	"engines": {
 		"node": ">=21"
 	},
-	"files": ["bin", "docs", "src", "lib", "Procfile", "server.js"],
+	"files": ["bin", "docs", "src", "lib", "server.js"],
 	"bugs": {
 		"url": "https://github.com/Kong/mockbin/issues"
 	},
 	"config": {
 		"port": 8080,
 		"quiet": false,
-		"redis": "//redis:6379",
+		"redis": "localhost:6379",
 		"commitizen": {
 			"path": "./node_modules/cz-conventional-changelog"
 		}
 	},
-	"watch": {
-		"start": {
-			"patterns": ["src", "test", "lib", "."],
-			"extensions": "js,jsx,pug,md",
-			"ignore": "src/vendor/external.min.js",
-			"quiet": true,
-			"legacyWatch": true,
-			"delay": 2500,
-			"runOnChangeOnly": false
-		}
-	},
 	"scripts": {
 		"start": "node --trace-deprecation bin/mockbin",
-		"dev": "node server.js",
+		"dev": "npx nodemon server.js",
 		"test": "mocha --recursive",
 		"check": "biome check .",
 		"coverage": "npx nyc --report-dir coverage npm test",
-		"watch": "npm-watch",
 		"clean": "git clean -fdX"
-	},
-	"echint": {
-		"ignore": ["CONTRIBUTING.md"]
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.4.1",

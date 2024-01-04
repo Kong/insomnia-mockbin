@@ -1,6 +1,6 @@
 ## Requirements
 
-- [Node.js](http://nodejs.org/) *(v0.10.x or higher)*
+- [Node.js](http://nodejs.org/) *(v21 or higher)*
 - [Redis](http://redis.io/)
 - npm modules *listed in [package.json](package.json)*
 
@@ -9,12 +9,6 @@
 ```shell
 git clone https://github.com/Kong/mockbin.git ./mockbin
 cd mockbin
-```
-
-## Install with [npm](https://www.npmjs.com/):
-
-```shell
-npm install mockbin
 ```
 
 ## Install with [Docker](https://www.docker.com/)
@@ -31,5 +25,4 @@ To run, this image needs to be linked to a Redis container:
 
 ```shell
 docker run -d --name mockbin_redis redis
-docker run -d -p 8080:8080 --link mockbin_redis:redis mashape/mockbin
 ```

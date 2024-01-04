@@ -11,9 +11,8 @@ Mockbin is used internally and maintained by [Kong](https://github.com/Kong), wh
 
 - [Features](#features)
 - [Installation](#installation)
-  - [Heroku](#heroku)
-  - [Docker](#docker)
   - [Requirements](#requirements)
+  - [Docker](#docker)
   - [Configuration](#configuration)
   - [Running](#running)
 - [Usage](#usage)
@@ -30,19 +29,21 @@ Mockbin is used internally and maintained by [Kong](https://github.com/Kong), wh
 - allows for HTTP Method Override using the header `X-HTTP-Method-Override` or through query string parameter: `_method`
 - create custom bins for experimenting log collection
 
+### Requirements
+
+other than the dependencies listed in [package.json](package.json) The following are required:
+
+- [Redis](http://redis.io/)
+
 ## Installation
 
-install from source or through [npm](https://www.npmjs.com/):
+### Running with node
 
 ```shell
-npm install mockbin
+NODE_DEBUG=mockbin npm start
+# OR watch for changes with
+NODE_DEBUG=mockbin npm run dev
 ```
-
-### Heroku
-
-[![Deploy][docker-image]][docker-url]
-
-*read more on [Installation](docs/install.md)*.
 
 ### Docker
 
@@ -50,36 +51,11 @@ npm install mockbin
 
 *read more on [Installation](docs/install.md#install-with-docker)*.
 
-### Requirements
-
-other than the dependencies listed in [package.json](package.json) The following are required:
-
-- [Redis](http://redis.io/)
-
 ### Configuration
 
-you will need to tell *mockbin* where Redis is:
-
-```shell
-npm config set mockbin:redis redis://127.0.0.1:6379
-```
-
-By Default the server will run on port `8080`, you can customize the port like so:
-
-```shell
-npm config set mockbin:port 8001
-```
-
-*read more on [Configuration](docs/config.md)*.
-
-### Running
-
-After installing the `npm` package you can now start the server like so:
-
-```shell
-npm start
-NODE_DEBUG=mockbin npm run dev
-```
+- copy env file
+- use env variables
+- package json
 
 ## Usage
 
@@ -129,8 +105,6 @@ Editor preferences are available in the [editor config](.editorconfig) for easy 
 [david-url]: https://david-dm.org/Kong/mockbin
 [david-image]: https://img.shields.io/david/Kong/mockbin.svg?style=flat-square
 
-[docker-image]: https://www.herokucdn.com/deploy/button.svg
-[docker-url]: https://heroku.com/deploy?template=https://github.com/Kong/mockbin
 [docker-logo]: https://d3oypxn00j2a10.cloudfront.net/0.16.0/images/pages/brand_guidelines/small_h.png
 
 [gitter-url]: https://gitter.im/Kong/mockbin

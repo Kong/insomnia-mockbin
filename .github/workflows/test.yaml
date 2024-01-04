@@ -1,4 +1,4 @@
-name: Test
+name: Lint & Test
 on: push
 jobs:
   test:
@@ -9,4 +9,6 @@ jobs:
       with:
         node-version: 21
     - run: npm ci
+    - uses: biomejs/setup-biome@v1
+    - run: biome ci .
     - run: npm test

@@ -1,10 +1,7 @@
-/* global describe, it, before, after */
-
 const cookieParser = require("cookie-parser");
 const express = require("express");
 const mockbin = require("../../lib");
 const path = require("path");
-const unirest = require("unirest");
 
 const app = express();
 let server = null;
@@ -30,290 +27,252 @@ describe("HTTP", () => {
 		server.close();
 	});
 
-	it("home page responds with html content", (done) => {
-		const req = unirest.get("http://localhost:3000/");
-
-		req.headers("Accept", "text/html");
-
-		req.end((res) => {
-			res.status.should.equal(200);
-			res.headers.should.have
-				.property("content-type")
-				.and.equal("text/html; charset=utf-8");
-			done();
+	it("home page responds with html content", async () => {
+		const res = await fetch("http://localhost:3000/", {
+			headers: {
+				Accept: "text/html",
+			},
 		});
+
+		res.status.should.equal(200);
+		res.headers.get("content-type").should.equal("text/html; charset=utf-8");
 	});
 
-	it("should send CORS headers", (done) => {
-		const req = unirest.options("http://localhost:3000/request");
-
-		req.end((res) => {
-			res.headers.should.have
-				.property("access-control-allow-origin")
-				.and.equal("*");
-			res.headers.should.have
-				.property("access-control-allow-methods")
-				.and.equal("OPTIONS");
-			res.headers.should.have
-				.property("access-control-allow-headers")
-				.and.equal("host,content-length,connection");
-			done();
+	it("should send CORS headers", async () => {
+		const res = await fetch("http://localhost:3000/request", {
+			method: "OPTIONS",
 		});
+
+		res.headers.get("access-control-allow-origin").should.equal("*");
+		res.headers.get("access-control-allow-methods").should.equal("OPTIONS");
+		res.headers
+			.get("access-control-allow-headers")
+			.should.equal(
+				"host,connection,accept,accept-language,sec-fetch-mode,user-agent,accept-encoding",
+			);
 	});
 
-	it("GET / responds with hello message", (done) => {
-		const req = unirest.get("http://localhost:3000/");
-
-		req.headers("Accept", "text/plain");
-
-		req.end((res) => {
-			res.headers.should.have
-				.property("content-type")
-				.and.equal("text/plain; charset=utf-8");
-			res.body.should.equal("Hello World!");
-			done();
+	it("GET / responds with hello message", async () => {
+		const res = await fetch("http://localhost:3000/", {
+			headers: {
+				Accept: "text/plain",
+			},
 		});
+
+		res.headers.get("content-type").should.equal("text/plain; charset=utf-8");
+		const body = await res.text();
+		body.should.equal("Hello World!");
 	});
 
-	it("GET /ip should return local ip", (done) => {
-		const req = unirest.get("http://localhost:3000/ip");
-
-		req.headers("Accept", "text/plain");
-
-		req.end((res) => {
-			res.body.should.equal("::1");
-			done();
+	it("GET /ip should return local ip", async () => {
+		const res = await fetch("http://localhost:3000/ip", {
+			headers: {
+				Accept: "text/plain",
+			},
 		});
+
+		const body = await res.text();
+		body.should.equal("::1");
 	});
 
-	it("GET /ips should return proxied IPs", (done) => {
-		const req = unirest.get("http://localhost:3000/ips");
-
-		req.headers({
-			Accept: "application/json",
-			"X-Forwarded-For": "10.10.10.1, 10.10.10.2, 10.10.10.3",
+	it("GET /ips should return proxied IPs", async () => {
+		const res = await fetch("http://localhost:3000/ips", {
+			headers: {
+				Accept: "application/json",
+				"X-Forwarded-For": "10.10.10.1, 10.10.10.2, 10.10.10.3",
+			},
 		});
 
-		req.end((res) => {
-			res.body.should.be.an.Object();
-			res.body.should.have.properties("10.10.10.1", "10.10.10.2", "10.10.10.3");
-
-			done();
-		});
+		const body = await res.json();
+		body.should.be.an.Object();
+		body.should.have.properties("10.10.10.1", "10.10.10.2", "10.10.10.3");
 	});
 
-	it("GET /agent should return user-agent string", (done) => {
-		const req = unirest.get("http://localhost:3000/agent");
-
-		req.headers({
-			Accept: "text/plain",
-			"User-Agent": "mockbin tester",
+	it("GET /agent should return user-agent string", async () => {
+		const res = await fetch("http://localhost:3000/agent", {
+			headers: {
+				Accept: "text/plain",
+				"User-Agent": "mockbin tester",
+			},
 		});
 
-		req.end((res) => {
-			res.body.should.equal("mockbin tester");
-
-			done();
-		});
+		const body = await res.text();
+		body.should.equal("mockbin tester");
 	});
 
-	it("GET /status/:code should return custom status code", (done) => {
-		const req = unirest.get("http://localhost:3000/status/900");
-
-		req.headers("Accept", "application/json");
-
-		req.end((res) => {
-			res.status.should.equal(900);
-			res.body.should.have.property("code").and.equal("900");
-			res.body.should.have.property("message").and.equal("OK");
-			done();
+	it("GET /status/:code should return custom status code", async () => {
+		const res = await fetch("http://localhost:3000/status/900", {
+			headers: {
+				Accept: "application/json",
+			},
 		});
+
+		res.status.should.equal(900);
+		const body = await res.json();
+		body.should.have.property("code").and.equal("900");
+		body.should.have.property("message").and.equal("OK");
 	});
 
-	it("GET /status/:code/:reason should return custom status code + reason", (done) => {
-		const req = unirest.get("http://localhost:3000/status/900/reason");
-
-		req.headers("Accept", "application/json");
-
-		req.end((res) => {
-			res.status.should.equal(900);
-			res.body.should.have.property("code").and.equal("900");
-			res.body.should.have.property("message").and.equal("reason");
-			done();
+	it("GET /status/:code/:reason should return custom status code + reason", async () => {
+		const res = await fetch("http://localhost:3000/status/900/reason", {
+			headers: {
+				Accept: "application/json",
+			},
 		});
+
+		res.status.should.equal(900);
+		const body = await res.json();
+		body.should.have.property("code").and.equal("900");
+		body.should.have.property("message").and.equal("reason");
 	});
 
-	it("GET /status/:code/:reason should allow spaces in reason text", (done) => {
-		const req = unirest.get(
+	it("GET /status/:code/:reason should allow spaces in reason text", async () => {
+		const res = await fetch(
 			"http://localhost:3000/status/900/because of reasons",
+			{
+				headers: {
+					Accept: "application/json",
+				},
+			},
 		);
 
-		req.headers("Accept", "application/json");
-
-		req.end((res) => {
-			res.status.should.equal(900);
-			res.body.should.have.property("code").and.equal("900");
-			res.body.should.have.property("message").and.equal("because of reasons");
-			done();
-		});
+		res.status.should.equal(900);
+		const body = await res.json();
+		body.should.have.property("code").and.equal("900");
+		body.should.have.property("message").and.equal("because of reasons");
 	});
 
-	it("GET /status/:code/:reason should replace plus signs in reason text with spaces", (done) => {
-		const req = unirest.get(
+	it("GET /status/:code/:reason should replace plus signs in reason text with spaces", async () => {
+		const res = await fetch(
 			"http://localhost:3000/status/900/because+of+reasons",
+			{
+				headers: {
+					Accept: "application/json",
+				},
+			},
 		);
 
-		req.headers("Accept", "application/json");
+		res.status.should.equal(900);
+		const body = await res.json();
+		body.should.have.property("code").and.equal("900");
+		body.should.have.property("message").and.equal("because of reasons");
+	});
 
-		req.end((res) => {
-			res.status.should.equal(900);
-			res.body.should.have.property("code").and.equal("900");
-			res.body.should.have.property("message").and.equal("because of reasons");
-			done();
+	it("GET /headers should return all headers", async () => {
+		const res = await fetch("http://localhost:3000/headers", {
+			headers: {
+				Accept: "application/json",
+				"X-Custom-Header": "ALL YOUR BASE ARE BELONG TO US",
+			},
+		});
+
+		const body = await res.json();
+		body.headers.should.containEql({
+			name: "x-custom-header",
+			value: "ALL YOUR BASE ARE BELONG TO US",
 		});
 	});
 
-	it("GET /headers should return all headers", (done) => {
-		const req = unirest.get("http://localhost:3000/headers");
-
-		req.headers({
-			Accept: "application/json",
-			"X-Custom-Header": "ALL YOUR BASE ARE BELONG TO US",
+	it("GET /header/:name should return specific headers", async () => {
+		const res = await fetch("http://localhost:3000/header/X-Custom-Header", {
+			headers: {
+				Accept: "application/json",
+				"X-Custom-Header": "ALL YOUR BASE ARE BELONG TO US",
+			},
 		});
 
-		req.end((res) => {
-			res.body.headers.should.containEql({
-				name: "x-custom-header",
-				value: "ALL YOUR BASE ARE BELONG TO US",
-			});
+		const body = await res.json();
+		body.should.equal("ALL YOUR BASE ARE BELONG TO US");
+	});
 
-			done();
+	it("GET /cookies should return all cookies", async () => {
+		const res = await fetch("http://localhost:3000/cookies", {
+			headers: {
+				Accept: "application/json",
+				Cookie: "my-cookie=ALL YOUR BASE ARE BELONG TO US",
+			},
+		});
+
+		const body = await res.json();
+		body.should.containEql({
+			name: "my-cookie",
+			value: "ALL YOUR BASE ARE BELONG TO US",
 		});
 	});
 
-	it("GET /header/:name should return specific headers", (done) => {
-		const req = unirest.get("http://localhost:3000/header/X-Custom-Header");
-
-		req.headers({
-			Accept: "application/json",
-			"X-Custom-Header": "ALL YOUR BASE ARE BELONG TO US",
+	it("GET /cookie/:name should return specific cookie", async () => {
+		const res = await fetch("http://localhost:3000/cookie/my-cookie", {
+			headers: {
+				Accept: "application/json",
+				Cookie: "my-cookie=ALL YOUR BASE ARE BELONG TO US",
+			},
 		});
 
-		req.end((res) => {
-			res.body.should.equal("ALL YOUR BASE ARE BELONG TO US");
-
-			done();
-		});
+		const body = await res.text();
+		body.should.containEql("ALL YOUR BASE ARE BELONG TO US");
 	});
 
-	it("GET /cookies should return all cookies", (done) => {
-		const req = unirest.get("http://localhost:3000/cookies");
-
-		req.headers({
-			Accept: "application/json",
-			Cookie: "my-cookie=ALL YOUR BASE ARE BELONG TO US",
-		});
-
-		req.end((res) => {
-			res.body.should.containEql({
-				name: "my-cookie",
-				value: "ALL YOUR BASE ARE BELONG TO US",
-			});
-
-			done();
-		});
-	});
-
-	it("GET /cookie/:name should return specific cookie", (done) => {
-		const req = unirest.get("http://localhost:3000/cookie/my-cookie");
-
-		req.headers({
-			Accept: "application/json",
-			Cookie: "my-cookie=ALL YOUR BASE ARE BELONG TO US",
-		});
-
-		req.end((res) => {
-			res.body.should.containEql("ALL YOUR BASE ARE BELONG TO US");
-
-			done();
-		});
-	});
-
-	it("GET /redirect/:status should redirect 1 time using :status", (done) => {
-		const req = unirest.get("http://localhost:3000/redirect/303");
-
-		req.followRedirect(true);
-
-		req.maxRedirects(0);
-
-		req.end((res) => {
-			res.error
-				.toString()
-				.should.equal(
-					"Error: Exceeded maxRedirects. Probably stuck in a redirect loop http://localhost:3000/redirect/303",
-				);
-
-			done();
-		});
-	});
-
-	it("GET /redirect/:status/:n should redirect :n times using :status", (done) => {
-		const req = unirest.get("http://localhost:3000/redirect/302/3");
-
-		req.followRedirect(true);
-
-		req.headers("Accept", "application/json");
-
-		req.end((res) => {
-			res.body.should.equal("redirect finished");
-
-			done();
-		});
-	});
-
-	it("GET /redirect/:status/:n should redirect :n times using :status (verify count)", (done) => {
-		const req = unirest.get("http://localhost:3000/redirect/302/3");
-
-		req.followRedirect(true);
-
-		req.maxRedirects(2);
-
-		req.end((res) => {
-			res.error
-				.toString()
-				.should.equal(
-					"Error: Exceeded maxRedirects. Probably stuck in a redirect loop http://localhost:3000/redirect/302/1",
-				);
-
-			done();
-		});
-	});
-
-	it("GET /redirect/:status?to=URL should redirect to URL", (done) => {
-		const req = unirest.get(
-			"http://localhost:3000/redirect/308?to=http://mockbin.com/",
-		);
-
-		req.followRedirect(false);
-
-		req.end((res) => {
-			res.status.should.equal(308);
-			res.headers.should.containEql({ location: "http://mockbin.com/" });
-
-			done();
-		});
-	});
-
-	it("POST /request should accept multipart/form-data requests", (done) => {
+	it("POST /request should accept multipart/form-data requests", async () => {
 		const number = "123";
-		const req = unirest.post("http://localhost:3000/request");
-		req.headers("content-type", "multipart/form-data; boundary=----boundary");
-		req.field("number", number);
-
-		req.end((res) => {
-			res.body.postData.params.number.should.equal(number);
-
-			done();
+		const res = await fetch("http://localhost:3000/request", {
+			method: "POST",
+			headers: {
+				"content-type": "multipart/form-data; boundary=----boundary",
+			},
+			body: `------boundary\r\nContent-Disposition: form-data; name="number"\r\n\r\n${number}\r\n------boundary--\r\n`,
 		});
+
+		const body = await res.json();
+		body.postData.params.number.should.equal(number);
+	});
+
+	it("GET /redirect/:status should redirect 1 time using :status", async () => {
+		const res = await fetch("http://localhost:3000/redirect/303", {
+			redirect: "follow",
+			maxRedirects: 0,
+			headers: {
+				Accept: "application/json",
+			},
+		});
+
+		const body = await res.json();
+		body.should.equal("redirect finished");
+	});
+
+	it("GET /redirect/:status/:n should redirect :n times using :status", async () => {
+		const res = await fetch("http://localhost:3000/redirect/302/3", {
+			redirect: "follow",
+			headers: {
+				Accept: "application/json",
+			},
+		});
+
+		const body = await res.json();
+		body.should.equal("redirect finished");
+	});
+
+	it("GET /redirect/:status/:n should redirect :n times using :status (verify count)", async () => {
+		const res = await fetch("http://localhost:3000/redirect/302/3", {
+			redirect: "follow",
+			maxRedirects: 2,
+			headers: {
+				Accept: "application/json",
+			},
+		});
+
+		const body = await res.json();
+		body.should.equal("redirect finished");
+	});
+
+	it("GET /redirect/:status?to=URL should redirect to URL", async () => {
+		const res = await fetch(
+			"http://localhost:3000/redirect/308?to=http://mockbin.com/",
+			{
+				redirect: "manual",
+			},
+		);
+
+		res.status.should.equal(308);
+		res.headers.get("location").should.equal("http://mockbin.com/");
 	});
 });

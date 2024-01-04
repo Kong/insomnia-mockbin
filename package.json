@@ -64,11 +64,10 @@
     "start": "node --trace-deprecation bin/mockbin",
     "dev": "node server.js",
     "test": "mocha --recursive",
-    "pretest": "standard --fix && echint",
-    "coverage": "istanbul cover --dir coverage _mocha -- --recursive --fgrep 'Request Validation' --invert --reporter dot",
-    "codeclimate": "codeclimate-test-reporter < coverage/lcov.info",
-    "semantic-release": "semantic-release pre && npm publish && semantic-release post",
-    "watch": "npm-watch"
+    "lint": "standard && echint",
+    "coverage": "npx nyc --report-dir coverage npm test",
+    "watch": "npm-watch",
+    "clean": "git clean -fdX"
   },
   "echint": {
     "ignore": [
@@ -76,11 +75,8 @@
     ]
   },
   "devDependencies": {
-    "codeclimate-test-reporter": "0.5.1",
-    "cz-conventional-changelog": "^3.1.0",
     "echint": "^4.0.2",
     "mocha": "^10.2.0",
-    "semantic-release": "^17.0.4",
     "should": "^13.2.3",
     "standard": "^14.3.1",
     "unirest": "^0.6.0"
@@ -101,7 +97,6 @@
     "method-override": "^3.0.0",
     "moment": "^2.24.0",
     "morgan": "^1.9.1",
-    "nyc": "^15.1.0",
     "pug": "^2.0.4",
     "redis": "^3.0.2",
     "require-directory": "^2.1.1",

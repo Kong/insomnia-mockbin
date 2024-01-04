@@ -1,4 +1,4 @@
-FROM node:18-alpine
+FROM node:21-alpine
 
 # Create app directory
 WORKDIR /mockbin

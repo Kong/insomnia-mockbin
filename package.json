@@ -1,108 +1,94 @@
 {
-  "version": "1.7.2",
-  "name": "mockbin",
-  "description": "Test, mock, and track HTTP requests & responses between libraries, sockets and APIs",
-  "author": "Kong (https://www.konghq.com/)",
-  "homepage": "https://mockbin.org/",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Kong/mockbin.git"
-  },
-  "license": "MIT",
-  "main": "lib/index",
-  "bin": "bin/mockbin",
-  "keywords": [
-    "api",
-    "bin",
-    "har",
-    "http",
-    "json",
-    "mock",
-    "mocking",
-    "test",
-    "testing"
-  ],
-  "engines": {
-    "node": ">=21"
-  },
-  "files": [
-    "bin",
-    "docs",
-    "src",
-    "lib",
-    "Procfile",
-    "server.js"
-  ],
-  "bugs": {
-    "url": "https://github.com/Kong/mockbin/issues"
-  },
-  "config": {
-    "port": 8080,
-    "quiet": false,
-    "redis": "//redis:6379",
-    "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
-    }
-  },
-  "watch": {
-    "start": {
-      "patterns": [
-        "src",
-        "test",
-        "lib",
-        "."
-      ],
-      "extensions": "js,jsx,pug,md",
-      "ignore": "src/vendor/external.min.js",
-      "quiet": true,
-      "legacyWatch": true,
-      "delay": 2500,
-      "runOnChangeOnly": false
-    }
-  },
-  "scripts": {
-    "start": "node --trace-deprecation bin/mockbin",
-    "dev": "node server.js",
-    "test": "mocha --recursive",
-    "lint": "standard && echint",
-    "coverage": "npx nyc --report-dir coverage npm test",
-    "watch": "npm-watch",
-    "clean": "git clean -fdX"
-  },
-  "echint": {
-    "ignore": [
-      "CONTRIBUTING.md"
-    ]
-  },
-  "devDependencies": {
-    "@biomejs/biome": "1.4.1",
-    "echint": "^4.0.2",
-    "mocha": "^10.2.0",
-    "should": "^13.2.3",
-    "standard": "^14.3.1",
-    "unirest": "^0.6.0"
-  },
-  "dependencies": {
-    "change-case": "^4.1.1",
-    "commander": "^4.1.1",
-    "compression": "^1.7.4",
-    "content-type": "^1.0.4",
-    "cookie-parser": "^1.4.5",
-    "debug": "^4.3.4",
-    "dicer": "^0.3.0",
-    "dotenv": "^8.2.0",
-    "express": "^4.17.1",
-    "forwarded-http": "^0.3.0",
-    "har-validator": "^5.1.3",
-    "jstransformer-marked": "^1.4.0",
-    "method-override": "^3.0.0",
-    "moment": "^2.24.0",
-    "morgan": "^1.9.1",
-    "pug": "^2.0.4",
-    "redis": "^3.0.2",
-    "require-directory": "^2.1.1",
-    "uuid": "^8.3.2",
-    "xmlbuilder": "^15.0.0",
-    "yamljs": "^0.3.0"
-  }
+	"version": "1.7.2",
+	"name": "mockbin",
+	"description": "Test, mock, and track HTTP requests & responses between libraries, sockets and APIs",
+	"author": "Kong (https://www.konghq.com/)",
+	"homepage": "https://mockbin.org/",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Kong/mockbin.git"
+	},
+	"license": "MIT",
+	"main": "lib/index",
+	"bin": "bin/mockbin",
+	"keywords": [
+		"api",
+		"bin",
+		"har",
+		"http",
+		"json",
+		"mock",
+		"mocking",
+		"test",
+		"testing"
+	],
+	"engines": {
+		"node": ">=21"
+	},
+	"files": ["bin", "docs", "src", "lib", "Procfile", "server.js"],
+	"bugs": {
+		"url": "https://github.com/Kong/mockbin/issues"
+	},
+	"config": {
+		"port": 8080,
+		"quiet": false,
+		"redis": "//redis:6379",
+		"commitizen": {
+			"path": "./node_modules/cz-conventional-changelog"
+		}
+	},
+	"watch": {
+		"start": {
+			"patterns": ["src", "test", "lib", "."],
+			"extensions": "js,jsx,pug,md",
+			"ignore": "src/vendor/external.min.js",
+			"quiet": true,
+			"legacyWatch": true,
+			"delay": 2500,
+			"runOnChangeOnly": false
+		}
+	},
+	"scripts": {
+		"start": "node --trace-deprecation bin/mockbin",
+		"dev": "node server.js",
+		"test": "mocha --recursive",
+		"lint": "standard && echint",
+		"coverage": "npx nyc --report-dir coverage npm test",
+		"watch": "npm-watch",
+		"clean": "git clean -fdX"
+	},
+	"echint": {
+		"ignore": ["CONTRIBUTING.md"]
+	},
+	"devDependencies": {
+		"@biomejs/biome": "1.4.1",
+		"echint": "^4.0.2",
+		"mocha": "^10.2.0",
+		"should": "^13.2.3",
+		"standard": "^14.3.1",
+		"unirest": "^0.6.0"
+	},
+	"dependencies": {
+		"change-case": "^4.1.1",
+		"commander": "^4.1.1",
+		"compression": "^1.7.4",
+		"content-type": "^1.0.4",
+		"cookie-parser": "^1.4.5",
+		"debug": "^4.3.4",
+		"dicer": "^0.3.0",
+		"dotenv": "^8.2.0",
+		"express": "^4.17.1",
+		"forwarded-http": "^0.3.0",
+		"har-validator": "^5.1.3",
+		"jstransformer-marked": "^1.4.0",
+		"method-override": "^3.0.0",
+		"moment": "^2.24.0",
+		"morgan": "^1.9.1",
+		"pug": "^2.0.4",
+		"redis": "^3.0.2",
+		"require-directory": "^2.1.1",
+		"uuid": "^8.3.2",
+		"xmlbuilder": "^15.0.0",
+		"yamljs": "^0.3.0"
+	}
 }

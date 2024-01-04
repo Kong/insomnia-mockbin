@@ -9,4 +9,5 @@ jobs:
       with:
         node-version: 21
     - run: npm ci
+    - run: npm run check
     - run: npm test

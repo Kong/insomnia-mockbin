@@ -1,8 +1,5 @@
-# Mockbin [![version][npm-version]][npm-url] [![License][npm-license]][license-url]
+# Mockbin ![version][npm-version] [![License][npm-license]][license-url]
 
-[![Build Status][travis-image]][travis-url]
-[![Downloads][npm-downloads]][npm-url]
-[![Dependencies][david-image]][david-url]
 [![Gitter][gitter-image]][gitter-url]
 
 Mockbin is used internally and maintained by [Kong](https://github.com/Kong), who also maintain the open-source API Gateway [Kong](https://github.com/Kong/kong).
@@ -11,12 +8,9 @@ Mockbin is used internally and maintained by [Kong](https://github.com/Kong), wh
 
 - [Features](#features)
 - [Installation](#installation)
-  - [Heroku](#heroku)
-  - [Docker](#docker)
   - [Requirements](#requirements)
-  - [Configuration](#configuration)
-  - [Running](#running)
-- [Usage](#usage)
+  - [Running with Node](#running-with-node)
+  - [Running with Docker Compose](#running-with-docker-compose)
 - [Documentation](#documentation)
 - [Bugs and feature requests](#bugs-and-feature-requests)
 - [Contributing](#contributing)
@@ -32,23 +26,16 @@ Mockbin is used internally and maintained by [Kong](https://github.com/Kong), wh
 
 ## Installation
 
-install from source or through [npm](https://www.npmjs.com/):
-
 ```shell
-npm install mockbin
+git clone https://github.com/Kong/mockbin.git ./mockbin
+cd mockbin
+cp .env.sample .env
+brew install fnm
+fnm use
+npm install
 ```
 
-### Heroku
-
-[![Deploy][docker-image]][docker-url]
-
-*read more on [Installation](docs/install.md)*.
-
-### Docker
-
-[![Docker][docker-logo]](docs/install.md#install-with-docker)
-
-*read more on [Installation](docs/install.md#install-with-docker)*.
+Note: nvm, n or volta can be used instead of fnm.
 
 ### Requirements
 
@@ -56,44 +43,27 @@ other than the dependencies listed in [package.json](package.json) The following
 
 - [Redis](http://redis.io/)
 
-### Configuration
-
-you will need to tell *mockbin* where Redis is:
-
 ```shell
-npm config set mockbin:redis redis://127.0.0.1:6379
+brew install redis
+brew services start redis
 ```
 
-By Default the server will run on port `8080`, you can customize the port like so:
+Redis should be now running on localhost:6379
 
-```shell
-npm config set mockbin:port 8001
-```
-
-*read more on [Configuration](docs/config.md)*.
-
-### Running
-
-After installing the `npm` package you can now start the server like so:
+### Running with Node
 
 ```shell
 npm start
-NODE_DEBUG=mockbin npm run dev
+# OR watch for changes
+npm run dev
+# OR with debug logs
+DEBUG=mockbin npm run dev
 ```
 
-## Usage
+## Running with Docker Compose
 
 ```shell
-  Usage: mockbin [options]
-
-  Options:
-
-    -h, --help         output usage information
-    -V, --version      output the version number
-    -p, --port <port>  Port that the HTTP server will run on
-    -r, --redis [dsn]  Redis dsn
-    -q, --quiet        Disable console logging
-
+docker compose up
 ```
 
 ## Documentation
@@ -118,20 +88,7 @@ Editor preferences are available in the [editor config](.editorconfig) for easy 
 
 [license-url]: https://github.com/Kong/mockbin/blob/master/LICENSE
 
-[travis-url]: https://travis-ci.org/Kong/mockbin
-[travis-image]: https://img.shields.io/travis/Kong/mockbin.svg?style=flat-square
-
-[npm-url]: https://www.npmjs.com/package/mockbin
 [npm-license]: https://img.shields.io/npm/l/mockbin.svg?style=flat-square
 [npm-version]: https://img.shields.io/npm/v/mockbin.svg?style=flat-square
-[npm-downloads]: https://img.shields.io/npm/dm/mockbin.svg?style=flat-square
-
-[david-url]: https://david-dm.org/Kong/mockbin
-[david-image]: https://img.shields.io/david/Kong/mockbin.svg?style=flat-square
-
-[docker-image]: https://www.herokucdn.com/deploy/button.svg
-[docker-url]: https://heroku.com/deploy?template=https://github.com/Kong/mockbin
-[docker-logo]: https://d3oypxn00j2a10.cloudfront.net/0.16.0/images/pages/brand_guidelines/small_h.png
-
 [gitter-url]: https://gitter.im/Kong/mockbin
 [gitter-image]: https://img.shields.io/badge/Gitter-Join%20Chat-blue.svg?style=flat-square

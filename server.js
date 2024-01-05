@@ -1,13 +1,22 @@
 const app = require("./src");
 const dotenv = require("dotenv");
-const pkg = require("./package");
 
-dotenv.config({ silent: true });
+const result = dotenv.config({ silent: false });
+if (result.error) {
+	console.warn(`
+	------------------------
+	Missing env file:
+	run this to fix it.
+	cp .env.sample .env
+	------------------------
+	`);
+	throw result.error;
+}
 
 const options = {
-	port: process.env.MOCKBIN_PORT || pkg.config.port,
-	quiet: process.env.MOCKBIN_QUIET || pkg.config.quiet,
-	redis: process.env.MOCKBIN_REDIS || pkg.config.redis,
+	port: process.env.MOCKBIN_PORT,
+	quiet: process.env.MOCKBIN_QUIET,
+	redis: process.env.MOCKBIN_REDIS,
 };
 
 app(options, () => {

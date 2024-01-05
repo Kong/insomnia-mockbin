@@ -91,6 +91,86 @@ Responds with a `Location` header with the newly created **Bin**, e.g. `Location
 
 ----
 
+#### Update Bin
+
+> ##### `PUT /bin/:id`
+
+Updates a new **Bin** with a mock HTTP response as described by a [HAR Response Object](http://www.softwareishard.com/blog/har-12-spec/#response) body.
+
+Responds with a `Location` header with the updated **Bin**, e.g. `Location: /bin/3c149e20-bc9c-4c68-8614-048e6023a108` *(the Bin ID is also repeated in the body)*
+
+###### Request
+
+> ```http
+> PUT /bin/3c149e20-bc9c-4c68-8614-048e6023a108 HTTP/1.1
+> Host: mockbin.org
+> Content-Type: application/json
+> Accept: application/json
+> Content-Length: 819
+>
+> {
+>   "status": 200,
+>   "statusText": "OK",
+>   "httpVersion": "HTTP/1.1",
+>   "headers": [
+>     {
+>       "name": "Date",
+>       "value": "Wed, 21 Jan 2015 23:36:35 GMT"
+>     },
+>     {
+>       "name": "Server",
+>       "value": "Apache"
+>     },
+>     {
+>       "name": "Transfer-Encoding",
+>       "value": "chunked"
+>     },
+>     {
+>       "name": "Content-Type",
+>       "value": "text/html; charset=UTF-8"
+>     },
+>     {
+>       "name": "Cache-Control",
+>       "value": "max-age=7200"
+>     },
+>     {
+>       "name": "Connection",
+>       "value": "Keep-Alive"
+>     },
+>     {
+>       "name": "Keep-Alive",
+>       "value": "timeout=5, max=50"
+>     },
+>     {
+>       "name": "Expires",
+>       "value": "Thu, 22 Jan 2015 01:36:35 GMT"
+>     }
+>   ],
+>   "cookies": [],
+>   "content": {
+>     "size": 70972,
+>     "mimeType": "text/html",
+>     "compression": -21
+>   },
+>   "redirectURL": "",
+>   "headersSize": 323,
+>   "bodySize": 70993
+> }
+> ```
+
+###### Response
+
+> ```http
+> HTTP/1.1 200 OK
+> Location: /bin/3c149e20-bc9c-4c68-8614-048e6023a108
+> Content-Type: application/json; charset=utf-8
+> Content-Length: 38
+>
+> "3c149e20-bc9c-4c68-8614-048e6023a108"
+> ```
+
+----
+
 #### Inspect Bin
 
 > ##### `GET /bin/:id/view`

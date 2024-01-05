@@ -1,8 +1,5 @@
-# Mockbin [![version][npm-version]][npm-url] [![License][npm-license]][license-url]
+# Mockbin
 
-[![Build Status][travis-image]][travis-url]
-[![Downloads][npm-downloads]][npm-url]
-[![Dependencies][david-image]][david-url]
 [![Gitter][gitter-image]][gitter-url]
 
 Mockbin is used internally and maintained by [Kong](https://github.com/Kong), who also maintain the open-source API Gateway [Kong](https://github.com/Kong/kong).
@@ -13,8 +10,6 @@ Mockbin is used internally and maintained by [Kong](https://github.com/Kong), wh
 - [Installation](#installation)
   - [Requirements](#requirements)
   - [Docker](#docker)
-  - [Configuration](#configuration)
-  - [Running](#running)
 - [Usage](#usage)
 - [Documentation](#documentation)
 - [Bugs and feature requests](#bugs-and-feature-requests)
@@ -29,48 +24,43 @@ Mockbin is used internally and maintained by [Kong](https://github.com/Kong), wh
 - allows for HTTP Method Override using the header `X-HTTP-Method-Override` or through query string parameter: `_method`
 - create custom bins for experimenting log collection
 
+
+## Installation
+
+```shell
+git clone https://github.com/Kong/mockbin.git ./mockbin
+cd mockbin
+cp .env.sample .env
+brew install fnm
+fnm use
+npm install
+```
+
 ### Requirements
 
 other than the dependencies listed in [package.json](package.json) The following are required:
 
 - [Redis](http://redis.io/)
 
-## Installation
+```shell
+brew install redis
+```
 
 ### Running with node
 
 ```shell
 NODE_DEBUG=mockbin npm start
-# OR watch for changes with
+# OR watch for changes
 NODE_DEBUG=mockbin npm run dev
 ```
 
-### Docker
+## Running with Docker compose
 
-[![Docker][docker-logo]](docs/install.md#install-with-docker)
-
-*read more on [Installation](docs/install.md#install-with-docker)*.
-
-### Configuration
-
-- copy env file
-- use env variables
-- package json
-
-## Usage
 
 ```shell
-  Usage: mockbin [options]
-
-  Options:
-
-    -h, --help         output usage information
-    -V, --version      output the version number
-    -p, --port <port>  Port that the HTTP server will run on
-    -r, --redis [dsn]  Redis dsn
-    -q, --quiet        Disable console logging
-
+docker-compose up
 ```
+
 
 ## Documentation
 
@@ -93,17 +83,6 @@ Editor preferences are available in the [editor config](.editorconfig) for easy 
 [MIT](LICENSE) &copy; [Kong](https://www.konghq.com)
 
 [license-url]: https://github.com/Kong/mockbin/blob/master/LICENSE
-
-[travis-url]: https://travis-ci.org/Kong/mockbin
-[travis-image]: https://img.shields.io/travis/Kong/mockbin.svg?style=flat-square
-
-[npm-url]: https://www.npmjs.com/package/mockbin
-[npm-license]: https://img.shields.io/npm/l/mockbin.svg?style=flat-square
-[npm-version]: https://img.shields.io/npm/v/mockbin.svg?style=flat-square
-[npm-downloads]: https://img.shields.io/npm/dm/mockbin.svg?style=flat-square
-
-[david-url]: https://david-dm.org/Kong/mockbin
-[david-image]: https://img.shields.io/david/Kong/mockbin.svg?style=flat-square
 
 [docker-logo]: https://d3oypxn00j2a10.cloudfront.net/0.16.0/images/pages/brand_guidelines/small_h.png
 

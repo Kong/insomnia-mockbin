@@ -49,9 +49,11 @@ brew install redis
 ### Running with node
 
 ```shell
-NODE_DEBUG=mockbin npm start
+npm start
 # OR watch for changes
-NODE_DEBUG=mockbin npm run dev
+npm run dev
+# OR with debug logs
+DEBUG=mockbin npm run dev
 ```
 
 ## Running with Docker compose

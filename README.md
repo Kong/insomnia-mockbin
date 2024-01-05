@@ -9,8 +9,8 @@ Mockbin is used internally and maintained by [Kong](https://github.com/Kong), wh
 - [Features](#features)
 - [Installation](#installation)
   - [Requirements](#requirements)
-  - [Docker](#docker)
-- [Usage](#usage)
+  - [Running with Node](#running-with-node)
+  - [Running with Docker Compose](#running-with-docker-compose)
 - [Documentation](#documentation)
 - [Bugs and feature requests](#bugs-and-feature-requests)
 - [Contributing](#contributing)
@@ -50,7 +50,7 @@ brew services start redis
 
 Redis should be now running on localhost:6379
 
-### Running with node
+### Running with Node
 
 ```shell
 npm start
@@ -60,10 +60,10 @@ npm run dev
 DEBUG=mockbin npm run dev
 ```
 
-## Running with Docker compose
+## Running with Docker Compose
 
 ```shell
-docker-compose up
+docker compose up
 ```
 
 ## Documentation

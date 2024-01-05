@@ -24,7 +24,6 @@ Mockbin is used internally and maintained by [Kong](https://github.com/Kong), wh
 - allows for HTTP Method Override using the header `X-HTTP-Method-Override` or through query string parameter: `_method`
 - create custom bins for experimenting log collection
 
-
 ## Installation
 
 ```shell
@@ -36,6 +35,8 @@ fnm use
 npm install
 ```
 
+Note: nvm, n or volta can be used instead of fnm.
+
 ### Requirements
 
 other than the dependencies listed in [package.json](package.json) The following are required:
@@ -44,7 +45,10 @@ other than the dependencies listed in [package.json](package.json) The following
 
 ```shell
 brew install redis
+brew services start redis
 ```
+
+Redis should be now running on localhost:6379
 
 ### Running with node
 
@@ -58,11 +62,9 @@ DEBUG=mockbin npm run dev
 
 ## Running with Docker compose
 
-
 ```shell
 docker-compose up
 ```
-
 
 ## Documentation
 

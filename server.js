@@ -1,7 +1,10 @@
 const app = require("./src");
 const dotenv = require("dotenv");
 
-dotenv.config({ silent: true });
+const result = dotenv.config({ silent: false });
+if (result.error) {
+	throw result.error;
+}
 
 const options = {
 	port: process.env.MOCKBIN_PORT,

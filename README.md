@@ -1,4 +1,4 @@
-# Mockbin
+# Mockbin ![version][npm-version] [![License][npm-license]][license-url]
 
 [![Gitter][gitter-image]][gitter-url]
 
@@ -84,7 +84,7 @@ Editor preferences are available in the [editor config](.editorconfig) for easy 
 
 [license-url]: https://github.com/Kong/mockbin/blob/master/LICENSE
 
-[docker-logo]: https://d3oypxn00j2a10.cloudfront.net/0.16.0/images/pages/brand_guidelines/small_h.png
-
+[npm-license]: https://img.shields.io/npm/l/mockbin.svg?style=flat-square
+[npm-version]: https://img.shields.io/npm/v/mockbin.svg?style=flat-square
 [gitter-url]: https://gitter.im/Kong/mockbin
 [gitter-image]: https://img.shields.io/badge/Gitter-Join%20Chat-blue.svg?style=flat-square

@@ -30,9 +30,11 @@ module.exports = (options, done) => {
 	app.use(methodOverride("X-HTTP-Method-Override"));
 	app.use("/static", express.static(path.join(__dirname, "static")));
 
-	if (options.quiet !== true) {
-		app.use(morgan("dev"));
-	}
+	app.use(
+		morgan("dev", {
+			skip: (req, res) => options.quiet === "true" && res.statusCode < 400,
+		}),
+	);
 
 	// magic starts here
 	app.use("/", router(options));

@@ -26,6 +26,18 @@ Mockbin is used internally and maintained by [Kong](https://github.com/Kong), wh
 
 ## Installation
 
+### Requirements
+
+- [Redis](http://redis.io/)
+
+```shell
+brew install redis
+brew services start redis
+```
+
+Redis should be now running on localhost:6379
+Mockbin will start without redis but you wont be able to set or get response bins.
+
 ```shell
 git clone https://github.com/Kong/mockbin.git ./mockbin
 cd mockbin
@@ -36,19 +48,6 @@ npm install
 ```
 
 Note: nvm, n or volta can be used instead of fnm.
-
-### Requirements
-
-other than the dependencies listed in [package.json](package.json) The following are required:
-
-- [Redis](http://redis.io/)
-
-```shell
-brew install redis
-brew services start redis
-```
-
-Redis should be now running on localhost:6379
 
 ### Running with Node
 

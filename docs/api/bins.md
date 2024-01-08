@@ -285,14 +285,14 @@ You can request this endpoint with *any* combination of the following:
 
 #### Bin Access Log
 
-> ##### `GET /bin/:id/log`
+> ##### `GET /bin/log/:id`
 
 List all requests made to this Bin, using [HAR](http://www.softwareishard.com/blog/har-12-spec/) log format.
 
 ###### Request
 
 > ```http
-> GET /bin/3c149e20-bc9c-4c68-8614-048e6023a108/log HTTP/1.1
+> GET /bin/log/3c149e20-bc9c-4c68-8614-048e6023a108 HTTP/1.1
 > Host: mockbin.org
 > Accept: application/json
 > ```

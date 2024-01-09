@@ -1,7 +1,7 @@
 doctype html
 html
   head
-    meta(http-equiv='refresh', content=`0; url=${res.getHeaders().location}/view`)
+    meta(http-equiv='refresh', content=`0; url=${res.getHeaders().location.replace('/bin','/bin/view')}`)
 
   body
-    p Redirecting to #[a(href=res.getHeaders().location)= res.getHeaders().location + '/view']
+    p Redirecting to #[a(href=res.getHeaders().location)= res.getHeaders().location.replace('/bin','/bin/view')]

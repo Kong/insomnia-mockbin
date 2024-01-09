@@ -93,16 +93,16 @@ Responds with a `Location` header with the newly created **Bin**, e.g. `Location
 
 #### Update Bin
 
-> ##### `PUT /bin/:id`
+> ##### `PUT /bin/:id/a/b/c`
 
-Updates a new **Bin** with a mock HTTP response as described by a [HAR Response Object](http://www.softwareishard.com/blog/har-12-spec/#response) body.
+Creates or updates a **Bin** with a mock HTTP response as described by a [HAR Response Object](http://www.softwareishard.com/blog/har-12-spec/#response) body. /a/b/c represeent any following paths than will be combined with the id for response matching.
 
-Responds with a `Location` header with the updated **Bin**, e.g. `Location: /bin/3c149e20-bc9c-4c68-8614-048e6023a108` *(the Bin ID is also repeated in the body)*
+Responds with a `Location` header with the updated **Bin**, e.g. `Location: /bin/3c149e20-bc9c-4c68-8614-048e6023a108/a/b/c` *(the Bin ID is also repeated in the body)*
 
 ###### Request
 
 > ```http
-> PUT /bin/3c149e20-bc9c-4c68-8614-048e6023a108 HTTP/1.1
+> PUT /bin/3c149e20-bc9c-4c68-8614-048e6023a108/a/b/c HTTP/1.1
 > Host: mockbin.org
 > Content-Type: application/json
 > Accept: application/json
@@ -162,7 +162,7 @@ Responds with a `Location` header with the updated **Bin**, e.g. `Location: /bin
 
 > ```http
 > HTTP/1.1 200 OK
-> Location: /bin/3c149e20-bc9c-4c68-8614-048e6023a108
+> Location: /bin/3c149e20-bc9c-4c68-8614-048e6023a108/a/b/c
 > Content-Type: application/json; charset=utf-8
 > Content-Length: 38
 >
@@ -173,14 +173,14 @@ Responds with a `Location` header with the updated **Bin**, e.g. `Location: /bin
 
 #### Inspect Bin
 
-> ##### `GET /bin/:id/view`
+> ##### `GET /bin/view/:id`
 
 Respondes with the [HAR Response Object](http://www.softwareishard.com/blog/har-12-spec/#response) sent at time of [creation](#create-bin).
 
 ###### Request
 
 > ```http
-> GET /bin/3c149e20-bc9c-4c68-8614-048e6023a108/view HTTP/1.1
+> GET /bin/view/3c149e20-bc9c-4c68-8614-048e6023a108 HTTP/1.1
 > Host: mockbin.org
 > Accept: application/json
 > ```
@@ -252,16 +252,17 @@ The [HAR Response Object](http://www.softwareishard.com/blog/har-12-spec/#respon
 Each call to this endpoint will be [logged](#bin-log) *(max of 100 requests)*.
 
 You can request this endpoint with *any* combination of the following:
-  - HTTP methods *(e.g. `POST`, `XXPUT`)*
-  - HTTP headers *(e.g. `X-My-Header-Name: Value`)*
-  - body content *(max of 100mb)*
-  - query string *(e.g. `?foo=bar`)*
-  - path arguments *(e.g. `/bin/3c149e20-bc9c-4c68-8614-048e6023a108/any/extra/path/`)*
+
+- HTTP methods *(e.g. `POST`, `XXPUT`)*
+- HTTP headers *(e.g. `X-My-Header-Name: Value`)*
+- body content *(max of 100mb)*
+- query string *(e.g. `?foo=bar`)*
+- path arguments *(e.g. `/bin/3c149e20-bc9c-4c68-8614-048e6023a108/any/extra/path/`)*
 
 ###### Request
 
 > ```http
-> GET /bin/3c149e20-bc9c-4c68-8614-048e6023a108/view HTTP/1.1
+> GET /bin/view/3c149e20-bc9c-4c68-8614-048e6023a108 HTTP/1.1
 > Host: mockbin.org
 > Accept: application/json
 > ```
@@ -284,14 +285,14 @@ You can request this endpoint with *any* combination of the following:
 
 #### Bin Access Log
 
-> ##### `GET /bin/:id/log`
+> ##### `GET /bin/log/:id`
 
 List all requests made to this Bin, using [HAR](http://www.softwareishard.com/blog/har-12-spec/) log format.
 
 ###### Request
 
 > ```http
-> GET /bin/3c149e20-bc9c-4c68-8614-048e6023a108/log HTTP/1.1
+> GET /bin/log/3c149e20-bc9c-4c68-8614-048e6023a108 HTTP/1.1
 > Host: mockbin.org
 > Accept: application/json
 > ```
@@ -316,14 +317,14 @@ List all requests made to this Bin, using [HAR](http://www.softwareishard.com/bl
 
 #### Delete Bin
 
-> ##### `DELETE /bin/:id/delete`
+> ##### `DELETE /bin/delete/:id`
 
 Deletes the bin and all of its logs
 
 ###### Request
 
 > ```http
-> GET /bin/3c149e20-bc9c-4c68-8614-048e6023a108/view HTTP/1.1
+> GET /bin/view/3c149e20-bc9c-4c68-8614-048e6023a108 HTTP/1.1
 > ```
 
 ###### Response

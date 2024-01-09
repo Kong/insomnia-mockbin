@@ -173,14 +173,14 @@ Responds with a `Location` header with the updated **Bin**, e.g. `Location: /bin
 
 #### Inspect Bin
 
-> ##### `GET /bin/:id/view`
+> ##### `GET /bin/view/:id`
 
 Respondes with the [HAR Response Object](http://www.softwareishard.com/blog/har-12-spec/#response) sent at time of [creation](#create-bin).
 
 ###### Request
 
 > ```http
-> GET /bin/3c149e20-bc9c-4c68-8614-048e6023a108/view HTTP/1.1
+> GET /bin/view/3c149e20-bc9c-4c68-8614-048e6023a108 HTTP/1.1
 > Host: mockbin.org
 > Accept: application/json
 > ```
@@ -317,14 +317,14 @@ List all requests made to this Bin, using [HAR](http://www.softwareishard.com/bl
 
 #### Delete Bin
 
-> ##### `DELETE /bin/:id/delete`
+> ##### `DELETE /bin/delete/:id`
 
 Deletes the bin and all of its logs
 
 ###### Request
 
 > ```http
-> GET /bin/3c149e20-bc9c-4c68-8614-048e6023a108/view HTTP/1.1
+> GET /bin/view/3c149e20-bc9c-4c68-8614-048e6023a108 HTTP/1.1
 > ```
 
 ###### Response

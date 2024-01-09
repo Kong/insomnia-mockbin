@@ -9,12 +9,12 @@ mixin method (method)
 block content
   div(data-page="bin/log").container
     div.btn-group.pull-right.hidden-xs
-      a(href= '/bin/' + req.params.uuid + '/view').btn.btn-primary View Details
+      a(href= '/bin/view/' + req.params.uuid).btn.btn-primary View Details
 
     h3 Bin History: #[code= req.params.uuid]
 
     div.visible-xs
-      a(href= '/bin/' + req.params.uuid + '/view').btn.btn-block.btn-primary View Details
+      a(href= '/bin/view' + req.params.uuid).btn.btn-block.btn-primary View Details
 
     hr
 

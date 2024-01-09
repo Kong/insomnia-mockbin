@@ -262,7 +262,7 @@ You can request this endpoint with *any* combination of the following:
 ###### Request
 
 > ```http
-> GET /bin/3c149e20-bc9c-4c68-8614-048e6023a108/view HTTP/1.1
+> GET /bin/view/3c149e20-bc9c-4c68-8614-048e6023a108 HTTP/1.1
 > Host: mockbin.org
 > Accept: application/json
 > ```

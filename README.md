@@ -91,3 +91,16 @@ Editor preferences are available in the [editor config](.editorconfig) for easy 
 [npm-version]: https://img.shields.io/npm/v/mockbin.svg?style=flat-square
 [gitter-url]: https://gitter.im/Kong/mockbin
 [gitter-image]: https://img.shields.io/badge/Gitter-Join%20Chat-blue.svg?style=flat-square
+
+## TODO
+
+- [x] update node
+- [x] github action
+- [x] autofix on save
+- [x] upsert bin endpoint
+- [x] simplify entrypoint and environment
+- [x] replace unirest with fetch
+- [ ] redis function binding
+- [ ] callback tests
+- [ ] bin tests
+- [ ] support method as parameter

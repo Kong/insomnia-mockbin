@@ -104,3 +104,4 @@ Editor preferences are available in the [editor config](.editorconfig) for easy 
 - [ ] callback tests
 - [ ] bin tests
 - [ ] support method as parameter
+- [ ] wild cards in url

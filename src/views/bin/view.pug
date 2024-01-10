@@ -4,7 +4,7 @@ block content
   div(data-page="bin/view").container
     div.row
       div.col-sm-9
-        h3 Bin Identifier: #[code= req.params.uuid]
+        h3 Bin Identifier: #[code= req.params.uuid + req.params[0]]
 
         div#preview
           pre: code= data.json
@@ -13,14 +13,14 @@ block content
         h3 Next Steps
 
         a(href= '#apiembed').btn.btn-block.btn-primary #[span.badge 1] &nbsp; Send Some Requests
-        a(href= '/bin/' + req.params.uuid).btn.btn-block.btn-primary #[span.badge 2] &nbsp; Visit in Browser
-        a(href= '/bin/log/' + req.params.uuid).btn.btn-block.btn-primary #[span.badge 3] &nbsp; View History
+        a(href= '/bin/' + req.params.uuid + req.params[0]).btn.btn-block.btn-primary #[span.badge 2] &nbsp; Visit in Browser
+        a(href= '/bin/log/' + req.params.uuid + req.params[0]).btn.btn-block.btn-primary #[span.badge 3] &nbsp; View History
 
     br
 
     h4#apiembed Send Some Requests:
 
-    p Send request to #[a(target="_blank", href=req.protocol + '://' + req.get('host') +  '/bin/'+ req.params.uuid )= req.protocol + '://' + req.get('host') +   '/bin/' + req.params.uuid ]
+    p Send request to #[a(target="_blank", href=req.protocol + '://' + req.get('host') +  '/bin/'+ req.params.uuid + req.params[0] )= req.protocol + '://' + req.get('host') +   '/bin/' + req.params.uuid + req.params[0] ]
 
 
 

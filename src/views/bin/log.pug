@@ -42,7 +42,7 @@ block content
 
             td #{entry.request.bodySize / 1000} KB
 
-            td.date= moment(entry.startedDateTime).fromNow()
+            td.date= new Intl.DateTimeFormat('en-US', { weekday: 'short', hour: 'numeric', month:'short', year: 'numeric' }).format(new Date(entry.startedDateTime))
             td.ip= entry.clientIPAddress
             td.action.text-right
               div.btn-group.btn-group-sm

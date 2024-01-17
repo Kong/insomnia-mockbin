@@ -100,8 +100,8 @@ Editor preferences are available in the [editor config](.editorconfig) for easy 
 - [x] upsert bin endpoint
 - [x] simplify entrypoint and environment
 - [x] replace unirest with fetch
-- [ ] redis function binding
+- [x] redis function binding
+- [ ] remove redis legacyMode
 - [ ] callback tests
-- [ ] bin tests
-- [ ] support method as parameter
+- [ ] add bin tests
 - [ ] wild cards in url

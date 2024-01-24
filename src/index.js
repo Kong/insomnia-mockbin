@@ -38,6 +38,18 @@ module.exports = (options, done) => {
 
 	// magic starts here
 	app.use("/", router(options));
+	app.use("/healthcheck", (req, res) => {
+		res.set({ 'Content-Type': 'application/json; charset=utf-8' })
+		res.send(JSON.stringify({
+			name: process.env.npm_package_name,
+			version: process.env.npm_package_version,
+			uptimeSeconds: process.uptime(),
+			memory: process.memoryUsage(),
+			pid: process.pid,
+			versions: process.versions,
+		}, null, 2));
+
+	});
 
 	app.listen(options.port);
 

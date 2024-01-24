@@ -10,5 +10,15 @@ const options = {
 };
 
 app(options, () => {
-	console.info("starting server on port: %d", options.port);
+	console.info("starting server", options.port, options.redis);
+	if (!options.port || !options.redis) {
+		console.warn(`
+		------------------------
+		Missing env file or env vars:
+		run this to fix it.
+		cp .env.sample .env
+		OR add MOCKBIN_PORT and MOCKBIN_REDIS to your env.
+		------------------------
+		`);
+	}
 });

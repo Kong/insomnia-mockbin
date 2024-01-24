@@ -2,7 +2,7 @@ services:
   app:
     build: .
     environment:
-      REDIS_URL: "//redis:6379"
+      MOCKBIN_REDIS: "//redis:6379"
     links:
       - redis
     ports:

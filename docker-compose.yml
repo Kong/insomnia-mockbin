@@ -2,7 +2,9 @@ services:
   app:
     build: .
     environment:
-      MOCKBIN_REDIS: "//redis:6379"
+      MOCKBIN_REDIS: "redis://redis:6379"
+      MOCKBIN_QUIET: "false"
+      MOCKBIN_PORT: "8080"
     links:
       - redis
     ports:

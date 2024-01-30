@@ -3,6 +3,7 @@ services:
     build: .
     environment:
       MOCKBIN_REDIS: "//redis:6379"
+      MOCKBIN_REDIS_EXPIRE_SECONDS: 1000000000
     links:
       - redis
     ports:

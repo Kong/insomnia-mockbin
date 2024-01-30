@@ -11,7 +11,12 @@ const options = {
 };
 
 app(options, () => {
-	console.info("starting server", options.port, options.redis);
+	console.info(
+		"starting server",
+		options.port,
+		options.redis,
+		options.redisExpiry,
+	);
 	if (!options.port || !options.redis) {
 		console.warn(`
 		------------------------

@@ -7,10 +7,16 @@ const options = {
 	port: process.env.MOCKBIN_PORT,
 	quiet: process.env.MOCKBIN_QUIET,
 	redis: process.env.MOCKBIN_REDIS,
+	redisExpiry: process.env.MOCKBIN_REDIS_EXPIRE_SECONDS,
 };
 
 app(options, () => {
-	console.info("starting server", options.port, options.redis);
+	console.info(
+		"starting server",
+		options.port,
+		options.redis,
+		options.redisExpiry,
+	);
 	if (!options.port || !options.redis) {
 		console.warn(`
 		------------------------

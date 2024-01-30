@@ -5,6 +5,7 @@ services:
       MOCKBIN_REDIS: "redis://redis:6379"
       MOCKBIN_QUIET: "false"
       MOCKBIN_PORT: "8080"
+      MOCKBIN_REDIS_EXPIRE_SECONDS: 1000000000
     links:
       - redis
     ports:

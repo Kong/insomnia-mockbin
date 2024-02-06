@@ -1,8 +1,8 @@
-# Mockbin ![version][npm-version] [![License][npm-license]][license-url]
+# Insomnia Mockbin ![version][npm-version] [![License][npm-license]][license-url]
 
 [![Gitter][gitter-image]][gitter-url]
 
-Mockbin is used internally and maintained by [Kong](https://github.com/Kong), who also maintain the open-source API Gateway [Kong](https://github.com/Kong/kong).
+Insomnia Mockbin is used internally and maintained by [Kong](https://github.com/Kong), who also maintain the open-source API Gateway [Kong](https://github.com/Kong/kong).
 
 ## Table of contents
 

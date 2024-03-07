@@ -1,6 +1,6 @@
 FROM node:21.6.2-bullseye-slim
 
-RUN RUN apt-get update && apt-get install -y --no-install-recommends dumb-init
+RUN apt-get update && apt-get install -y --no-install-recommends dumb-init
 ENV NODE_ENV production
 WORKDIR /usr/src/app
 COPY --chown=node:node . .

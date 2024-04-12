@@ -1,7 +1,7 @@
 const cookieParser = require("cookie-parser");
 const express = require("express");
 const mockbin = require("../../lib");
-const path = require("path");
+const path = require("node:path");
 
 const app = express();
 let server = null;

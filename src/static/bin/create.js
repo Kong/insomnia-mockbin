@@ -178,7 +178,7 @@ $(() => {
 		});
 
 		// fix type issues
-		response.status = parseInt(response.status, 10);
+		response.status = Number.parseInt(response.status, 10);
 
 		$('input[name="response"]').val(JSON.stringify(response));
 		$("pre code").text(JSON.stringify(response, null, 2));

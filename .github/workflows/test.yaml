@@ -9,6 +9,6 @@ jobs:
       with:
         node-version: 21
     - run: npm ci
-    - uses: biomejs/setup-biome@v1
+    - uses: biomejs/setup-biome@v2
     - run: biome ci .
     - run: npm test

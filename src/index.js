@@ -4,7 +4,7 @@ const debug = require("debug")("mockbin");
 const express = require("express");
 const methodOverride = require("method-override");
 const morgan = require("morgan");
-const path = require("path");
+const path = require("node:path");
 const router = require("../lib");
 
 module.exports = (options, done) => {
@@ -32,7 +32,9 @@ module.exports = (options, done) => {
 
 	app.use(
 		morgan("dev", {
-			skip: (req, res) => options.quiet === "true" && res.statusCode < 400,
+			skip: (req, res) =>
+				req.baseUrl === "/healthcheck" ||
+				(options.quiet === "true" && res.statusCode < 400),
 		}),
 	);
 

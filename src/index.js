@@ -4,7 +4,7 @@ const debug = require("debug")("mockbin");
 const express = require("express");
 const methodOverride = require("method-override");
 const morgan = require("morgan");
-const path = require("path");
+const path = require("node:path");
 const router = require("../lib");
 
 module.exports = (options, done) => {

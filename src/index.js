@@ -32,7 +32,9 @@ module.exports = (options, done) => {
 
 	app.use(
 		morgan("dev", {
-			skip: (req, res) => options.quiet === "true" && res.statusCode < 400,
+			skip: (req, res) =>
+				req.baseUrl === "/healthcheck" ||
+				(options.quiet === "true" && res.statusCode < 400),
 		}),
 	);
 

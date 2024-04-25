@@ -1,4 +1,4 @@
-name: Docker
+name: Package & Release
 
 # This workflow uses actions that are not certified by GitHub.
 # They are provided by a third-party and are governed by
@@ -16,32 +16,49 @@ on:
 env:
   # Use docker.io for Docker Hub if empty
   REGISTRY: ghcr.io
-  # github.repository as <account>/<repo>
-  IMAGE_NAME: ${{ github.repository }}
-
+  # Format as <account>/<repo>
+  # Must be lower case for container tools to parse correctly
+  IMAGE_NAME: kong/insomnia-mockbin
+  HAS_ACCESS_TO_GITHUB_TOKEN: ${{ github.repository_owner == 'Kong' }}
+  # Local docker OCI archive name until the image is pushed to registry
+  DOCKER_OCI_ARCHIVE: "docker-archive"
+  # Always use Docker Hub for publishing image signatures
+  ## docker.io/kong/notary - Use Public Notary repository for release image signatures
+  ## docker.io/kong/notary-internal - Use Private Notary repository for internal image signatures 
+  NOTARY_REPOSITORY: ${{ github.ref_type == 'tag' || github.ref_name == 'master' && 'kong/notary' || 'kong/notary-internal' }}
 
 jobs:
-  build:
-
+  check:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      packages: write
-      # This is used to complete the identity challenge
-      # with sigstore/fulcio when running outside of PRs.
-      id-token: write
-
+      packages: write 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Install the cosign tool except on PR
-      # https://github.com/sigstore/cosign-installer
-      - name: Install cosign
-        if: github.event_name != 'pull_request'
-        uses: sigstore/cosign-installer@6e04d228eb30da1757ee4e1dd75a0ec73a653e06 #v3.1.1
+      # Perform SCA analysis for the code repository
+      # Produces SBOM and CVE report
+      # Helps understand vulnerabilities / license compliance across third party dependencies
+      - id: sca-project
+        uses: Kong/public-shared-actions/security-actions/sca@2f02738ecb1670f01391162e43fe3f5d4e7942a1 # v2.2.2
         with:
-          cosign-release: 'v2.1.1'
+          dir: .
+          upload-sbom-release-assets: true
+
+  # Build docker images
+  build-images:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    needs: [check]
+    outputs:
+      image_tags: ${{ steps.meta.outputs.tags }}
+      image_tag_version: ${{ steps.meta.outputs.version }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
       # Set up BuildKit Docker container builder to be able to build
       # multi-platform images and export cache
@@ -49,48 +66,164 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@f95db51fddba0c2d1ec667646a06c2ce06100226 # v3.0.0
 
+      # Extract metadata (tags, labels) for Docker Image
+      # https://github.com/docker/metadata-action
+      - name: Extract Docker metadata
+        id: meta
+        env:
+          DOCKER_METADATA_PR_HEAD_SHA: true
+        uses: docker/metadata-action@96383f45573cb7f253c731d3b3ab81c87ef81934 # v5.0.0
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          sep-tags: ","
+
+      # Build Docker image with Buildx (don't push on PR)
+      # https://github.com/docker/build-push-action
+      - name: Build Docker image
+        id: build-and-push
+        uses: docker/build-push-action@0565240e2d4ab88bba5387d719585280857ece09 # v5.0.0
+        with:
+          context: .
+          push: false #  only push after the image is scanned
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ´${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          # these 2 options are needed so that the MediaType of the manifest is
+          # OCI-compliant for other downstream integrations
+          # see also:
+          #   - https://github.com/docker/buildx/issues/1507
+          #   - https://github.com/docker/buildx/issues/1509#issuecomment-1378538197
+          provenance: false
+          outputs: type=docker,dest=${{ env.DOCKER_OCI_ARCHIVE }}.tar,oci-mediatypes=true
+
+      - name: Upload Docker OCI layout TAR Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ env.DOCKER_OCI_ARCHIVE }}
+          path: ${{ env.DOCKER_OCI_ARCHIVE }}.tar
+          if-no-files-found: error
+          retention-days: 1
+
+  scan-images:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    needs: [check, build-images]
+    if: >
+      github.repository_owner == 'Kong'
+      && needs.build-images.result == 'success'
+    steps:
+
+      - name: Download OCI docker TAR artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ env.DOCKER_OCI_ARCHIVE }}
+          path: ${{ github.workspace }}
+      - name: Load OCI docker TAR artifact
+        run: |
+          docker load -i ${{ github.workspace }}/${{ env.DOCKER_OCI_ARCHIVE }}.tar
+          docker image ls
+
+      - name: Scan the docker OCI Tar ball
+        id: sbom_action_amd64
+        uses: Kong/public-shared-actions/security-actions/scan-docker-image@2f02738ecb1670f01391162e43fe3f5d4e7942a1 # v2.2.2
+        with:
+          asset_prefix: image-${{ env.IMAGE_NAME }}-amd64
+          image: ${{ env.DOCKER_OCI_ARCHIVE }}.tar
+          upload-sbom-release-assets: true
+
+  release-images:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write # needed for publishing the images
+      id-token: write # needed for keyless signing of the images
+    needs: [check, build-images, scan-images]
+    if: >
+      github.repository_owner == 'Kong'
+      && needs.scan-images.result == 'success'
+      && github.event_name != 'pull_request'
+    env:
+      IMAGE_TAGS: ${{ needs.build-images.outputs.image_tags }}
+    outputs:
+      image_name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+      image_manifest_sha: ${{ steps.image_manifest_metadata.outputs.image_manifest_sha }}
+      notary_repository: ${{ env.NOTARY_REPOSITORY }}
+    steps:
+
+      - name: Download OCI docker TAR artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ env.DOCKER_OCI_ARCHIVE }}
+          path: ${{ github.workspace }}
+
+      - name: Load OCI docker TAR artifact
+        run: |
+          docker load -i ${{ github.workspace }}/${{ env.DOCKER_OCI_ARCHIVE }}.tar
+          docker image ls
+
       # Login against a Docker registry except on PR
       # https://github.com/docker/login-action
-      - name: Log into registry ${{ env.REGISTRY }}
-        if: github.event_name != 'pull_request'
+      - name: Log into image registry ${{ env.REGISTRY }}
         uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d # v3.0.0
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # Extract metadata (tags, labels) for Docker
-      # https://github.com/docker/metadata-action
-      - name: Extract Docker metadata
-        id: meta
-        uses: docker/metadata-action@96383f45573cb7f253c731d3b3ab81c87ef81934 # v5.0.0
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+      - name: Push images to registry
+        id: publish_images
+        run: |
+          for tag in ${IMAGE_TAGS//,/ }; do \
+            docker push $tag; \
+          done
 
-      # Build and push Docker image with Buildx (don't push on PR)
-      # https://github.com/docker/build-push-action
-      - name: Build and push Docker image
-        id: build-and-push
-        uses: docker/build-push-action@0565240e2d4ab88bba5387d719585280857ece09 # v5.0.0
-        with:
-          context: .
-          push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+      # Setup regctl to parse platform specific image digest from image manifest
+      - name: Install regctl
+        uses: regclient/actions/regctl-installer@main
 
-      # Sign the resulting Docker image digest except on PRs.
-      # This will only write to the public Rekor transparency log when the Docker
-      # repository is public to avoid leaking data.  If you would like to publish
-      # transparency data even for private images, pass --force to cosign below.
-      # https://github.com/sigstore/cosign
-      - name: Sign the published Docker image
-        if: ${{ github.event_name != 'pull_request' }}
-        env:
-          # https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions#using-an-intermediate-environment-variable
-          TAGS: ${{ steps.meta.outputs.tags }}
-          DIGEST: ${{ steps.build-and-push.outputs.digest }}
-        # This step uses the identity token to provision an ephemeral certificate
-        # against the sigstore community Fulcio instance.
-        run: echo "${TAGS}" | xargs -I {} cosign sign --yes {}@${DIGEST}
+      # The image manifest digest/sha is generated only after the image is published to registry
+      - name: Parse architecture specific digest from image manifest
+        id: image_manifest_metadata
+        run: |
+          IMAGE=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ needs.build-images.outputs.IMAGE_TAG_VERSION }}
+          sha="$(regctl image digest "${IMAGE}")"
+          echo "sha=${sha}" >> $GITHUB_OUTPUT
+
+      # Signing images requires image manifest digest
+      - name: Sign images
+        id: sign_images
+        if: ${{ steps.image_manifest_metadata.outputs.sha != '' }}
+        uses: Kong/public-shared-actions/security-actions/sign-docker-image@2f02738ecb1670f01391162e43fe3f5d4e7942a1 # v2.2.2
+        with:
+          image_digest: ${{ steps.image_manifest_metadata.outputs.sha }}
+          tags: ${{ env.IMAGE_TAGS }}
+          image_registry_domain: ghcr.io
+          registry_username: ${{ github.actor }}
+          registry_password: ${{ secrets.GITHUB_TOKEN }}
+          # Optional: Central notary repository for image signatures
+          # signature_registry_domain: docker.io
+          # signature_registry_username: ${{ secrets.GHA_DOCKERHUB_PUSH_USER }}
+          # signature_registry_password: ${{ secrets.GHA_DOCKERHUB_PUSH_TOKEN }}
+          # signature_registry: ${{ env.NOTARY_REPOSITORY }}
+
+  release-images-provenance:
+    needs: ["check", "build-images", "scan-images", "release-images"]
+    if: ${{ github.ref_type == 'tag' || (github.event_name == 'push' && github.ref_name == 'master') }}
+    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@v2.0.0
+    permissions:
+      contents: write
+      id-token: write # For using token to sign images
+      actions: read # For getting workflow run info to build provenance
+      packages: write # Required for publishing provenance. Issue: https://github.com/slsa-framework/slsa-github-generator/tree/main/internal/builders/container#known-issues
+    with:
+      image: ${{ needs.release-images.outputs.image_name }} # Image repository without tag. Eg: kong/insomnia-mockbins
+      digest: ${{ needs.release-images.outputs.image_manifest_sha }} # Image manifest digest for the published docker image/TAR
+      #provenance-repository: ${{ needs.release-images.outputs.notary_repository }}
+    secrets:
+      registry-username: ${{ github.actor }}
+      registry-password: ${{ secrets.GITHUB_TOKEN }}
+      # provenance-registry-username: ${{ secrets.GHA_DOCKERHUB_PUSH_USER }}
+      # provenance-registry-password: ${{ secrets.GHA_KONG_ORG_DOCKERHUB_PUSH_TOKEN }}

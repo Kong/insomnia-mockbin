@@ -149,7 +149,7 @@ jobs:
       IMAGE_TAGS: ${{ needs.build-images.outputs.image_tags }}
     outputs:
       image_name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-      image_manifest_sha: ${{ steps.image_manifest_metadata.outputs.image_manifest_sha }}
+      image_manifest_sha: ${{ steps.image_manifest_metadata.outputs.sha }}
       notary_repository: ${{ env.NOTARY_REPOSITORY }}
     steps:
 
@@ -221,9 +221,9 @@ jobs:
     with:
       image: ${{ needs.release-images.outputs.image_name }} # Image repository without tag. Eg: kong/insomnia-mockbins
       digest: ${{ needs.release-images.outputs.image_manifest_sha }} # Image manifest digest for the published docker image/TAR
+      registry-username: ${{ github.actor }}
       #provenance-repository: ${{ needs.release-images.outputs.notary_repository }}
     secrets:
-      registry-username: ${{ github.actor }}
       registry-password: ${{ secrets.GITHUB_TOKEN }}
       # provenance-registry-username: ${{ secrets.GHA_DOCKERHUB_PUSH_USER }}
       # provenance-registry-password: ${{ secrets.GHA_KONG_ORG_DOCKERHUB_PUSH_TOKEN }}

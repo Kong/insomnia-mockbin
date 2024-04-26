@@ -31,8 +31,8 @@ jobs:
   check:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
       packages: write 
+      contents: write # publish sbom to GH releases/tag assets
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -45,6 +45,7 @@ jobs:
         with:
           dir: .
           upload-sbom-release-assets: true
+
 
   # Build docker images
   build-images:
@@ -108,7 +109,7 @@ jobs:
   scan-images:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write # For publishing assets to releases
       packages: write
     needs: [check, build-images]
     if: >

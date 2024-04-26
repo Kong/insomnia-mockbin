@@ -86,7 +86,7 @@ jobs:
           context: .
           push: false #  only push after the image is scanned
           tags: ${{ steps.meta.outputs.tags }}
-          labels: ´${{ steps.meta.outputs.labels }}
+          labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           # these 2 options are needed so that the MediaType of the manifest is

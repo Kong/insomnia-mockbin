@@ -1,8 +1,8 @@
 # Insomnia Mockbin ![version][npm-version] [![License][npm-license]][license-url]
 
-[![Gitter][gitter-image]][gitter-url]
+**Note:** This repository is source visibile, but not open-source. Please check the [LICENSE](LICENSE) before using this software.
 
-Insomnia Mockbin is used internally and maintained by [Kong](https://github.com/Kong), who also maintain the open-source API Gateway [Kong](https://github.com/Kong/kong).
+Insomnia Mockbin is maintained by [Kong](https://github.com/Kong), who also maintains the open-source API Gateway [Kong](https://github.com/Kong/kong) and [Insomnia](https://github.com/Kong/insomnia).
 
 ## Table of contents
 
@@ -21,7 +21,6 @@ Insomnia Mockbin is used internally and maintained by [Kong](https://github.com/
   - [Bugs and feature requests](#bugs-and-feature-requests)
   - [Contributing](#contributing)
   - [License](#license)
-  - [TODO](#todo)
 
 ## Features
 
@@ -179,25 +178,9 @@ Editor preferences are available in the [editor config](.editorconfig) for easy 
 
 ## License
 
-[MIT](LICENSE) &copy; [Kong](https://www.konghq.com)
+[Enterprise](LICENSE) &copy; [Kong](https://www.konghq.com)
 
 [license-url]: https://github.com/Kong/mockbin/blob/master/LICENSE
 
 [npm-license]: https://img.shields.io/npm/l/mockbin.svg?style=flat-square
 [npm-version]: https://img.shields.io/npm/v/mockbin.svg?style=flat-square
-[gitter-url]: https://gitter.im/Kong/mockbin
-[gitter-image]: https://img.shields.io/badge/Gitter-Join%20Chat-blue.svg?style=flat-square
-
-## TODO
-
-- [x] update node
-- [x] github action
-- [x] autofix on save
-- [x] upsert bin endpoint
-- [x] simplify entrypoint and environment
-- [x] replace unirest with fetch
-- [x] redis function binding
-- [ ] remove redis legacyMode
-- [ ] callback tests
-- [ ] add bin tests
-- [ ] wild cards in url

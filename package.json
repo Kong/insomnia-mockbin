@@ -23,9 +23,15 @@
 		"testing"
 	],
 	"engines": {
-		"node": ">=21"
+		"node": ">=22"
 	},
-	"files": ["bin", "docs", "src", "lib", "server.js"],
+	"files": [
+		"bin",
+		"docs",
+		"src",
+		"lib",
+		"server.js"
+	],
 	"bugs": {
 		"url": "https://github.com/Kong/mockbin/issues"
 	},

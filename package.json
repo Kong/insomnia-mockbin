@@ -67,7 +67,7 @@
 		"jstransformer-marked": "^1.4.0",
 		"method-override": "^3.0.0",
 		"morgan": "^1.9.1",
-		"pug": "^2.0.4",
+		"pug": "^3.0.3",
 		"redis": "^4.6.12",
 		"require-directory": "^2.1.1",
 		"uuid": "^8.3.2",

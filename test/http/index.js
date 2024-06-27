@@ -4,29 +4,21 @@ const mockbin = require("../../lib");
 const path = require("node:path");
 
 const app = express();
-let server = null;
+app.enable("trust proxy");
+app.set("view engine", "pug");
+app.set("views", path.join(__dirname, "..", "..", "src", "views"));
+
+app.use(cookieParser());
+
+app.use("/", mockbin());
+server = app.listen(3000);
 
 require("should");
 
 describe("HTTP", () => {
-	before((done) => {
-		// express setup
-		app.enable("trust proxy");
-		app.set("view engine", "pug");
-		app.set("views", path.join(__dirname, "..", "..", "src", "views"));
-
-		app.use(cookieParser());
-
-		app.use("/", mockbin());
-		server = app.listen(3000, () => {
-			done();
-		});
-	});
-
 	after(() => {
-		server.close();
-	});
-
+    server.close();
+  });
 	it("home page responds with html content", async () => {
 		const res = await fetch("http://localhost:3000/", {
 			headers: {

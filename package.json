@@ -59,7 +59,7 @@
 		"content-type": "^1.0.4",
 		"cookie-parser": "^1.4.5",
 		"debug": "^4.3.4",
-		"dicer": "^0.3.0",
+		"dicer": "Kong/dicer",
 		"dotenv": "^16.4.0",
 		"express": "^4.17.1",
 		"har-validator": "^5.1.3",

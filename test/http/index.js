@@ -15,12 +15,12 @@ app.use("/", mockbin());
 require("should");
 
 describe("HTTP", () => {
-	before(()=>{
+	before(() => {
 		server = app.listen(3000);
-	})
+	});
 	after(() => {
-    server.close();
-  });
+		server.close();
+	});
 	it("home page responds with html content", async () => {
 		const res = await fetch("http://localhost:3000/", {
 			headers: {

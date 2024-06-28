@@ -1,4 +1,4 @@
-FROM node:21.6.2-bullseye-slim
+FROM node:22-bullseye-slim
 
 RUN apt-get update && apt-get install -y --no-install-recommends dumb-init
 ENV NODE_ENV production

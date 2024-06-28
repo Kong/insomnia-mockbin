@@ -18,23 +18,3 @@ describe("/ip", () => {
 		});
 	});
 });
-
-describe("/ips", () => {
-	it("should response with all address", (done) => {
-		const res = {};
-		const req = {
-			forwarded: {
-				for: {
-					"0.0.0.0": -1,
-					"1.1.1.1": -1,
-				},
-			},
-		};
-
-		ips.all(req, res, () => {
-			res.body.should.equal(req.forwarded.for);
-
-			done();
-		});
-	});
-});

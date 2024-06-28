@@ -4,29 +4,23 @@ const mockbin = require("../../lib");
 const path = require("node:path");
 
 const app = express();
-let server = null;
+app.enable("trust proxy");
+app.set("view engine", "pug");
+app.set("views", path.join(__dirname, "..", "..", "src", "views"));
+
+app.use(cookieParser());
+
+app.use("/", mockbin());
 
 require("should");
 
 describe("HTTP", () => {
-	before((done) => {
-		// express setup
-		app.enable("trust proxy");
-		app.set("view engine", "pug");
-		app.set("views", path.join(__dirname, "..", "..", "src", "views"));
-
-		app.use(cookieParser());
-
-		app.use("/", mockbin());
-		server = app.listen(3000, () => {
-			done();
-		});
+	before(() => {
+		server = app.listen(3000);
 	});
-
 	after(() => {
 		server.close();
 	});
-
 	it("home page responds with html content", async () => {
 		const res = await fetch("http://localhost:3000/", {
 			headers: {
@@ -73,19 +67,6 @@ describe("HTTP", () => {
 
 		const body = await res.text();
 		body.should.equal("::1");
-	});
-
-	it("GET /ips should return proxied IPs", async () => {
-		const res = await fetch("http://localhost:3000/ips", {
-			headers: {
-				Accept: "application/json",
-				"X-Forwarded-For": "10.10.10.1, 10.10.10.2, 10.10.10.3",
-			},
-		});
-
-		const body = await res.json();
-		body.should.be.an.Object();
-		body.should.have.properties("10.10.10.1", "10.10.10.2", "10.10.10.3");
 	});
 
 	it("GET /agent should return user-agent string", async () => {

@@ -23,16 +23,11 @@
 		"testing"
 	],
 	"engines": {
-		"node": ">=21"
+		"node": ">=22"
 	},
 	"files": ["bin", "docs", "src", "lib", "server.js"],
 	"bugs": {
 		"url": "https://github.com/Kong/mockbin/issues"
-	},
-	"config": {
-		"commitizen": {
-			"path": "./node_modules/cz-conventional-changelog"
-		}
 	},
 	"scripts": {
 		"start": "node server.js",
@@ -43,7 +38,7 @@
 		"clean": "git clean -fdX"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "1.6.4",
+		"@biomejs/biome": "1.8.3",
 		"mocha": "^10.2.0",
 		"should": "^13.2.3"
 	},
@@ -53,15 +48,14 @@
 		"content-type": "^1.0.4",
 		"cookie-parser": "^1.4.5",
 		"debug": "^4.3.4",
-		"dicer": "^0.3.0",
+		"@idio/dicer": "1.1.0",
 		"dotenv": "^16.4.0",
 		"express": "^4.17.1",
-		"forwarded-http": "^0.3.0",
 		"har-validator": "^5.1.3",
 		"jstransformer-marked": "^1.4.0",
 		"method-override": "^3.0.0",
 		"morgan": "^1.9.1",
-		"pug": "^2.0.4",
+		"pug": "^3.0.3",
 		"redis": "^4.6.12",
 		"require-directory": "^2.1.1",
 		"uuid": "^8.3.2",

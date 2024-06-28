@@ -38,7 +38,7 @@
 		"clean": "git clean -fdX"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "1.6.4",
+		"@biomejs/biome": "1.8.3",
 		"mocha": "^10.2.0",
 		"should": "^13.2.3"
 	},

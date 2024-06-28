@@ -12,3 +12,4 @@ jobs:
     - uses: biomejs/setup-biome@v2
     - run: biome ci .
     - run: npm test
+    - run: npm audit

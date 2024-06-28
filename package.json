@@ -25,7 +25,13 @@
 	"engines": {
 		"node": ">=22"
 	},
-	"files": ["bin", "docs", "src", "lib", "server.js"],
+	"files": [
+		"bin",
+		"docs",
+		"src",
+		"lib",
+		"server.js"
+	],
 	"bugs": {
 		"url": "https://github.com/Kong/mockbin/issues"
 	},
@@ -48,7 +54,7 @@
 		"content-type": "^1.0.4",
 		"cookie-parser": "^1.4.5",
 		"debug": "^4.3.4",
-		"dicer": "Kong/dicer",
+		"@idio/dicer": "1.1.0",
 		"dotenv": "^16.4.0",
 		"express": "^4.17.1",
 		"har-validator": "^5.1.3",

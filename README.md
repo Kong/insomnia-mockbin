@@ -81,10 +81,11 @@ Read the full API documentation, please review the [API Docs](https://github.com
 ## Releasing
 
 Run the following command and push the newly created commit into your PR.
-This will trigger the release action upon merging the PR.
+This will bump commit and tag, you will need to push this to the remote, which trigger the release action upon merging the PR.
 
 ```sh
 npm version patch
+git push origin tag <tag_name>
 ```
 
 ### Software Bill of materials

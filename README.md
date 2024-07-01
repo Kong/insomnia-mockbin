@@ -15,6 +15,7 @@ Insomnia Mockbin is maintained by [Kong](https://github.com/Kong), who also main
   - [Running with Docker Compose](#running-with-docker-compose)
   - [Documentation](#documentation)
     - [API Docs](#api-docs)
+  - [Releasing](#releasing)
     - [Software Bill of materials](#software-bill-of-materials)
     - [Verify a container image signature](#verify-a-container-image-signature)
     - [Verify a container image provenance](#verify-a-container-image-provenance)
@@ -76,6 +77,16 @@ docker compose up
 ### API Docs
 
 Read the full API documentation, please review the [API Docs](https://github.com/Kong/mockbin/tree/master/docs).
+
+## Releasing
+
+Run the following command and push the newly created commit into your PR.
+This will bump commit and tag, you will need to push this to the remote, which trigger the release action upon merging the PR.
+
+```sh
+npm version patch
+git push origin tag <tag_name>
+```
 
 ### Software Bill of materials
 

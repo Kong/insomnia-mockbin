@@ -44,7 +44,7 @@
 	},
 	"dependencies": {
 		"change-case": "^4.1.1",
-          "chai": "^5.1.2",
+		"chai": "^5.1.2",
 		"compression": "^1.7.4",
 		"content-type": "^1.0.4",
 		"cookie-parser": "^1.4.5",
@@ -56,7 +56,7 @@
 		"jstransformer-marked": "^1.4.0",
 		"method-override": "^3.0.0",
 		"morgan": "^1.9.1",
-          "node-mocks-http": "^1.16.2",
+		"node-mocks-http": "^1.16.2",
 		"pug": "^3.0.3",
 		"redis": "^4.6.12",
 		"require-directory": "^2.1.1",

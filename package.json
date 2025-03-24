@@ -39,18 +39,18 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.8.3",
-		"mocha": "^10.2.0",
+		"mocha": "^11.1.0",
 		"should": "^13.2.3"
 	},
 	"dependencies": {
 		"change-case": "^4.1.1",
 		"compression": "^1.7.4",
 		"content-type": "^1.0.4",
-		"cookie-parser": "^1.4.5",
+		"cookie-parser": "^1.4.7",
 		"debug": "^4.3.4",
 		"@idio/dicer": "1.1.0",
 		"dotenv": "^16.4.0",
-		"express": "^4.17.1",
+		"express": "^4.21.2",
 		"har-validator": "^5.1.3",
 		"jstransformer-marked": "^1.4.0",
 		"method-override": "^3.0.0",

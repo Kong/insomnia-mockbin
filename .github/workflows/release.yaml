@@ -41,7 +41,7 @@ jobs:
       # Produces SBOM and CVE report
       # Helps understand vulnerabilities / license compliance across third party dependencies
       - id: sca-project
-        uses: Kong/public-shared-actions/security-actions/sca@28d20a1f492927f35b00b317acd78f669c45f88b # v2.7.3
+        uses: Kong/public-shared-actions/security-actions/sca@a18abf762d6e2444bcbfd20de70451ea1e3bc1b1 # v4.1.1
         with:
           dir: .
           upload-sbom-release-assets: true
@@ -129,7 +129,7 @@ jobs:
 
       - name: Scan the docker OCI Tar ball
         id: sbom_action_amd64
-        uses: Kong/public-shared-actions/security-actions/scan-docker-image@2f02738ecb1670f01391162e43fe3f5d4e7942a1 # v2.2.2
+        uses: Kong/public-shared-actions/security-actions/scan-docker-image@a18abf762d6e2444bcbfd20de70451ea1e3bc1b1 # v4.1.3
         with:
           asset_prefix: image-${{ env.IMAGE_NAME }}-amd64
           image: ${{ env.DOCKER_OCI_ARCHIVE }}.tar
@@ -197,7 +197,7 @@ jobs:
       - name: Sign images
         id: sign_images
         if: ${{ steps.image_manifest_metadata.outputs.sha != '' }}
-        uses: Kong/public-shared-actions/security-actions/sign-docker-image@2f02738ecb1670f01391162e43fe3f5d4e7942a1 # v2.2.2
+        uses: Kong/public-shared-actions/security-actions/sign-docker-image@a18abf762d6e2444bcbfd20de70451ea1e3bc1b1 # v4.1.1
         with:
           image_digest: ${{ steps.image_manifest_metadata.outputs.sha }}
           tags: ${{ env.IMAGE_TAGS }}

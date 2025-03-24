@@ -183,7 +183,7 @@ jobs:
 
       # Setup regctl to parse platform specific image digest from image manifest
       - name: Install regctl
-        uses: regclient/actions/regctl-installer@main
+        uses: regclient/actions/regctl-installer@ce5fd131e371ffcdd7508b478cb223b3511a9183 # main
 
       # The image manifest digest/sha is generated only after the image is published to registry
       - name: Parse architecture specific digest from image manifest
@@ -213,7 +213,7 @@ jobs:
   release-images-provenance:
     needs: ["check", "build-images", "scan-images", "release-images"]
     if: ${{ github.ref_type == 'tag' || (github.event_name == 'push' && github.ref_name == 'master') }}
-    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@v2.0.0
+    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@5a775b367a56d5bd118a224a811bba288150a563 # v2.0.0
     permissions:
       contents: write
       id-token: write # For using token to sign images

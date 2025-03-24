@@ -118,7 +118,7 @@ jobs:
     steps:
 
       - name: Download OCI docker TAR artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ${{ env.DOCKER_OCI_ARCHIVE }}
           path: ${{ github.workspace }}
@@ -155,7 +155,7 @@ jobs:
     steps:
 
       - name: Download OCI docker TAR artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ${{ env.DOCKER_OCI_ARCHIVE }}
           path: ${{ github.workspace }}

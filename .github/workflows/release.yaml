@@ -99,7 +99,7 @@ jobs:
           outputs: type=docker,dest=${{ env.DOCKER_OCI_ARCHIVE }}.tar,oci-mediatypes=true
 
       - name: Upload Docker OCI layout TAR Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ env.DOCKER_OCI_ARCHIVE }}
           path: ${{ env.DOCKER_OCI_ARCHIVE }}.tar

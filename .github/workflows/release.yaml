@@ -83,8 +83,8 @@ jobs:
       - name: Login to Docker Hub
         uses: docker/login-action@3d58c274f17dffee475a5520cbe67f0a882c4dbb # v2.1.0
         with:
-          username: ${{ secrets.GHA_DOCKERHUB_PUSH_USER }}
-          password: ${{ secrets.GHA_KONG_ORG_DOCKERHUB_PUSH_TOKEN }}
+          username: ${{ secrets.DOCKER_REGISTRY_USER }}
+          password: ${{ secrets.DOCKER_REGISTRY_TOKEN }}
 
       # Build Docker image with Buildx (don't push on PR)
       # https://github.com/docker/build-push-action

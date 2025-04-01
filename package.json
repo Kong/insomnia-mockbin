@@ -31,7 +31,7 @@
 	},
 	"scripts": {
 		"start": "node server.js",
-		"dev": "npx nodemon -e pug,js,json server.js",
+		"dev": "node --watch server.js",
 		"test": "mocha --recursive",
 		"check": "biome check .",
 		"coverage": "npx nyc --report-dir coverage npm test",

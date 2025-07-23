@@ -1,6 +1,6 @@
-FROM node:22-bullseye-slim
+FROM node:22-alpine
 
-RUN apt-get update && apt-get install -y --no-install-recommends dumb-init
+RUN apk add --no-cache dumb-init
 ENV NODE_ENV production
 WORKDIR /usr/src/app
 COPY --chown=node:node . .

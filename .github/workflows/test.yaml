@@ -7,8 +7,9 @@ jobs:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
       with:
-        node-version: 21
+        node-version: 22
     - run: npm ci
     - uses: biomejs/setup-biome@c016c38f26f2c4a6eb3662679143614a254263fd # v2
     - run: biome ci .
     - run: npm test
+    - run: npm run test:contract:docker

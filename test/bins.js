@@ -14,10 +14,8 @@ const sampleRoute = require("../lib/routes/bins/sample");
 describe("bins", () => {
 	describe("create route", () => {
 		it("should create a bin with valid HAR response", (done) => {
-			console.log("starting");
 			const mockClient = {
 				set: (key, value, ex, expire, callback) => {
-					console.log("setting");
 					key.should.match(/^bin:[a-f0-9-]{36}$/);
 					const parsedValue = JSON.parse(value);
 					parsedValue.status.should.equal(200);
@@ -56,7 +54,6 @@ describe("bins", () => {
 				body: null,
 			};
 
-			console.log("routing");
 			const route = createRoute(mockClient);
 			route(req, res, () => {
 				res.body.should.match(/^[a-f0-9-]{36}$/);

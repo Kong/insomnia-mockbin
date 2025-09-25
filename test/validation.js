@@ -22,10 +22,7 @@ describe("validateRequestMethod", () => {
 		(() => validateRequestMethod("INVALID")).should.throw(
 			"Invalid request method: INVALID",
 		);
-		(() => validateRequestMethod("get")).should.throw(
-			"Invalid request method: get",
-		);
-		(() => validateRequestMethod("TRACE")).should.throw(
+		(() => validateRequestMethod("trace")).should.throw(
 			"Invalid request method: TRACE",
 		);
 		done();

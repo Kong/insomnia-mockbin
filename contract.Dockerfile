@@ -1,9 +1,10 @@
-FROM node:22-bullseye-slim
+FROM node:22-alpine
 
-RUN apt-get update && apt-get install -y procps
+RUN apk add --no-cache procps
 ENV NODE_ENV=development
 WORKDIR /usr/src/app
-COPY package.json package-lock.json ./
+COPY --chown=node:node package.json package-lock.json ./
 RUN npm ci
+USER node
 COPY --chown=node:node . .
 CMD ["npm", "run", "test:contract"]

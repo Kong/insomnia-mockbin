@@ -7,49 +7,48 @@ name: Package & Release
 
 on:
   push:
-    branches: [ "master" ]
+    branches: ["master", "self-hosted"]
     # Publish semver tags as releases.
-    tags: [ 'v*.*.*' ]
+    tags: ["v*.*.*"]
   pull_request:
-    branches: [ "master" ]
+    branches: ["master", "self-hosted"]
 
 env:
   # Use docker.io for Docker Hub if empty
   REGISTRY: ghcr.io
   # Format as <account>/<repo>
   # Must be lower case for container tools to parse correctly
-  IMAGE_NAME: kong/insomnia-mockbin
+  IMAGE_NAME: ${{ github.ref_name == 'self-hosted' && 'kong/insomnia-mockbin-self-hosted' || 'kong/insomnia-mockbin-cloud' }}
   HAS_ACCESS_TO_GITHUB_TOKEN: ${{ github.repository_owner == 'Kong' }}
   # Local docker OCI archive name until the image is pushed to registry
   DOCKER_OCI_ARCHIVE: "docker-archive"
   # Always use Docker Hub for publishing image signatures
   ## docker.io/kong/notary - Use Public Notary repository for release image signatures
-  ## docker.io/kong/notary-internal - Use Private Notary repository for internal image signatures 
-  NOTARY_REPOSITORY: ${{ github.ref_type == 'tag' || github.ref_name == 'master' && 'kong/notary' || 'kong/notary-internal' }}
+  ## docker.io/kong/notary-internal - Use Private Notary repository for internal image signatures
+  NOTARY_REPOSITORY: ${{ github.ref_type == 'tag' || github.ref_name == 'master' || github.ref_name == 'self-hosted' && 'kong/notary' || 'kong/notary-internal' }}
 
 jobs:
   check:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
-      packages: write 
+      packages: write
       contents: write # publish sbom to GH releases/tag assets
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
 
       # Perform SCA analysis for the code repository
       # Produces SBOM and CVE report
       # Helps understand vulnerabilities / license compliance across third party dependencies
       - id: sca-project
-        uses: Kong/public-shared-actions/security-actions/sca@a18abf762d6e2444bcbfd20de70451ea1e3bc1b1 # v4.1.1
+        uses: Kong/public-shared-actions/security-actions/sca@7040193cacd1787991b11b6b2ddb0a9719cbb533 # v5.1.3
         with:
           dir: .
           upload-sbom-release-assets: true
 
-
   # Build docker images
   build-images:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
       packages: write
@@ -59,13 +58,13 @@ jobs:
       image_tag_version: ${{ steps.meta.outputs.version }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
 
       # Set up BuildKit Docker container builder to be able to build
       # multi-platform images and export cache
       # https://github.com/docker/setup-buildx-action
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@f95db51fddba0c2d1ec667646a06c2ce06100226 # v3.0.0
+        uses: docker/setup-buildx-action@e468171a9de216ec08956ac3ada2f0791b6bd435 # v3.11.1
 
       # Extract metadata (tags, labels) for Docker Image
       # https://github.com/docker/metadata-action
@@ -73,7 +72,7 @@ jobs:
         id: meta
         env:
           DOCKER_METADATA_PR_HEAD_SHA: true
-        uses: docker/metadata-action@96383f45573cb7f253c731d3b3ab81c87ef81934 # v5.0.0
+        uses: docker/metadata-action@c1e51972afc2121e065aed6d45c65596fe445f3f # v5.8.0
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           sep-tags: ","
@@ -115,7 +114,7 @@ jobs:
           retention-days: 1
 
   scan-images:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: write # For publishing assets to releases
       packages: write
@@ -124,7 +123,6 @@ jobs:
       github.repository_owner == 'Kong'
       && needs.build-images.result == 'success'
     steps:
-
       - name: Download OCI docker TAR artifact
         uses: actions/download-artifact@v4
         with:
@@ -161,7 +159,6 @@ jobs:
       image_manifest_sha: ${{ steps.image_manifest_metadata.outputs.sha }}
       notary_repository: ${{ env.NOTARY_REPOSITORY }}
     steps:
-
       - name: Download OCI docker TAR artifact
         uses: actions/download-artifact@v4
         with:
@@ -176,7 +173,7 @@ jobs:
       # Login against a Docker registry except on PR
       # https://github.com/docker/login-action
       - name: Log into image registry ${{ env.REGISTRY }}
-        uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d # v3.0.0
+        uses: docker/login-action@184bdaa0721073962dff0199f1fb9940f07167d1 # v3.5.0
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
@@ -205,7 +202,7 @@ jobs:
       - name: Sign images
         id: sign_images
         if: ${{ steps.image_manifest_metadata.outputs.sha != '' }}
-        uses: Kong/public-shared-actions/security-actions/sign-docker-image@a18abf762d6e2444bcbfd20de70451ea1e3bc1b1 # v4.1.1
+        uses: Kong/public-shared-actions/security-actions/sign-docker-image@7040193cacd1787991b11b6b2ddb0a9719cbb533 # v5.0.3
         with:
           image_digest: ${{ steps.image_manifest_metadata.outputs.sha }}
           tags: ${{ env.IMAGE_TAGS }}

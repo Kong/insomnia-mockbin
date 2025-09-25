@@ -13,6 +13,7 @@ Insomnia Mockbin is maintained by [Kong](https://github.com/Kong), who also main
     - [Requirements](#requirements)
     - [Running with Node](#running-with-node)
   - [Running with Docker Compose](#running-with-docker-compose)
+  - [Running the Contract Tests with Docker Compose](#running-the-contract-tests-with-docker-compose)
   - [Documentation](#documentation)
     - [API Docs](#api-docs)
   - [Releasing](#releasing)
@@ -36,6 +37,8 @@ Insomnia Mockbin is maintained by [Kong](https://github.com/Kong), who also main
 ### Requirements
 
 - [Redis](http://redis.io/)
+
+(note that you don't need this if you're going to use Docker Compose)
 
 ```shell
 brew install redis
@@ -70,6 +73,12 @@ DEBUG=mockbin npm run dev
 
 ```shell
 docker compose up
+```
+
+## Running the Contract Tests with Docker Compose
+
+```shell
+npm run test:contract:docker
 ```
 
 ## Documentation

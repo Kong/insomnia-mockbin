@@ -38,14 +38,17 @@
 	"scripts": {
 		"start": "node server.js",
 		"dev": "node --watch server.js",
-		"test": "mocha --recursive",
+		"test": "mocha --recursive  --ignore 'test/contract/**'",
+		"test:contract": "mocha --serial --recursive 'test/contract'",
+		"test:contract:docker": "docker compose run --rm --build contract",
 		"check": "biome check .",
-		"coverage": "npx nyc --report-dir coverage npm test",
+		"coverage": "nyc --report-dir coverage npm test",
 		"clean": "git clean -fdX"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.8.3",
 		"mocha": "^10.2.0",
+		"nyc": "^17.1.0",
 		"should": "^13.2.3"
 	},
 	"dependencies": {

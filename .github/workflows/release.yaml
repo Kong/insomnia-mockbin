@@ -18,7 +18,7 @@ env:
   REGISTRY: ghcr.io
   # Format as <account>/<repo>
   # Must be lower case for container tools to parse correctly
-  IMAGE_NAME: ${{ github.ref_name == 'self-hosted' && 'kong/insomnia-mockbin-self-hosted' || 'kong/insomnia-mockbin-cloud' }}
+  IMAGE_NAME: ${{ (github.ref_name == 'self-hosted' || contains(github.ref_name, 'self-hosted')) && 'kong/insomnia-mockbin-self-hosted' || 'kong/insomnia-mockbin-cloud' }}
   HAS_ACCESS_TO_GITHUB_TOKEN: ${{ github.repository_owner == 'Kong' }}
   # Local docker OCI archive name until the image is pushed to registry
   DOCKER_OCI_ARCHIVE: "docker-archive"

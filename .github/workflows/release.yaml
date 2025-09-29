@@ -218,7 +218,7 @@ jobs:
   # See https://github.com/slsa-framework/slsa-github-generator/tree/main/internal/builders/container
   release-images-provenance:
     needs: ["check", "build-images", "scan-images", "release-images"]
-    if: ${{ github.ref_type == 'tag' || (github.event_name == 'push' && github.ref_name == 'master') }}
+    if: ${{ github.ref_type == 'tag' || (github.event_name == 'push' && github.ref_name == 'master') || (github.event_name == 'push' && github.ref_name == 'self-hosted') }}
     # https://github.com/slsa-framework/slsa-github-generator/tree/main/internal/builders/container#referencing-the-slsa-generator
     # The reusable action MUST be referenced with a tag.
     uses: slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@v2.1.0

@@ -6,7 +6,7 @@ Insomnia Mockbin is maintained by [Kong](https://github.com/Kong), who also main
 
 ## Table of contents
 
-- [Insomnia Mockbin  ](#insomnia-mockbin--)
+- [Insomnia Mockbin](#insomnia-mockbin--)
   - [Table of contents](#table-of-contents)
   - [Features](#features)
   - [Installation](#installation)
@@ -27,7 +27,7 @@ Insomnia Mockbin is maintained by [Kong](https://github.com/Kong), who also main
 
 - uses HAR format
 - supports JSON, YAML, XML, HTML output
-- plays nice with proxies (uses the X-Forwarded-* headers for IP resolution)
+- plays nice with proxies (uses the `X-Forwarded-*` headers for IP resolution)
 - allows for HTTP Method Override using the header `X-HTTP-Method-Override` or through query string parameter: `_method`
 - create custom bins for experimenting log collection
 
@@ -110,7 +110,7 @@ A minimal example, used to verify an image without leveraging any annotations. F
 
 ```code
 cosign verify \
-  ghcr.io/kong/insomnia-mockbin:<tag>@sha256:<digest> \
+  ghcr.io/kong/insomnia-mockbin-self-hosted:<tag>@sha256:<digest> \
   --certificate-oidc-issuer='https://token.actions.githubusercontent.com' \
   --certificate-identity-regexp='https://github.com/Kong/insomnia-mockbin/.github/workflows/release.yaml'
 ```
@@ -119,7 +119,7 @@ A complete example, leveraging optional annotations for increased trust. For the
 
 ```code
 cosign verify \
-  ghcr.io/kong/insomnia-mockbin:<tag>@sha256:<digest> \
+  ghcr.io/kong/insomnia-mockbin-self-hosted:<tag>@sha256:<digest> \
   --certificate-oidc-issuer='https://token.actions.githubusercontent.com' \
   --certificate-identity-regexp='https://github.com/Kong/insomnia-mockbin/.github/workflows/release.yaml' \
   -a repo='Kong/insomnia-mockbin' \
@@ -134,46 +134,46 @@ Steps to verify provenance for signed Kong Insomnia Mockbin Docker container ima
 
 1. Fetch the image `<manifest_digest>` using regctl:
 
-    ```code
-    regctl image digest ghcr.io/kong/insomnia-mockbin:<tag>
-    ```
+   ```code
+   regctl image digest ghcr.io/kong/insomnia-mockbin-self-hosted:<tag>
+   ```
 
 2. A minimal example, used to verify an image without leveraging any annotations. For the minimal example, you only need Docker Image manifest, a GitHub repo name.
 
-    ```code
-    cosign verify-attestation \
-      ghcr.io/kong/insomnia-mockbin:<tag>@sha256:<manifest_digest> \
-      --type='slsaprovenance' \
-      --certificate-oidc-issuer='https://token.actions.githubusercontent.com' \
-      --certificate-identity-regexp='^https://github.com/slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@refs/tags/v[0-9]+.[0-9]+.[0-9]+$'
-    ```
+   ```code
+   cosign verify-attestation \
+     ghcr.io/kong/insomnia-mockbin-self-hosted:<tag>@sha256:<manifest_digest> \
+     --type='slsaprovenance' \
+     --certificate-oidc-issuer='https://token.actions.githubusercontent.com' \
+     --certificate-identity-regexp='^https://github.com/slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@refs/tags/v[0-9]+.[0-9]+.[0-9]+$'
+   ```
 
-    ```code
-    slsa-verifier verify-image \
-      ghcr.io/kong/insomnia-mockbin:<tag>@sha256:<manifest_digest> \
-      --print-provenance \
-      --source-uri 'github.com/Kong/insomnia-mockbin'
-    ```
+   ```code
+   slsa-verifier verify-image \
+     ghcr.io/kong/insomnia-mockbin-self-hosted:<tag>@sha256:<manifest_digest> \
+     --print-provenance \
+     --source-uri 'github.com/Kong/insomnia-mockbin'
+   ```
 
 3. A complete example, leveraging optional annotations for increased trust. For the complete example, you need the same details as the minimal example, as well as any of the optional annotations you wish to verify:
 
-    ```code
-    cosign verify-attestation \
-      ghcr.io/kong/insomnia-mockbin:<tag>@sha256:<manifest_digest> \
-      --type='slsaprovenance' \
-      --certificate-oidc-issuer='https://token.actions.githubusercontent.com' \
-      --certificate-identity-regexp='^https://github.com/slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@refs/tags/v[0-9]+.[0-9]+.[0-9]+$' \
-      --certificate-github-workflow-repository='Kong/insomnia-mockbin' \
-      --certificate-github-workflow-name='Package & Release'
-    ```
+   ```code
+   cosign verify-attestation \
+     ghcr.io/kong/insomnia-mockbin-self-hosted:<tag>@sha256:<manifest_digest> \
+     --type='slsaprovenance' \
+     --certificate-oidc-issuer='https://token.actions.githubusercontent.com' \
+     --certificate-identity-regexp='^https://github.com/slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@refs/tags/v[0-9]+.[0-9]+.[0-9]+$' \
+     --certificate-github-workflow-repository='Kong/insomnia-mockbin' \
+     --certificate-github-workflow-name='Package & Release'
+   ```
 
-    ```code
-    slsa-verifier verify-image \
-      ghcr.io/kong/insomnia-mockbin:<tag>@sha256:<manifest_digest> \
-      --print-provenance \
-      --source-uri 'github.com/Kong/insomnia-mockbin' \
-      --source-tag '<tag>'
-    ```
+   ```code
+   slsa-verifier verify-image \
+     ghcr.io/kong/insomnia-mockbin-self-hosted:<tag>@sha256:<manifest_digest> \
+     --print-provenance \
+     --source-uri 'github.com/Kong/insomnia-mockbin' \
+     --source-tag '<tag>'
+   ```
 
 ## Bugs and feature requests
 
@@ -192,6 +192,5 @@ Editor preferences are available in the [editor config](.editorconfig) for easy 
 [Enterprise](LICENSE) &copy; [Kong](https://www.konghq.com)
 
 [license-url]: https://github.com/Kong/mockbin/blob/master/LICENSE
-
 [npm-license]: https://img.shields.io/npm/l/mockbin.svg?style=flat-square
 [npm-version]: https://img.shields.io/npm/v/mockbin.svg?style=flat-square

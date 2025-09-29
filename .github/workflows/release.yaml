@@ -215,21 +215,20 @@ jobs:
           # signature_registry_password: ${{ secrets.GHA_DOCKERHUB_PUSH_TOKEN }}
           # signature_registry: ${{ env.NOTARY_REPOSITORY }}
 
+  # See https://github.com/slsa-framework/slsa-github-generator/tree/main/internal/builders/container
   release-images-provenance:
     needs: ["check", "build-images", "scan-images", "release-images"]
     if: ${{ github.ref_type == 'tag' || (github.event_name == 'push' && github.ref_name == 'master') }}
-    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@5a775b367a56d5bd118a224a811bba288150a563 # v2.0.0
+    # https://github.com/slsa-framework/slsa-github-generator/tree/main/internal/builders/container#referencing-the-slsa-generator
+    # The reusable action MUST be referenced with a tag.
+    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@2.1.0
     permissions:
-      contents: write
-      id-token: write # For using token to sign images
-      actions: read # For getting workflow run info to build provenance
-      packages: write # Required for publishing provenance. Issue: https://github.com/slsa-framework/slsa-github-generator/tree/main/internal/builders/container#known-issues
+      actions: read # for detecting the Github Actions environment.
+      id-token: write # for creating OIDC tokens for signing.
+      packages: write # for uploading attestations.
     with:
       image: ${{ needs.release-images.outputs.image_name }} # Image repository without tag. Eg: kong/insomnia-mockbins
       digest: ${{ needs.release-images.outputs.image_manifest_sha }} # Image manifest digest for the published docker image/TAR
       registry-username: ${{ github.actor }}
-      #provenance-repository: ${{ needs.release-images.outputs.notary_repository }}
     secrets:
       registry-password: ${{ secrets.GITHUB_TOKEN }}
-      # provenance-registry-username: ${{ secrets.GHA_DOCKERHUB_PUSH_USER }}
-      # provenance-registry-password: ${{ secrets.GHA_KONG_ORG_DOCKERHUB_PUSH_TOKEN }}

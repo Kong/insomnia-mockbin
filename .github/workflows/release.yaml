@@ -221,7 +221,7 @@ jobs:
     if: ${{ github.ref_type == 'tag' || (github.event_name == 'push' && github.ref_name == 'master') }}
     # https://github.com/slsa-framework/slsa-github-generator/tree/main/internal/builders/container#referencing-the-slsa-generator
     # The reusable action MUST be referenced with a tag.
-    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@2.1.0
+    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@v2.1.0
     permissions:
       actions: read # for detecting the Github Actions environment.
       id-token: write # for creating OIDC tokens for signing.

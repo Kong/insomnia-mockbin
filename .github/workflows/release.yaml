@@ -76,6 +76,13 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           sep-tags: ","
+          tags: |
+            # Use the git tag as-is when pushing tags
+            type=ref,event=tag
+            # Use 'latest' for pushes to master or self-hosted branches
+            type=raw,value=latest,enable=${{ (github.ref_name == 'master' || github.ref_name == 'self-hosted') && github.event_name == 'push' }}
+            # Keep existing behavior for PRs
+            type=ref,event=pr
 
       # Login to Docker Hub to avoid image pull ratelimit failures on build step
       # https://github.com/docker/login-action
@@ -142,7 +149,7 @@ jobs:
           upload-sbom-release-assets: true
 
   release-images:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: write
       packages: write # needed for publishing the images
@@ -194,9 +201,15 @@ jobs:
       - name: Parse architecture specific digest from image manifest
         id: image_manifest_metadata
         run: |
-          IMAGE=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ needs.build-images.outputs.IMAGE_TAG_VERSION }}
+          # Use git tag if it's a tag push, otherwise use latest for master/self-hosted branch pushes
+          if [[ "${{ github.ref_type }}" == "tag" ]]; then
+            IMAGE=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }}
+          else
+            IMAGE=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          fi
           sha="$(regctl image digest "${IMAGE}")"
           echo "sha=${sha}" >> $GITHUB_OUTPUT
+          echo "Using image: ${IMAGE}"
 
       # Signing images requires image manifest digest
       - name: Sign images

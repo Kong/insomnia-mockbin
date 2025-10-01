@@ -31,7 +31,7 @@ Insomnia Mockbin is maintained by [Kong](https://github.com/Kong), who also main
 - allows for HTTP Method Override using the header `X-HTTP-Method-Override` or through query string parameter: `_method`
 - create custom bins for experimenting log collection
 
-## Installation
+## Local Development
 
 ### Requirements
 
@@ -66,10 +66,22 @@ npm run dev
 DEBUG=mockbin npm run dev
 ```
 
-## Running with Docker Compose
+### Running with Docker Compose
 
 ```shell
 docker compose up
+```
+
+### Releasing
+
+Run the following command and push the newly created commit into your PR.
+This will bump commit and tag, you will need to push this to the remote, which trigger the release action upon merging the PR.
+
+Please note that separate branches are currently maintained for cloud mocks and self hosted mocks. Merging to the default branch or creating a tag on a commit on the default branch will result in the cloud mock server image being published. Merging to the `self-hosted` branch of creating a tag on a commit on the `self-hosted` branch (please use the format v.x.x.x-self-hosted in this case) will result in the self-hosted mock server image being published.
+
+```sh
+npm version patch
+git push origin tag <tag_name>
 ```
 
 ## Documentation
@@ -78,15 +90,9 @@ docker compose up
 
 Read the full API documentation, please review the [API Docs](https://github.com/Kong/mockbin/tree/master/docs).
 
-## Releasing
+### Deployment
 
-Run the following command and push the newly created commit into your PR.
-This will bump commit and tag, you will need to push this to the remote, which trigger the release action upon merging the PR.
-
-```sh
-npm version patch
-git push origin tag <tag_name>
-```
+See [https://developer.konghq.com/insomnia/mock-servers/](https://developer.konghq.com/insomnia/mock-servers/) for the available options for deploying mockbin.
 
 ### Software Bill of materials
 
@@ -102,7 +108,7 @@ The SBOMs are available to download at:
 
 ### Verify a container image signature
 
-Docker container images are now signed using cosign with signatures published to a [Github Container registry](https://ghcr.io) with `insomnia-mockbin` repository.
+Docker container images are now signed using cosign with signatures published to a [Github Container registry](https://ghcr.io) with `insomnia-mockbin` repository. Separate images are published for cloud hosted mocks ([ghcr.io/kong/insomnia-mockbin-cloud](https://developer.konghq.com/how-to/create-a-cloud-hosted-mock-server/)) and self-hosted mocks ([ghcr.io/kong/insomnia-mockbin-self-hosted](https://developer.konghq.com/insomnia/self-hosted-mocks/)). Modify the examples below if you need to verify the image for self-hosted mocks.
 
 Steps to verify signatures for signed Kong Insomnia Mockbin Docker container images in two different ways:
 
@@ -110,7 +116,7 @@ A minimal example, used to verify an image without leveraging any annotations. F
 
 ```code
 cosign verify \
-  ghcr.io/kong/insomnia-mockbin:<tag>@sha256:<digest> \
+  ghcr.io/kong/insomnia-mockbin-cloud:<tag>@sha256:<digest> \
   --certificate-oidc-issuer='https://token.actions.githubusercontent.com' \
   --certificate-identity-regexp='https://github.com/Kong/insomnia-mockbin/.github/workflows/release.yaml'
 ```
@@ -119,7 +125,7 @@ A complete example, leveraging optional annotations for increased trust. For the
 
 ```code
 cosign verify \
-  ghcr.io/kong/insomnia-mockbin:<tag>@sha256:<digest> \
+  ghcr.io/kong/insomnia-mockbin-cloud:<tag>@sha256:<digest> \
   --certificate-oidc-issuer='https://token.actions.githubusercontent.com' \
   --certificate-identity-regexp='https://github.com/Kong/insomnia-mockbin/.github/workflows/release.yaml' \
   -a repo='Kong/insomnia-mockbin' \
@@ -135,14 +141,14 @@ Steps to verify provenance for signed Kong Insomnia Mockbin Docker container ima
 1. Fetch the image `<manifest_digest>` using regctl:
 
     ```code
-    regctl image digest ghcr.io/kong/insomnia-mockbin:<tag>
+    regctl image digest ghcr.io/kong/insomnia-mockbin-cloud:<tag>
     ```
 
 2. A minimal example, used to verify an image without leveraging any annotations. For the minimal example, you only need Docker Image manifest, a GitHub repo name.
 
     ```code
     cosign verify-attestation \
-      ghcr.io/kong/insomnia-mockbin:<tag>@sha256:<manifest_digest> \
+      ghcr.io/kong/insomnia-mockbin-cloud:<tag>@sha256:<manifest_digest> \
       --type='slsaprovenance' \
       --certificate-oidc-issuer='https://token.actions.githubusercontent.com' \
       --certificate-identity-regexp='^https://github.com/slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@refs/tags/v[0-9]+.[0-9]+.[0-9]+$'
@@ -150,7 +156,7 @@ Steps to verify provenance for signed Kong Insomnia Mockbin Docker container ima
 
     ```code
     slsa-verifier verify-image \
-      ghcr.io/kong/insomnia-mockbin:<tag>@sha256:<manifest_digest> \
+      ghcr.io/kong/insomnia-mockbin-cloud:<tag>@sha256:<manifest_digest> \
       --print-provenance \
       --source-uri 'github.com/Kong/insomnia-mockbin'
     ```
@@ -159,7 +165,7 @@ Steps to verify provenance for signed Kong Insomnia Mockbin Docker container ima
 
     ```code
     cosign verify-attestation \
-      ghcr.io/kong/insomnia-mockbin:<tag>@sha256:<manifest_digest> \
+      ghcr.io/kong/insomnia-mockbin-cloud:<tag>@sha256:<manifest_digest> \
       --type='slsaprovenance' \
       --certificate-oidc-issuer='https://token.actions.githubusercontent.com' \
       --certificate-identity-regexp='^https://github.com/slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@refs/tags/v[0-9]+.[0-9]+.[0-9]+$' \
@@ -169,7 +175,7 @@ Steps to verify provenance for signed Kong Insomnia Mockbin Docker container ima
 
     ```code
     slsa-verifier verify-image \
-      ghcr.io/kong/insomnia-mockbin:<tag>@sha256:<manifest_digest> \
+      ghcr.io/kong/insomnia-mockbin-cloud:<tag>@sha256:<manifest_digest> \
       --print-provenance \
       --source-uri 'github.com/Kong/insomnia-mockbin' \
       --source-tag '<tag>'

@@ -41,8 +41,7 @@
 		"test": "mocha --recursive",
 		"check": "biome check .",
 		"coverage": "npx nyc --report-dir coverage npm test",
-		"clean": "git clean -fdX",
-		"debug": "node --nolazy --inspect=5959 --watch server.js"
+		"clean": "git clean -fdX"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.8.3",

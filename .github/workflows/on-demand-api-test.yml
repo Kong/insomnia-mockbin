@@ -1,0 +1,118 @@
+name: On-demand Insomnia Mockbin API Tests
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Environment to load"
+        type: choice
+        options:
+          - dev
+          - staging
+        default: "dev"
+      priority:
+        description: "Choose case priority (Smoke: P0; Core Regression: P0+P1; Full Regression: all)"
+        type: choice
+        options:
+          - P0
+          - P0+P1
+          - all
+          - P1
+          - P2
+        default: "P0"
+      keywords:
+        description: "Choose case name keywords (use '|' to split, eg: invite|sso)"
+        required: false
+        default: ""
+  pull_request:
+    branches:
+      - master
+      - self-hosted
+  push:
+    branches:
+      - master
+      - self-hosted
+
+# Concurrency control: Queue runs for the same environment to prevent report deployment conflicts
+concurrency:
+  group: e2e-tests-${{ github.event.inputs.environment || 'staging' }}-${{ github.event.pull_request.number || github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  # Generate grep pattern based on inputs
+  prepare-and-log:
+    runs-on: ubuntu-latest
+    outputs:
+      resolved_environment: ${{ steps.resolve-inputs.outputs.resolved_environment }}
+      resolved_url: ${{ steps.resolve-url.outputs.resolved_url }}
+      grep_pattern: ${{ steps.build-grep.outputs.grep_pattern }}
+    steps:
+      - name: Resolve Runtime Inputs
+        id: resolve-inputs
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            ENVIRONMENT="${{ github.event.inputs.environment }}"
+            PRIORITY="${{ github.event.inputs.priority }}"
+            KEYWORDS="${{ github.event.inputs.keywords }}"
+          else
+            ENVIRONMENT="staging"
+            PRIORITY="P0"
+            KEYWORDS=""
+          fi
+
+          echo "resolved_environment=$ENVIRONMENT" >> $GITHUB_OUTPUT
+          echo "resolved_priority=$PRIORITY" >> $GITHUB_OUTPUT
+          echo "resolved_keywords=$KEYWORDS" >> $GITHUB_OUTPUT
+
+      - name: Resolve Base URL
+        id: resolve-url
+        run: |
+          ENV="${{ steps.resolve-inputs.outputs.resolved_environment }}"
+          if [ "$ENV" == "dev" ]; then
+            URL="https://app.dev.insomnia.moe"
+          elif [ "$ENV" == "staging" ]; then
+            URL="https://app.insomnia.moe"
+          fi
+          echo "resolved_url=$URL" >> $GITHUB_OUTPUT
+
+      - name: Log Inputs
+        run: |
+          echo "### 📥 E2E Trigger: ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **URL**: ${{ steps.resolve-url.outputs.resolved_url }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Environment**: ${{ steps.resolve-inputs.outputs.resolved_environment }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Priority**: ${{ steps.resolve-inputs.outputs.resolved_priority }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Keywords**: ${{ steps.resolve-inputs.outputs.resolved_keywords }}" >> $GITHUB_STEP_SUMMARY
+
+      - name: Build Grep Pattern
+        id: build-grep
+        run: |
+          RAW_PRIORITY="${{ steps.resolve-inputs.outputs.resolved_priority }}"
+          if [ "$RAW_PRIORITY" == "all" ]; then
+            PRIORITY="."
+          elif [ "$RAW_PRIORITY" == "P0+P1" ]; then
+            PRIORITY="@P0|@P1"
+          else
+            PRIORITY="@$RAW_PRIORITY"
+          fi
+
+          KEYWORDS="${{ steps.resolve-inputs.outputs.resolved_keywords }}"
+          if [ -z "$KEYWORDS" ]; then
+            COMBINED_GREP="$PRIORITY"
+          else
+            # Regex pattern to match both Priority AND Keywords
+            COMBINED_GREP="(?=.*$PRIORITY)(?=.*$KEYWORDS)"
+          fi
+
+          echo "grep_pattern=$COMBINED_GREP" >> $GITHUB_OUTPUT
+
+  # Call e2e-engine workflow
+  run-e2e-tests:
+    needs: prepare-and-log
+    if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
+    uses: kong-insomnia/insomnia-api-test/.github/workflows/api-test-engine.yml@main
+    with:
+      base_url: ${{ needs.prepare-and-log.outputs.resolved_url }}
+      environment: ${{ needs.prepare-and-log.outputs.resolved_environment }}
+      grep_tag: ${{ needs.prepare-and-log.outputs.grep_pattern }}
+      deploy_pages: ${{ github.event_name == 'workflow_dispatch' }}
+    secrets: inherit

@@ -8,15 +8,13 @@ const options = {
 	quiet: process.env.MOCKBIN_QUIET,
 	redis: process.env.MOCKBIN_REDIS,
 	redisExpiry: process.env.MOCKBIN_REDIS_EXPIRE_SECONDS,
+	isCloudMock: process.env.MOCKBIN_IS_CLOUD_MOCK === "true",
+	cloudRestrictedHeaders: process.env.MOCKBIN_CLOUD_RESTRICTED_HEADERS,
 };
 
 app(options, () => {
-	console.info(
-		"starting server",
-		options.port,
-		options.redis,
-		options.redisExpiry,
-	);
+	console.info("starting server");
+	console.table(options);
 	if (!options.port || !options.redis) {
 		console.warn(`
 		------------------------

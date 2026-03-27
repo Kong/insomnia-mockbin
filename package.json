@@ -54,7 +54,6 @@
 		"ajv": "^8.18.0",
 		"ajv-errors": "^3.0.0",
 		"ajv-formats": "^3.0.1",
-		"change-case": "^4.1.1",
 		"compression": "^1.8.1",
 		"content-type": "^1.0.4",
 		"cookie-parser": "^1.4.7",
@@ -68,7 +67,6 @@
 		"morgan": "^1.10.1",
 		"pug": "^3.0.3",
 		"redis": "^4.6.12",
-		"require-directory": "^2.1.1",
 		"uuid": "^8.3.2",
 		"xmlbuilder": "^15.0.0",
 		"yamljs": "^0.3.0"

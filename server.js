@@ -10,6 +10,7 @@ const options = {
 	redisExpiry: process.env.MOCKBIN_REDIS_EXPIRE_SECONDS,
 	isCloudMock: process.env.MOCKBIN_IS_CLOUD_MOCK === "true",
 	cloudRestrictedHeaders: process.env.MOCKBIN_CLOUD_RESTRICTED_HEADERS,
+	nodeEnv: process.env.NODE_ENV,
 };
 
 app(options, () => {

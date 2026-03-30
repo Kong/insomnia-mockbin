@@ -6,6 +6,7 @@ const methodOverride = require("method-override");
 const morgan = require("morgan");
 const path = require("node:path");
 const router = require("../lib");
+const { errorHandler } = require("../lib/middleware");
 
 module.exports = (options, done) => {
 	if (!options) {
@@ -43,6 +44,8 @@ module.exports = (options, done) => {
 	app.use("/healthcheck", (req, res) => {
 		res.status(200).send();
 	});
+
+	app.use(errorHandler);
 
 	app.listen(options.port);
 

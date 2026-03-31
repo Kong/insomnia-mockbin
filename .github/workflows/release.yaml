@@ -142,7 +142,7 @@ jobs:
 
       - name: Scan the docker OCI Tar ball
         id: sbom_action_amd64
-        uses: Kong/public-shared-actions/security-actions/scan-docker-image@a18abf762d6e2444bcbfd20de70451ea1e3bc1b1 # v4.1.3
+        uses: Kong/public-shared-actions/security-actions/scan-docker-image@29dd57c7c19389e07390c1c9fe83aef6ff0c424a # v6.1.0
         with:
           asset_prefix: image-${{ env.IMAGE_NAME }}-amd64
           image: ${{ env.DOCKER_OCI_ARCHIVE }}.tar

@@ -22,6 +22,13 @@ describe("validateRequestMethod", () => {
 		done();
 	});
 
+	it("should accept valid HTTP methods regardless of case", (done) => {
+		(() => validateRequestMethod("get")).should.not.throw();
+		(() => validateRequestMethod("Post")).should.not.throw();
+		(() => validateRequestMethod("PUT")).should.not.throw();
+		done();
+	});
+
 	it("should throw error for invalid HTTP methods", (done) => {
 		(() => validateRequestMethod("INVALID")).should.throw(
 			"Invalid request method: INVALID",

@@ -10,6 +10,39 @@ services:
       - redis
     ports:
       - "8080:8080"
+    healthcheck:
+      test: >
+        node -e "require('http').get('http://app:8080/healthcheck',r=>process.exit(r.statusCode==200?0:1)).on('error',()=>process.exit(1))"
+      interval: 5s
+      timeout: 10s
+      retries: 5
+      start_period: 5s
+    depends_on:
+      redis:
+        condition: service_healthy
 
   redis:
     image: redis
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 10s
+      retries: 5
+      start_period: 5s
+
+  contract:
+    profiles: [test]
+    build:
+      context: .
+      dockerfile: contract.Dockerfile
+    environment:
+      MOCKBIN_HOST: "http://app:8080"
+      MOCKBIN_REDIS: "redis://redis:6379"
+      DEBUG: "mockbin"
+    links:
+      - app
+    depends_on:
+      redis:
+        condition: service_healthy
+      app:
+        condition: service_healthy

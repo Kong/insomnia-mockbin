@@ -15,7 +15,7 @@ const options = {
 
 app(options, () => {
 	console.info("starting server");
-	Object.keys(options).forEach(key => {
+	Object.keys(options).forEach((key) => {
 		console.info(`${key}: ${options[key]}`);
 	});
 	if (!options.port || !options.redis) {

@@ -34,7 +34,6 @@ jobs:
   check:
     runs-on: ubuntu-24.04
     permissions:
-      packages: write
       contents: write # publish sbom to GH releases/tag assets
     steps:
       - name: Checkout repository
@@ -54,7 +53,6 @@ jobs:
     runs-on: ubuntu-24.04
     permissions:
       contents: read
-    # packages: write
     needs: [check]
     outputs:
       image_tags: ${{ steps.meta.outputs.tags }}
@@ -118,7 +116,7 @@ jobs:
           outputs: type=docker,dest=${{ env.DOCKER_OCI_ARCHIVE }}.tar,oci-mediatypes=true
 
       - name: Upload Docker OCI layout TAR Artifact
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 #v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: ${{ env.DOCKER_OCI_ARCHIVE }}
           path: ${{ env.DOCKER_OCI_ARCHIVE }}.tar
@@ -129,14 +127,13 @@ jobs:
     runs-on: ubuntu-24.04
     permissions:
       contents: write # For publishing assets to releases
-      # packages: write
     needs: [check, build-images]
     if: >
       github.repository_owner == 'Kong'
       && needs.build-images.result == 'success'
     steps:
       - name: Download OCI docker TAR artifact
-        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 #v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
           name: ${{ env.DOCKER_OCI_ARCHIVE }}
           path: ${{ github.workspace }}
@@ -171,7 +168,7 @@ jobs:
       # notary_repository: ${{ env.NOTARY_REPOSITORY }}
     steps:
       - name: Download OCI docker TAR artifact
-        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 #v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
           name: ${{ env.DOCKER_OCI_ARCHIVE }}
           path: ${{ github.workspace }}

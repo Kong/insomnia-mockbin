@@ -1,14 +1,19 @@
 name: Lint & Test
 on: push
+
+permissions: {}  # top-level deny-all
+
 jobs:
   test:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-node@v4
+    - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+    - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
       with:
         node-version: 21
     - run: npm ci
-    - uses: biomejs/setup-biome@c016c38f26f2c4a6eb3662679143614a254263fd # v2
+    - uses: biomejs/setup-biome@c016c38f26f2c4a6eb3662679143614a254263fd # v2.3.0
     - run: biome ci .
     - run: npm test

@@ -28,11 +28,12 @@ env:
   ## docker.io/kong/notary-internal - Use Private Notary repository for internal image signatures
   # NOTARY_REPOSITORY: ${{ github.ref_type == 'tag' || github.ref_name == 'master' || 'kong/notary-internal' }}
 
+permissions: {} # Deny all GITHUB_TOKEN permissions by default.
+
 jobs:
   check:
     runs-on: ubuntu-24.04
     permissions:
-      packages: write
       contents: write # publish sbom to GH releases/tag assets
     steps:
       - name: Checkout repository
@@ -52,7 +53,6 @@ jobs:
     runs-on: ubuntu-24.04
     permissions:
       contents: read
-      packages: write
     needs: [check]
     outputs:
       image_tags: ${{ steps.meta.outputs.tags }}
@@ -116,7 +116,7 @@ jobs:
           outputs: type=docker,dest=${{ env.DOCKER_OCI_ARCHIVE }}.tar,oci-mediatypes=true
 
       - name: Upload Docker OCI layout TAR Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: ${{ env.DOCKER_OCI_ARCHIVE }}
           path: ${{ env.DOCKER_OCI_ARCHIVE }}.tar
@@ -127,14 +127,13 @@ jobs:
     runs-on: ubuntu-24.04
     permissions:
       contents: write # For publishing assets to releases
-      packages: write
     needs: [check, build-images]
     if: >
       github.repository_owner == 'Kong'
       && needs.build-images.result == 'success'
     steps:
       - name: Download OCI docker TAR artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
           name: ${{ env.DOCKER_OCI_ARCHIVE }}
           path: ${{ github.workspace }}
@@ -142,7 +141,6 @@ jobs:
         run: |
           docker load -i ${{ github.workspace }}/${{ env.DOCKER_OCI_ARCHIVE }}.tar
           docker image ls
-
       - name: Scan the docker OCI Tar ball
         id: sbom_action_amd64
         uses: Kong/public-shared-actions/security-actions/scan-docker-image@29dd57c7c19389e07390c1c9fe83aef6ff0c424a # v6.1.0
@@ -170,7 +168,7 @@ jobs:
       # notary_repository: ${{ env.NOTARY_REPOSITORY }}
     steps:
       - name: Download OCI docker TAR artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
           name: ${{ env.DOCKER_OCI_ARCHIVE }}
           path: ${{ github.workspace }}

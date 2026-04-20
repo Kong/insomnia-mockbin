@@ -32,7 +32,7 @@ module.exports = (options, done) => {
 	app.use("/static", express.static(path.join(__dirname, "static")));
 
 	app.use(
-		morgan("dev", {
+		morgan(":method :url :status :response-time ms - :res[content-length]", {
 			skip: (req, res) =>
 				req.baseUrl === "/healthcheck" ||
 				(options.quiet === "true" && res.statusCode < 400),

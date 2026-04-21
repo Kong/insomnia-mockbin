@@ -77,8 +77,6 @@ docker compose up
 Run the following command and push the newly created commit into your PR.
 This will bump commit and tag, you will need to push this to the remote, which trigger the release action upon merging the PR.
 
-Please note that separate branches are currently maintained for cloud mocks and self hosted mocks. Merging to the default branch or creating a tag on a commit on the default branch will result in the cloud mock server image being published. Merging to the `self-hosted` branch of creating a tag on a commit on the `self-hosted` branch (please use the format v.x.x.x-self-hosted in this case) will result in the self-hosted mock server image being published.
-
 ```sh
 npm version patch
 git push origin tag <tag_name>
@@ -140,46 +138,46 @@ Steps to verify provenance for signed Kong Insomnia Mockbin Docker container ima
 
 1. Fetch the image `<manifest_digest>` using regctl:
 
-    ```code
-    regctl image digest ghcr.io/kong/insomnia-mockbin-cloud:<tag>
-    ```
+   ```code
+   regctl image digest ghcr.io/kong/insomnia-mockbin-cloud:<tag>
+   ```
 
 2. A minimal example, used to verify an image without leveraging any annotations. For the minimal example, you only need Docker Image manifest, a GitHub repo name.
 
-    ```code
-    cosign verify-attestation \
-      ghcr.io/kong/insomnia-mockbin-cloud:<tag>@sha256:<manifest_digest> \
-      --type='slsaprovenance' \
-      --certificate-oidc-issuer='https://token.actions.githubusercontent.com' \
-      --certificate-identity-regexp='^https://github.com/slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@refs/tags/v[0-9]+.[0-9]+.[0-9]+$'
-    ```
+   ```code
+   cosign verify-attestation \
+     ghcr.io/kong/insomnia-mockbin-cloud:<tag>@sha256:<manifest_digest> \
+     --type='slsaprovenance' \
+     --certificate-oidc-issuer='https://token.actions.githubusercontent.com' \
+     --certificate-identity-regexp='^https://github.com/slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@refs/tags/v[0-9]+.[0-9]+.[0-9]+$'
+   ```
 
-    ```code
-    slsa-verifier verify-image \
-      ghcr.io/kong/insomnia-mockbin-cloud:<tag>@sha256:<manifest_digest> \
-      --print-provenance \
-      --source-uri 'github.com/Kong/insomnia-mockbin'
-    ```
+   ```code
+   slsa-verifier verify-image \
+     ghcr.io/kong/insomnia-mockbin-cloud:<tag>@sha256:<manifest_digest> \
+     --print-provenance \
+     --source-uri 'github.com/Kong/insomnia-mockbin'
+   ```
 
 3. A complete example, leveraging optional annotations for increased trust. For the complete example, you need the same details as the minimal example, as well as any of the optional annotations you wish to verify:
 
-    ```code
-    cosign verify-attestation \
-      ghcr.io/kong/insomnia-mockbin-cloud:<tag>@sha256:<manifest_digest> \
-      --type='slsaprovenance' \
-      --certificate-oidc-issuer='https://token.actions.githubusercontent.com' \
-      --certificate-identity-regexp='^https://github.com/slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@refs/tags/v[0-9]+.[0-9]+.[0-9]+$' \
-      --certificate-github-workflow-repository='Kong/insomnia-mockbin' \
-      --certificate-github-workflow-name='Package & Release'
-    ```
+   ```code
+   cosign verify-attestation \
+     ghcr.io/kong/insomnia-mockbin-cloud:<tag>@sha256:<manifest_digest> \
+     --type='slsaprovenance' \
+     --certificate-oidc-issuer='https://token.actions.githubusercontent.com' \
+     --certificate-identity-regexp='^https://github.com/slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@refs/tags/v[0-9]+.[0-9]+.[0-9]+$' \
+     --certificate-github-workflow-repository='Kong/insomnia-mockbin' \
+     --certificate-github-workflow-name='Package & Release'
+   ```
 
-    ```code
-    slsa-verifier verify-image \
-      ghcr.io/kong/insomnia-mockbin-cloud:<tag>@sha256:<manifest_digest> \
-      --print-provenance \
-      --source-uri 'github.com/Kong/insomnia-mockbin' \
-      --source-tag '<tag>'
-    ```
+   ```code
+   slsa-verifier verify-image \
+     ghcr.io/kong/insomnia-mockbin-cloud:<tag>@sha256:<manifest_digest> \
+     --print-provenance \
+     --source-uri 'github.com/Kong/insomnia-mockbin' \
+     --source-tag '<tag>'
+   ```
 
 ## Bugs and feature requests
 

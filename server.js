@@ -16,7 +16,11 @@ const options = {
 app(options, () => {
 	console.info("starting server");
 	Object.keys(options).forEach((key) => {
-		console.info(`${key}: ${options[key]}`);
+		let value = options[key];
+		if (key === "redis" && typeof value === "string") {
+			value = value.replace(/(:)[^:@]+(@)/, "$1***$2");
+		}
+		console.info(`${key}: ${value}`);
 	});
 	if (!options.port || !options.redis) {
 		console.warn(`

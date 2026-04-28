@@ -20,6 +20,7 @@ env:
   # Format as <account>/<repo>
   # Must be lower case for container tools to parse correctly
   IMAGE_NAME: kong/insomnia-mockbin
+  SELF_HOSTED_IMAGE_NAME: insomnia-mockbin-self-hosted
   HAS_ACCESS_TO_GITHUB_TOKEN: ${{ github.repository_owner == 'Kong' }}
   # Local docker OCI archive name until the image is pushed to registry
   DOCKER_OCI_ARCHIVE: "docker-archive"
@@ -75,7 +76,9 @@ jobs:
           DOCKER_METADATA_PR_HEAD_SHA: true
         uses: docker/metadata-action@c1e51972afc2121e065aed6d45c65596fe445f3f # v5.8.0
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+            ${{ env.REGISTRY }}/${{ env.SELF_HOSTED_IMAGE_NAME }}
           sep-tags: ","
           tags: |
             # Use the git tag as-is when pushing tags

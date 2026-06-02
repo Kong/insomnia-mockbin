@@ -32,29 +32,28 @@ env:
 permissions: {} # Deny all GITHUB_TOKEN permissions by default.
 
 jobs:
-  check:
-    runs-on: ubuntu-24.04
-    permissions:
-      contents: write # publish sbom to GH releases/tag assets
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-
-      # Perform SCA analysis for the code repository
-      # Produces SBOM and CVE report
-      # Helps understand vulnerabilities / license compliance across third party dependencies
-      - id: sca-project
-        uses: Kong/public-shared-actions/security-actions/sca@7040193cacd1787991b11b6b2ddb0a9719cbb533 # v5.1.3
-        with:
-          dir: .
-          upload-sbom-release-assets: true
+  # All pre-build security checks via the centralized security-actions repo.
+  # Toggle capabilities with the enable_* inputs. CodeQL is disabled here because
+  # mockbin is a private repo without GitHub Advanced Security — see security-codeql.yaml
+  # in kong-insomnia/security-actions for the licensing constraint.
+  # Scorecard runs separately via scorecard.yaml (schedule + push trigger).
+  security:
+    uses: kong-insomnia/security-actions/.github/workflows/security.yaml@7bce7d0dafa0a7693608ce909e0669b34fe318e7 # main
+    with:
+      enable_aikido: true
+      enable_trufflehog: false
+      enable_codeql: false
+      enable_dependency_review: false
+      enable_container_lint: false
+    secrets:
+      AIKIDO_API_KEY: ${{ secrets.AIKIDO_API_KEY }}
 
   # Build docker images
   build-images:
     runs-on: ubuntu-24.04
     permissions:
       contents: read
-    needs: [check]
+    needs: [security]
     outputs:
       image_tags: ${{ steps.meta.outputs.tags }}
       image_tag_version: ${{ steps.meta.outputs.version }}
@@ -126,31 +125,21 @@ jobs:
           if-no-files-found: error
           retention-days: 1
 
+  # Aikido container image scan + CycloneDX SBOM.
+  # Loads the OCI archive built above, scans it, and on tags attaches the SBOM to the release.
+  # Called directly (not through the orchestrator) because it needs the build-images artifact.
   scan-images:
-    runs-on: ubuntu-24.04
-    permissions:
-      contents: write # For publishing assets to releases
-    needs: [check, build-images]
+    needs: [build-images]
     if: >
       github.repository_owner == 'Kong'
       && needs.build-images.result == 'success'
-    steps:
-      - name: Download OCI docker TAR artifact
-        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
-        with:
-          name: ${{ env.DOCKER_OCI_ARCHIVE }}
-          path: ${{ github.workspace }}
-      - name: Load OCI docker TAR artifact
-        run: |
-          docker load -i ${{ github.workspace }}/${{ env.DOCKER_OCI_ARCHIVE }}.tar
-          docker image ls
-      - name: Scan the docker OCI Tar ball
-        id: sbom_action_amd64
-        uses: Kong/public-shared-actions/security-actions/scan-docker-image@29dd57c7c19389e07390c1c9fe83aef6ff0c424a # v6.1.0
-        with:
-          asset_prefix: image-${{ env.IMAGE_NAME }}-amd64
-          image: ${{ env.DOCKER_OCI_ARCHIVE }}.tar
-          upload-sbom-release-assets: true
+    uses: kong-insomnia/security-actions/.github/workflows/security-aikido.yaml@7bce7d0dafa0a7693608ce909e0669b34fe318e7 # main
+    with:
+      mode: image
+      oci_archive: docker-archive
+      image_tags: ${{ needs.build-images.outputs.image_tags }}
+    secrets:
+      AIKIDO_API_KEY: ${{ secrets.AIKIDO_API_KEY }}
 
   release-images:
     runs-on: ubuntu-24.04
@@ -158,7 +147,7 @@ jobs:
       contents: write
       packages: write # needed for publishing the images
       id-token: write # needed for keyless signing of the images
-    needs: [check, build-images, scan-images]
+    needs: [build-images, scan-images]
     if: >
       github.repository_owner == 'Kong'
       && needs.scan-images.result == 'success'
@@ -193,8 +182,9 @@ jobs:
       - name: Push images to registry
         id: publish_images
         run: |
+          # shellcheck disable=SC2086
           for tag in ${IMAGE_TAGS//,/ }; do \
-            docker push $tag; \
+            docker push "$tag"; \
           done
 
       # Setup regctl to parse platform specific image digest from image manifest
@@ -215,7 +205,7 @@ jobs:
             IMAGE=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
           fi
           sha="$(regctl image digest "${IMAGE}")"
-          echo "sha=${sha}" >> $GITHUB_OUTPUT
+          echo "sha=${sha}" >> "$GITHUB_OUTPUT"
           echo "Using image: ${IMAGE}"
 
       # Signing images requires image manifest digest
@@ -237,7 +227,7 @@ jobs:
 
   # See https://github.com/slsa-framework/slsa-github-generator/tree/main/internal/builders/container
   release-images-provenance:
-    needs: ["check", "build-images", "scan-images", "release-images"]
+    needs: ["build-images", "scan-images", "release-images"]
     if: ${{ github.ref_type == 'tag' || (github.event_name == 'push' && github.ref_name == 'master') }}
     # https://github.com/slsa-framework/slsa-github-generator/tree/main/internal/builders/container#referencing-the-slsa-generator
     # The reusable action MUST be referenced with a tag.

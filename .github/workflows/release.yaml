@@ -38,7 +38,7 @@ jobs:
   # in kong-insomnia/security-actions for the licensing constraint.
   # Scorecard runs separately via scorecard.yaml (schedule + push trigger).
   security:
-    uses: kong-insomnia/security-actions/.github/workflows/security.yaml@7bce7d0dafa0a7693608ce909e0669b34fe318e7 # main
+    uses: kong-insomnia/security-actions/.github/workflows/security.yaml@main
     with:
       enable_aikido: true
       enable_trufflehog: false
@@ -133,7 +133,7 @@ jobs:
     if: >
       github.repository_owner == 'Kong'
       && needs.build-images.result == 'success'
-    uses: kong-insomnia/security-actions/.github/workflows/security-aikido.yaml@7bce7d0dafa0a7693608ce909e0669b34fe318e7 # main
+    uses: kong-insomnia/security-actions/.github/workflows/security-aikido.yaml@main
     with:
       mode: image
       oci_archive: docker-archive

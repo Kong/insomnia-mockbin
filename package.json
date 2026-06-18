@@ -61,7 +61,7 @@
 		"express": "^4.22.0",
 		"har-validator": "^5.1.5",
 		"jstransformer-marked": "^1.4.0",
-		"liquidjs": "^10.25.2",
+		"liquidjs": "^10.27.0",
 		"method-override": "^3.0.0",
 		"morgan": "^1.10.1",
 		"pug": "^3.0.3",

@@ -15,7 +15,7 @@ block content
         div.tab-content
           for key in ['json', 'yaml', 'xml']
             div(id= key).tab-pane.active.fade.in
-              button(data-clipboard-target='#{key}-code').btn.btn-default.btn-xs.btn-clipboard #[i.fa.fa-copy] #[span Copy to Clipboard]
+              button(data-clipboard-target=`${key}-code`).btn.btn-default.btn-xs.btn-clipboard #[i.fa.fa-copy] #[span Copy to Clipboard]
               pre: code(id=`${key}-code`)= data[key]
 
     br
@@ -25,21 +25,20 @@ block content
 block scripts
   script(type='text/javascript').
     $(function() {
-      // configure Zero Clipboard
-      ZeroClipboard.config({
-        swfPath: '//cdnjs.cloudflare.com/ajax/libs/zeroclipboard/2.2.0/ZeroClipboard.swf',
-        forceHandCursor: true,
-        trustedDomains: [window.location.host, "cdnjs.cloudflare.com"]
-      })
+      // copy to clipboard via the native Clipboard API (replaces the legacy Flash-based helper)
+      $('.btn-clipboard').on('click', function () {
+        var target = document.getElementById($(this).data('clipboard-target'));
 
-      // attach Zero Clipboard
-      new ZeroClipboard($('.btn-clipboard'))
+        if (target && navigator.clipboard) {
+          navigator.clipboard.writeText(target.textContent);
+        }
+      });
 
       // select first tab
       $('.nav-tabs a:first').tab('show');
 
       // highlight the code
       $('.tab-content pre code').each(function (i, block) {
-        hljs.highlightBlock(block);
+        hljs.highlightElement(block);
       });
     });

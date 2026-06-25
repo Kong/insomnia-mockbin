@@ -9,6 +9,10 @@ app.set("view engine", "pug");
 app.set("views", path.join(__dirname, "..", "..", "src", "views"));
 
 app.use(cookieParser());
+app.use(
+	"/static",
+	express.static(path.join(__dirname, "..", "..", "src", "static")),
+);
 
 app.use("/", mockbin());
 
@@ -30,6 +34,47 @@ describe("HTTP", () => {
 
 		res.status.should.equal(200);
 		res.headers.get("content-type").should.equal("text/html; charset=utf-8");
+	});
+
+	describe("front-end pages render", () => {
+		it("GET / renders the home page", async () => {
+			const res = await fetch("http://localhost:3000/", {
+				headers: { Accept: "text/html" },
+			});
+
+			res.status.should.equal(200);
+			res.headers.get("content-type").should.equal("text/html; charset=utf-8");
+		});
+
+		it("GET /har renders the clipboard + highlight page with its dependencies", async () => {
+			const res = await fetch("http://localhost:3000/har", {
+				headers: { Accept: "text/html" },
+			});
+
+			res.status.should.equal(200);
+			res.headers.get("content-type").should.equal("text/html; charset=utf-8");
+
+			const html = await res.text();
+			html.should.containEql("btn-clipboard");
+			html.should.containEql("nav-tabs");
+
+			// the clipboard button's target must resolve to a real code element id,
+			// not a leaked Pug interpolation literal like `#{key}-code`
+			html.should.not.containEql("#{");
+			for (const key of ["json", "yaml", "xml"]) {
+				html.should.containEql(`data-clipboard-target="${key}-code"`);
+				html.should.containEql(`id="${key}-code"`);
+			}
+		});
+
+		it("serves the create.js static asset with its highlight wiring", async () => {
+			const res = await fetch("http://localhost:3000/static/bin/create.js");
+
+			res.status.should.equal(200);
+
+			const js = await res.text();
+			js.should.containEql("hljs.");
+		});
 	});
 
 	it("should send CORS headers", async () => {
@@ -255,5 +300,71 @@ describe("HTTP", () => {
 
 		res.status.should.equal(308);
 		res.headers.get("location").should.equal("http://mockbin.com/");
+	});
+
+	describe("front-end assets are patched", () => {
+		// numeric semver-ish compare: gte("3.7.2", "3.5.0") === true
+		const gte = (a, b) => {
+			const pa = a.split(".").map(Number);
+			const pb = b.split(".").map(Number);
+			for (let i = 0; i < 3; i++) {
+				if ((pa[i] || 0) !== (pb[i] || 0)) return (pa[i] || 0) > (pb[i] || 0);
+			}
+			return true;
+		};
+		const versionOf = (html, re) => (html.match(re) || [])[1];
+
+		let home;
+		let har;
+
+		before(async () => {
+			home = await (
+				await fetch("http://localhost:3000/", {
+					headers: { Accept: "text/html" },
+				})
+			).text();
+			har = await (
+				await fetch("http://localhost:3000/har", {
+					headers: { Accept: "text/html" },
+				})
+			).text();
+		});
+
+		it("contains no vulnerable or Flash-based references", () => {
+			const blocklist = [
+				"jquery/2.1.3",
+				"twitter-bootstrap/3.3.4",
+				"highlight.js/8.4",
+				"zeroclipboard",
+				"ZeroClipboard",
+				".swf",
+				"highlightBlock",
+			];
+
+			for (const bad of blocklist) {
+				home.should.not.containEql(bad);
+				har.should.not.containEql(bad);
+			}
+		});
+
+		it("loads library versions at or above the patched floor", () => {
+			gte(
+				versionOf(home, /jquery\/(\d+\.\d+\.\d+)\//),
+				"3.5.0",
+			).should.be.true();
+			gte(
+				versionOf(home, /twitter-bootstrap\/(\d+\.\d+\.\d+)\//),
+				"3.4.1",
+			).should.be.true();
+			gte(
+				versionOf(home, /highlight\.js\/(\d+\.\d+\.\d+)\//),
+				"10.0.0",
+			).should.be.true();
+		});
+
+		it("uses the native Clipboard API for copy-to-clipboard", () => {
+			har.should.containEql("navigator.clipboard");
+			har.should.containEql("btn-clipboard");
+		});
 	});
 });

@@ -77,7 +77,7 @@ $(() => {
 		if (data) {
 			$('input[name="response"]').val(JSON.stringify(data));
 			$("pre code").text(JSON.stringify(data, null, 2));
-			hljs.highlightBlock($("pre code")[0]);
+			hljs.highlightElement($("pre code")[0]);
 		}
 	});
 
@@ -101,7 +101,7 @@ $(() => {
 				$('input[name="response"]').val(JSON.stringify(data));
 
 				$("pre code").text(JSON.stringify(data, null, 2));
-				hljs.highlightBlock($("pre code")[0]);
+				hljs.highlightElement($("pre code")[0]);
 			}
 		};
 
@@ -183,7 +183,7 @@ $(() => {
 		$('input[name="response"]').val(JSON.stringify(response));
 		$("pre code").text(JSON.stringify(response, null, 2));
 
-		hljs.highlightBlock($("pre code")[0]);
+		hljs.highlightElement($("pre code")[0]);
 	};
 
 	$(".toggle-comments").on("click", function (event) {

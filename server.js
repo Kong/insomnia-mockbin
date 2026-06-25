@@ -13,7 +13,29 @@ const options = {
 	nodeEnv: process.env.NODE_ENV,
 };
 
-app(options, () => {
+// Node runs as PID 1 in the container; the kernel only delivers signals to
+// PID 1 if a handler is registered. Drain in-flight requests on shutdown
+// instead of waiting for Docker's 10s SIGKILL. Handlers are registered before
+// the server starts listening so they are in place the moment it accepts
+// connections (and `server` is assigned synchronously by app() below before
+// any signal can be delivered).
+// biome-ignore lint/style/useConst: must be `let` — assigned after the handlers below, but the shutdown closure captures it beforehand.
+let server;
+
+const shutdown = (signal) => {
+	console.info(`${signal} received, shutting down`);
+	server.close(() => process.exit(0));
+	setTimeout(() => {
+		console.error("forced shutdown after timeout");
+		process.exit(1);
+	}, 8000).unref();
+};
+
+for (const signal of ["SIGTERM", "SIGINT"]) {
+	process.on(signal, () => shutdown(signal));
+}
+
+server = app(options, () => {
 	console.info("starting server");
 	Object.keys(options).forEach((key) => {
 		let value = options[key];

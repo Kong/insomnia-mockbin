@@ -47,9 +47,11 @@ module.exports = (options, done) => {
 
 	app.use(errorHandler);
 
-	app.listen(options.port);
+	const server = app.listen(options.port);
 
 	if (typeof done === "function") {
 		done();
 	}
+
+	return server;
 };

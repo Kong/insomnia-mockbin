@@ -36,7 +36,7 @@ for (const signal of ["SIGTERM", "SIGINT"]) {
 }
 
 server = app(options, () => {
-	console.info("starting server");
+	console.info("starting server: testing deployment");
 	Object.keys(options).forEach((key) => {
 		let value = options[key];
 		if (key === "redis" && typeof value === "string") {

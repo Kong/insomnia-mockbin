@@ -26,5 +26,9 @@ jobs:
     if: (github.actor != 'dependabot[bot]')
 
     steps:
+      - name: Harden runner
+        uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
+        with:
+          egress-policy: audit
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
       - uses: Kong/public-shared-actions/security-actions/semgrep@a18abf762d6e2444bcbfd20de70451ea1e3bc1b1 # v4.0.1

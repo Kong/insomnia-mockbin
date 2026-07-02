@@ -37,6 +37,10 @@ jobs:
     permissions:
       contents: write # publish sbom to GH releases/tag assets
     steps:
+      - name: Harden runner
+        uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
+        with:
+          egress-policy: audit
       - name: Checkout repository
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
 
@@ -59,6 +63,10 @@ jobs:
       image_tags: ${{ steps.meta.outputs.tags }}
       image_tag_version: ${{ steps.meta.outputs.version }}
     steps:
+      - name: Harden runner
+        uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
+        with:
+          egress-policy: audit
       - name: Checkout repository
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
 
@@ -135,6 +143,10 @@ jobs:
       github.repository_owner == 'Kong'
       && needs.build-images.result == 'success'
     steps:
+      - name: Harden runner
+        uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
+        with:
+          egress-policy: audit
       - name: Download OCI docker TAR artifact
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
@@ -170,6 +182,10 @@ jobs:
       image_manifest_sha: ${{ steps.image_manifest_metadata.outputs.sha }}
       # notary_repository: ${{ env.NOTARY_REPOSITORY }}
     steps:
+      - name: Harden runner
+        uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
+        with:
+          egress-policy: audit
       - name: Download OCI docker TAR artifact
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:

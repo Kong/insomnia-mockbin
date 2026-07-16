@@ -135,6 +135,48 @@ describe("Utils", () => {
 			done();
 		});
 
+		// Blocks markup-breaking chars, since the path is rendered raw into bin/view.pug.
+		['"', "<", ">"].forEach((char) => {
+			it(`should return an error for a path containing \`${char}\``, (done) => {
+				const result = utils.isValidCompoundId(validId, `/foo${char}bar`);
+
+				result.should.be.an.Object();
+				result.error.should.be.equal("Invalid Path Characters");
+
+				done();
+			});
+		});
+
+		// Blocks CRLF, since the path flows into the `Location` header and stored HAR logs.
+		["\r", "\n", "\r\n"].forEach((seq) => {
+			it(`should return an error for a path containing ${JSON.stringify(seq)}`, (done) => {
+				const result = utils.isValidCompoundId(validId, `/foo${seq}bar`);
+
+				result.should.be.an.Object();
+				result.error.should.be.equal("Invalid Path Characters");
+
+				done();
+			});
+		});
+
+		it("should return an error for a path containing a backslash", (done) => {
+			const result = utils.isValidCompoundId(validId, "/foo\\bar");
+
+			result.should.be.an.Object();
+			result.error.should.be.equal("Invalid Path Characters");
+
+			done();
+		});
+
+		it("should return an error for a path containing a null byte", (done) => {
+			const result = utils.isValidCompoundId(validId, "/foo\0bar");
+
+			result.should.be.an.Object();
+			result.error.should.be.equal("Invalid Path Characters");
+
+			done();
+		});
+
 		it("should return an error for a malformed id", (done) => {
 			const result = utils.isValidCompoundId("not_a_valid_id", "/foo");
 

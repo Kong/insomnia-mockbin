@@ -58,7 +58,7 @@
 		"cookie-parser": "^1.4.7",
 		"debug": "^4.3.4",
 		"dotenv": "^16.4.0",
-		"express": "^4.22.0",
+		"express": "^4.22.2",
 		"har-validator": "^5.1.5",
 		"jstransformer-marked": "^1.4.0",
 		"liquidjs": "^10.28.0",

@@ -1,4 +1,4 @@
-FROM cgr.dev/chainguard/node:latest@sha256:cf7ae5ead5aed79a61404d7b1bbb9b89ea461991b21cb8fcb07d4b6ad4d8b734
+FROM cgr.dev/chainguard/node:latest@sha256:f2a8ed64ec02cef2e53c76d1255d0917e749570af251e32e99f54cda1076cc8d
 
 ENV NODE_ENV production
 WORKDIR /usr/src/app

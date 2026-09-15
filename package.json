@@ -1,5 +1,5 @@
 {
-	"version": "2.1.0",
+	"version": "2.1.1",
 	"name": "mockbin",
 	"description": "Test, mock, and track HTTP requests & responses between libraries, sockets and APIs",
 	"author": "Kong (https://www.konghq.com/)",

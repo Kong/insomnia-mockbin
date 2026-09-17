@@ -49,7 +49,7 @@
 		"should": "^13.2.3"
 	},
 	"dependencies": {
-		"@faker-js/faker": "^9.8.0",
+		"@faker-js/faker": "^10.6.0",
 		"@idio/dicer": "1.1.0",
 		"ajv": "^8.20.0",
 		"ajv-formats": "^3.0.1",

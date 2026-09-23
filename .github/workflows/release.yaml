@@ -38,10 +38,16 @@ jobs:
       contents: write # publish sbom to GH releases/tag assets
     steps:
       - name: Harden Runner
-        uses: step-security/harden-runner@bf7454d06d71f1098171f2acdf0cd4708d7b5920 # v2.20.0
+        uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
         with:
-          egress-policy: audit
-
+          disable-sudo-and-containers: true
+          egress-policy: block
+          allowed-endpoints: >
+            get.anchore.io:443
+            github.com:443
+            grype.anchore.io:443
+            raw.githubusercontent.com:443
+            release-assets.githubusercontent.com:443
       - name: Checkout repository
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
 
@@ -65,10 +71,19 @@ jobs:
       image_tag_version: ${{ steps.meta.outputs.version }}
     steps:
       - name: Harden Runner
-        uses: step-security/harden-runner@bf7454d06d71f1098171f2acdf0cd4708d7b5920 # v2.20.0
+        uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
         with:
-          egress-policy: audit
-
+          egress-policy: block
+          allowed-endpoints: >
+            9236a389bd48b984df91adc1bc924620.r2.cloudflarestorage.com:443
+            api.github.com:443
+            auth.docker.io:443
+            cgr.dev:443
+            github.com:443
+            production.cloudfront.docker.com:443
+            registry-1.docker.io:443
+            registry.npmjs.org:443           
+    
       - name: Checkout repository
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
@@ -148,9 +163,18 @@ jobs:
       && needs.build-images.result == 'success'
     steps:
       - name: Harden Runner
-        uses: step-security/harden-runner@bf7454d06d71f1098171f2acdf0cd4708d7b5920 # v2.20.0
+        uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
         with:
-          egress-policy: audit
+          egress-policy: block
+          allowed-endpoints: >
+            check.trivy.dev:443
+            get.anchore.io:443
+            get.trivy.dev:443
+            github.com:443
+            grype.anchore.io:443
+            mirror.gcr.io:443
+            raw.githubusercontent.com:443
+            release-assets.githubusercontent.com:443
 
       - name: Download OCI docker TAR artifact
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
@@ -188,9 +212,16 @@ jobs:
       # notary_repository: ${{ env.NOTARY_REPOSITORY }}
     steps:
       - name: Harden Runner
-        uses: step-security/harden-runner@bf7454d06d71f1098171f2acdf0cd4708d7b5920 # v2.20.0
+        uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
         with:
-          egress-policy: audit
+          egress-policy: block
+          allowed-endpoints: >
+            fulcio.sigstore.dev:443
+            ghcr.io:443
+            github.com:443
+            rekor.sigstore.dev:443
+            release-assets.githubusercontent.com:443
+            tuf-repo-cdn.sigstore.dev:443
 
       - name: Download OCI docker TAR artifact
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
@@ -258,6 +289,7 @@ jobs:
           # signature_registry: ${{ env.NOTARY_REPOSITORY }}
 
   # See https://github.com/slsa-framework/slsa-github-generator/tree/main/internal/builders/container
+  
   release-images-provenance:
     needs: ["check", "build-images", "scan-images", "release-images"]
     if: ${{ github.ref_type == 'tag' || (github.event_name == 'push' && github.ref_name == 'master') }}

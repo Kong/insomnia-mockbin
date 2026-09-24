@@ -26,7 +26,7 @@ jobs:
         persist-credentials: false
     - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
       with:
-        node-version: 21
+        node-version: 22
     - run: npm ci
     - uses: biomejs/setup-biome@c016c38f26f2c4a6eb3662679143614a254263fd # v2.3.0
     - run: biome ci .

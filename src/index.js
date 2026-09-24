@@ -6,7 +6,7 @@ const methodOverride = require("method-override");
 const morgan = require("morgan");
 const path = require("node:path");
 const router = require("../lib");
-const { errorHandler } = require("../lib/middleware");
+const { errorHandler, restrictedHeaders } = require("../lib/middleware");
 
 module.exports = (options, done) => {
 	if (!options) {
@@ -23,6 +23,10 @@ module.exports = (options, done) => {
 	app.set("view engine", "pug");
 	app.set("views", path.join(__dirname, "views"));
 	app.set("jsonp callback name", "__callback");
+
+	if (process.env.MOCKBIN_IS_CLOUD_MOCK === "true") {
+		app.use(restrictedHeaders);
+	}
 
 	// add 3rd party middlewares
 	app.use(compression());

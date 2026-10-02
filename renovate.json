@@ -1,0 +1,11 @@
+{
+	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
+	"extends": ["Kong/public-shared-renovate"],
+	"packageRules": [
+		{
+			"description": "slsa-github-generator must be referenced by tag, not SHA, for provenance verification",
+			"matchPackageNames": ["slsa-framework/slsa-github-generator"],
+			"pinDigests": false
+		}
+	]
+}

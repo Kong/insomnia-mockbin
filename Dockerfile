@@ -1,9 +1,9 @@
-FROM cgr.dev/chainguard/node:latest@sha256:f2a8ed64ec02cef2e53c76d1255d0917e749570af251e32e99f54cda1076cc8d
+FROM cgr.dev/chainguard/node:latest@sha256:10be2e69be84a55739a6f4e0ab47703746e546006dad2c80494fafc7f5f6c5fd
 
 ENV NODE_ENV production
 WORKDIR /usr/src/app
 COPY --chown=node:node . .
-RUN npm ci --only=production
+RUN npm ci --omit=dev --ignore-scripts
 USER node
 ENV MOCKBIN_REDIS "redis://redis:6379"
 EXPOSE 8080

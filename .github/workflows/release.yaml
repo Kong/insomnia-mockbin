@@ -50,6 +50,8 @@ jobs:
             release-assets.githubusercontent.com:443
       - name: Checkout repository
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          persist-credentials: false
 
       # Perform SCA analysis for the code repository
       # Produces SBOM and CVE report
@@ -119,7 +121,9 @@ jobs:
 
       # Login to Docker Hub to avoid image pull ratelimit failures on build step
       # https://github.com/docker/login-action
+      # Skipped for fork PRs, which have no access to repository secrets
       - name: Login to Docker Hub
+        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.fork == false
         uses: docker/login-action@3d58c274f17dffee475a5520cbe67f0a882c4dbb # v2.1.0
         with:
           username: ${{ secrets.DOCKER_REGISTRY_USER }}
@@ -170,9 +174,11 @@ jobs:
             check.trivy.dev:443
             get.anchore.io:443
             get.trivy.dev:443
+            ghcr.io:443
             github.com:443
             grype.anchore.io:443
             mirror.gcr.io:443
+            pkg-containers.githubusercontent.com:443
             raw.githubusercontent.com:443
             release-assets.githubusercontent.com:443
 
@@ -192,6 +198,122 @@ jobs:
           asset_prefix: image-${{ env.IMAGE_NAME }}-amd64
           image: ${{ env.DOCKER_OCI_ARCHIVE }}.tar
           upload-sbom-release-assets: true
+
+  # Scan the built image with Aikido and diff the findings against the
+  # baseline (the published insomnia-mockbin container repo in Aikido)
+  aikido-sbom-scanner:
+    name: Aikido SBOM Scanner
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    needs: [build-images]
+    if: >
+      github.repository_owner == 'Kong'
+      && (github.event_name != 'pull_request'
+      || github.event.pull_request.head.repo.full_name == github.repository)
+    env:
+      # Baseline: the Aikido container repo whose name ends in /<image> and has a
+      # path segment ending in -<env>, resolved through the API at runtime
+      BASELINE_IMAGE: kong/insomnia-mockbin
+      BASELINE_ENV: production
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
+        with:
+          egress-policy: block
+          disable-sudo-and-containers: false
+          allowed-endpoints: >
+            9236a389bd48b984df91adc1bc924620.r2.cloudflarestorage.com:443
+            api.github.com:443
+            app.aikido.dev:443
+            auth.docker.io:443
+            github.com:443
+            production.cloudfront.docker.com:443
+            registry-1.docker.io:443
+
+      - name: Checkout repository
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          persist-credentials: false
+
+      - name: Check Aikido credentials
+        id: creds
+        env:
+          AIKIDO_API_KEY: ${{ secrets.AIKIDO_API_KEY }}
+          AIKIDO_CLIENT_ID: ${{ secrets.AIKIDO_REST_CLIENT_ID }}
+          AIKIDO_CLIENT_SECRET: ${{ secrets.AIKIDO_REST_CLIENT_SECRET }}
+        run: |
+          if [[ -z "${AIKIDO_API_KEY}" || -z "${AIKIDO_CLIENT_ID}" || -z "${AIKIDO_CLIENT_SECRET}" ]]; then
+            echo "::warning::Aikido secrets are not configured (AIKIDO_API_KEY, AIKIDO_REST_CLIENT_ID, AIKIDO_REST_CLIENT_SECRET); skipping Aikido image scan"
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Download OCI docker TAR artifact
+        if: steps.creds.outputs.enabled == 'true'
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: ${{ env.DOCKER_OCI_ARCHIVE }}
+          path: ${{ github.workspace }}
+
+      - name: Load OCI docker TAR artifact
+        id: load
+        if: steps.creds.outputs.enabled == 'true'
+        run: |
+          out="$(docker load -i "${GITHUB_WORKSPACE}/${DOCKER_OCI_ARCHIVE}.tar")"
+          echo "${out}"
+          # "Loaded image: <ref>" (take the first loaded image)
+          image="$(echo "${out}" | sed -n 's/^Loaded image: //p' | head -n1)"
+          if [[ -z "${image}" ]]; then
+            echo "::error::Could not determine loaded image reference"
+            exit 1
+          fi
+          echo "image=${image}" >> "$GITHUB_OUTPUT"
+
+      - name: Aikido local scanner
+        if: steps.creds.outputs.enabled == 'true'
+        env:
+          IMAGE: ${{ steps.load.outputs.image }}
+          AIKIDO_API_KEY: ${{ secrets.AIKIDO_API_KEY }}
+        run: |
+          mkdir -p out
+          chmod 777 out
+          # Findings are gated by the diff step below, not by the scanner exit code
+          docker run --rm \
+            -v /var/run/docker.sock:/var/run/docker.sock \
+            -v "$PWD/out:/out" \
+            -e AIKIDO_API_KEY \
+            aikidosecurity/local-scanner@sha256:90c164eadb56557c668cf052fcb115e2ff8927668a9b116949a58935d533f542 \
+            image-scan "$IMAGE" \
+            --image-name insomnia-mockbin-ci \
+            --tag "$GITHUB_SHA" \
+            --apikey "$AIKIDO_API_KEY" \
+            --fail-on low \
+            --gating-result-output /out/candidate.json 2>&1 | tee out/scanner.log || true
+          # The scanner writes no result file when it finds nothing, so use its log
+          # to tell a clean scan apart from a failed one (e.g. a rejected key)
+          if ! grep -q '^Scan completed' out/scanner.log; then
+            echo "::error::Aikido local scanner did not complete; check AIKIDO_API_KEY"
+            exit 1
+          fi
+          [[ -s out/candidate.json ]] || echo '[]' > out/candidate.json
+
+      - name: Diff Aikido findings against baseline
+        if: steps.creds.outputs.enabled == 'true'
+        env:
+          AIKIDO_CLIENT_ID: ${{ secrets.AIKIDO_REST_CLIENT_ID }}
+          AIKIDO_CLIENT_SECRET: ${{ secrets.AIKIDO_REST_CLIENT_SECRET }}
+        run: .github/scripts/aikido-sbom-diff.sh out/candidate.json
+
+      - name: Upload Aikido diff
+        if: always() && steps.creds.outputs.enabled == 'true'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: aikido-sbom-diff
+          path: out/aikido-diff.json
+          if-no-files-found: warn
+          retention-days: 7
 
   release-images:
     runs-on: ubuntu-24.04

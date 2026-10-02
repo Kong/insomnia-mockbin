@@ -201,7 +201,8 @@ jobs:
 
   # Scan the built image with Aikido and diff the findings against the
   # baseline (the published insomnia-mockbin container repo in Aikido)
-  aikido-image-scan:
+  aikido-sbom-scanner:
+    name: Aikido SBOM Scanner
     runs-on: ubuntu-24.04
     permissions:
       contents: read
@@ -215,15 +216,11 @@ jobs:
       # path segment ending in -<env>, resolved through the API at runtime
       BASELINE_IMAGE: kong/insomnia-mockbin
       BASELINE_ENV: production
-      AIKIDO_API_KEY: ${{ secrets.AIKIDO_API_KEY }}
-      AIKIDO_CLIENT_ID: ${{ secrets.AIKIDO_REST_CLIENT_ID }}
-      AIKIDO_CLIENT_SECRET: ${{ secrets.AIKIDO_REST_CLIENT_SECRET }}
     steps:
       - name: Harden Runner
         uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
         with:
-          # TODO: switch to block after first audit run
-          egress-policy: audit
+          egress-policy: block
           disable-sudo-and-containers: false
           allowed-endpoints: >
             9236a389bd48b984df91adc1bc924620.r2.cloudflarestorage.com:443
@@ -241,6 +238,10 @@ jobs:
 
       - name: Check Aikido credentials
         id: creds
+        env:
+          AIKIDO_API_KEY: ${{ secrets.AIKIDO_API_KEY }}
+          AIKIDO_CLIENT_ID: ${{ secrets.AIKIDO_REST_CLIENT_ID }}
+          AIKIDO_CLIENT_SECRET: ${{ secrets.AIKIDO_REST_CLIENT_SECRET }}
         run: |
           if [[ -z "${AIKIDO_API_KEY}" || -z "${AIKIDO_CLIENT_ID}" || -z "${AIKIDO_CLIENT_SECRET}" ]]; then
             echo "::warning::Aikido secrets are not configured (AIKIDO_API_KEY, AIKIDO_REST_CLIENT_ID, AIKIDO_REST_CLIENT_SECRET); skipping Aikido image scan"
@@ -274,6 +275,7 @@ jobs:
         if: steps.creds.outputs.enabled == 'true'
         env:
           IMAGE: ${{ steps.load.outputs.image }}
+          AIKIDO_API_KEY: ${{ secrets.AIKIDO_API_KEY }}
         run: |
           mkdir -p out
           chmod 777 out
@@ -299,13 +301,16 @@ jobs:
 
       - name: Diff Aikido findings against baseline
         if: steps.creds.outputs.enabled == 'true'
-        run: .github/scripts/aikido-container-diff.sh out/candidate.json
+        env:
+          AIKIDO_CLIENT_ID: ${{ secrets.AIKIDO_REST_CLIENT_ID }}
+          AIKIDO_CLIENT_SECRET: ${{ secrets.AIKIDO_REST_CLIENT_SECRET }}
+        run: .github/scripts/aikido-sbom-diff.sh out/candidate.json
 
       - name: Upload Aikido diff
         if: always() && steps.creds.outputs.enabled == 'true'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: aikido-diff
+          name: aikido-sbom-diff
           path: out/aikido-diff.json
           if-no-files-found: warn
           retention-days: 7

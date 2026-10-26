@@ -228,8 +228,10 @@ jobs:
             app.aikido.dev:443
             auth.docker.io:443
             github.com:443
+            grype.anchore.io:443
             production.cloudfront.docker.com:443
             registry-1.docker.io:443
+            toolbox-data.anchore.io:443
 
       - name: Checkout repository
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
@@ -289,11 +291,13 @@ jobs:
             ephemeral-image-scan "$IMAGE" \
             --result-output /out/candidate.json \
             --include-unfixed \
+            --disable-telemetry \
             --fail-on low 2>&1 | tee out/scanner.log || true
+          # A missing result file means the scan failed; never diff against an empty set
           if [[ ! -s out/candidate.json ]]; then
-            echo "::warning::No ephemeral scan result file; scanner log follows"
+            echo "::error::Aikido ephemeral scan produced no result file"
             tail -n 40 out/scanner.log
-            echo '[]' > out/candidate.json
+            exit 1
           fi
 
       - name: Diff Aikido findings against baseline

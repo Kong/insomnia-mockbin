@@ -288,7 +288,7 @@ jobs:
             -v "$PWD/out:/out" \
             -e AIKIDO_API_KEY \
             -e AIKIDO_DISABLE_TELEMETRY=true \
-            aikidosecurity/local-scanner@sha256:90c164eadb56557c668cf052fcb115e2ff8927668a9b116949a58935d533f542 \
+            aikidosecurity/local-scanner@sha256:243c3b9649ea6e72c089a390f94ed247c9d6799445e3a657a3e628e1bd4d2ede \
             ephemeral-image-scan "$IMAGE" \
             --result-output /out/candidate.json \
             --fail-on low 2>&1 | tee out/scanner.log || true

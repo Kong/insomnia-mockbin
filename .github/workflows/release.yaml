@@ -287,11 +287,11 @@ jobs:
             -v /var/run/docker.sock:/var/run/docker.sock \
             -v "$PWD/out:/out" \
             -e AIKIDO_API_KEY \
+            -e AIKIDO_DISABLE_TELEMETRY=true \
             aikidosecurity/local-scanner@sha256:90c164eadb56557c668cf052fcb115e2ff8927668a9b116949a58935d533f542 \
             ephemeral-image-scan "$IMAGE" \
             --result-output /out/candidate.json \
             --include-unfixed \
-            --disable-telemetry \
             --fail-on low 2>&1 | tee out/scanner.log || true
           # A missing result file means the scan failed; never diff against an empty set
           if [[ ! -s out/candidate.json ]]; then

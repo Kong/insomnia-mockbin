@@ -313,6 +313,18 @@ jobs:
           AIKIDO_CLIENT_SECRET: ${{ secrets.AIKIDO_REST_CLIENT_SECRET }}
         run: .github/scripts/aikido-sbom-diff.sh out/candidate.json
 
+      # TEMP (test PR only): capture raw scanner output to verify its JSON shape
+      - name: Upload raw scanner output (temp)
+        if: always() && steps.creds.outputs.enabled == 'true'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: aikido-scanner-raw
+          path: |
+            out/candidate.json
+            out/scanner.log
+          if-no-files-found: warn
+          retention-days: 3
+
       - name: Upload Aikido diff
         if: always() && steps.creds.outputs.enabled == 'true'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2

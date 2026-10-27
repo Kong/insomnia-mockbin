@@ -6,6 +6,12 @@
 #      BASELINE_IMAGE / BASELINE_ENV            baseline container repo, matched by
 #                                               name suffix and env path segment
 #      OUT_DIR                                  output dir (default out)
+#      AIKIDO_ISSUE_URL_TEMPLATE                Aikido issue link, {group_id} is substituted
+#                                               (default https://app.aikido.dev/issues/{group_id}/detail;
+#                                               empty disables links)
+#      AIKIDO_MAX_TASK_LOOKUPS                  max Jira task lookups (default 50)
+#      AIKIDO_RENDER_FROM                       render the summary from an existing
+#                                               aikido-diff.json and exit (offline, no API)
 #
 # Key = (package, CVE id). RESOLVED = baseline only, REMAINING = both, NEW = candidate only.
 # Exits 1 only if NEW has a high/critical finding; without a baseline it reports only.
@@ -16,7 +22,91 @@ BASELINE_IMAGE="${BASELINE_IMAGE:-kong/insomnia-mockbin}"
 BASELINE_ENV="${BASELINE_ENV:-production}"
 BASELINE_LABEL="${BASELINE_IMAGE} (${BASELINE_ENV})"
 OUT_DIR="${OUT_DIR:-out}"
+# Not inlined as a ${VAR-default}: the "}" in {group_id} would end the expansion early
+ISSUE_URL_TEMPLATE='https://app.aikido.dev/issues/{group_id}/detail'
+ISSUE_URL_TEMPLATE="${AIKIDO_ISSUE_URL_TEMPLATE-${ISSUE_URL_TEMPLATE}}"
+MAX_TASK_LOOKUPS="${AIKIDO_MAX_TASK_LOOKUPS:-50}"
 CANDIDATE_FILE="${1:-${OUT_DIR}/candidate.json}"
+
+# --- summary renderer (GitHub-flavoured markdown; every external value is escaped) ---
+# Reads an aikido-diff.json. Findings are grouped per package; NEW findings come from the
+# ephemeral scan and are not persisted in Aikido, so they never have issue/ticket links.
+# shellcheck disable=SC2016 # jq program, not shell
+SUMMARY_JQ='
+  def esc: tostring | gsub("[|\\n\\r]"; " ") | gsub("<"; "&lt;") | gsub(">"; "&gt;");
+  def sevrank: ({"critical":0,"high":1,"medium":2,"low":3}[.] // 4);
+  def semoji: ({"critical":"🔴","high":"🟠","medium":"🟡","low":"🟢"}[.] // "⚪");
+  def okurl: type == "string" and test("^https://[^\\s()<>\\[\\]]+$");
+  def tlabel: if . == "container" then "container" else "codebase dependency" end;
+  def counts_line($arr): ["critical","high","medium","low"]
+    | map(. as $s | "\(semoji) \($s) \($arr | map(select(.severity == $s)) | length)")
+    | join(" · ");
+  # installed -> target: resolved shows the candidate version (or "removed"), else the fix version
+  def bump($sec):
+    (.version // null) as $v
+    | (if $sec == "resolved" then
+         (if (.candidate_version != null and .candidate_version != $v) then .candidate_version
+          elif (.package_removed // false) then "removed"
+          else .fixed_version end)
+       else .fixed_version end) as $to
+    | if $v != null and $to != null then "`\($v | esc) → \($to | esc)`"
+      elif $v != null then "`\($v | esc)`" else "—" end;
+  def links($u; $l; $p): [ .[] | select(.[$u] | okurl) | {u: .[$u], l: ($p + ((.[$l] // "link") | esc))} ]
+    | unique | map("[\(.l)](\(.u))") | if length == 0 then "—" else join(", ") end;
+  def prep($sec):
+    map(. + {bump: bump($sec)})
+    | group_by([.type, .package, .bump])
+    | map({ type: .[0].type, package: .[0].package, bump: .[0].bump,
+            sev: (map(.severity) | sort_by(sevrank) | .[0]),
+            ids: (map(.id) | unique | map(esc) | join(", ")),
+            aikido: links("issue_url"; "group_id"; "#"),
+            jira: links("ticket_url"; "ticket_key"; "") })
+    | sort_by([(.type == "container" | not), (.sev | sevrank), .package]);
+  def table($rows): "| Severity | Type | Package | Bump | Ids | Aikido | Jira |",
+    "|---|---|---|---|---|---|---|",
+    ($rows[] | "| \(.sev | semoji) \(.sev | esc) | \(.type | tlabel) | \(.package | esc) | \(.bump) | \(.ids) | \(.aikido) | \(.jira) |");
+  def section($title; $sec; $open):
+    if length == 0 then empty else
+      (prep($sec)) as $all | ($all[:100]) as $rows
+      | "<details\(if $open then " open" else "" end)><summary><b>\($title) (\(length) finding\(if length == 1 then "" else "s" end) in \($all | length) package\(if ($all | length) == 1 then "" else "s" end))</b></summary>", "",
+        (("container", "codebase") as $t | ($rows | map(select(.type == $t))) as $g
+          | if ($g | length) == 0 then empty else
+              "**\(if $t == "container" then "Container: base image / OS packages" else "Codebase: application dependencies" end)**", "",
+              table($g), "" end),
+        (if ($all | length) > 100 then "…and \($all | length - 100) more packages; see the `aikido-sbom-diff` artifact for the full JSON.", "" else empty end),
+        "</details>", "" end;
+  def banner:
+    if .has_baseline | not then "⚠️ **No baseline found:** findings are reported without gating."
+    elif ([.new[] | select(.severity == "high" or .severity == "critical")] | length) > 0 then
+      "❌ **Blocking:** \([.new[] | select(.severity == "high" or .severity == "critical")] | length) new high/critical finding(s) in the candidate image."
+    else "✅ **No new high/critical findings.**" end;
+  "## Aikido SBOM diff", "",
+  banner, "",
+  "Baseline: `\(.baseline | esc)` · Candidate: `\(.candidate_source | esc)`", "",
+  (if .has_baseline then
+     "| 🆕 New | ➡️ Remaining | ✅ Resolved |", "|---|---|---|",
+     "| \(.counts.new) | \(.counts.remaining) | \(.counts.resolved) |", "",
+     (if (.counts.new + .counts.remaining + .counts.resolved) == 0 then "✨ **No findings in baseline or candidate.**", ""
+      else
+        "New: \(counts_line(.new))  ", "Remaining: \(counts_line(.remaining))  ", "Resolved: \(counts_line(.resolved))", "",
+        (if .counts.new == 0 then "🆕 **No new findings.**", "" else (.new | section("🆕 New"; "new"; true)) end),
+        "> New findings come from the ephemeral scan and are not persisted in Aikido, so they have no issue or Jira links (shown as —).", "",
+        (.remaining | section("➡️ Remaining"; "remaining"; true)),
+        (.resolved | section("✅ Resolved"; "resolved"; false))
+      end)
+   else
+     (if .counts.findings_no_baseline == 0 then "✨ **No findings.**", ""
+      else (.findings_no_baseline | section("Findings (no baseline)"; "new"; true)) end)
+   end)'
+
+render_summary() { # $1 = aikido-diff.json
+  jq -r "${SUMMARY_JQ}" "$1"
+}
+
+if [[ -n "${AIKIDO_RENDER_FROM:-}" ]]; then
+  render_summary "${AIKIDO_RENDER_FROM}"
+  exit 0
+fi
 
 if [[ -z "${AIKIDO_CLIENT_ID:-}" || -z "${AIKIDO_CLIENT_SECRET:-}" ]]; then
   echo "::warning::AIKIDO_CLIENT_ID / AIKIDO_CLIENT_SECRET not set; skipping diff"
@@ -63,12 +153,36 @@ fetch_container_issues() {
     --data-urlencode "filter_status=open"
 }
 
+# shellcheck disable=SC2016 # jq program, not shell
 NORMALISE='
+  # Issue type: "container" (base image / OS package) or "codebase" (our app npm deps).
+  # Single place to adjust. Order: scanner purl/ecosystem, then file path, then an apk-style
+  # version revision (e.g. 2.44-r7). Aikido export attack_surface is deliberately unused:
+  # every issue of a container repo is likely "docker_container". Heuristic, unverified.
+  def classify:
+    ((.purl // .package_url // "") | tostring | ascii_downcase) as $purl
+    | ((.ecosystem // .package_manager // .package_type // "") | tostring | ascii_downcase) as $eco
+    | ((.affected_file // .file // .path // "") | tostring) as $file
+    | ((.installed_version // .version // "") | tostring) as $ver
+    | if ($purl | test("^pkg:(apk|deb|rpm|alpine|debian)")) or ($eco | test("^(apk|deb|dpkg|rpm|alpine|debian|os)")) then "container"
+      elif ($purl | startswith("pkg:npm")) or ($eco | test("^(npm|yarn|pnpm|node)")) then "codebase"
+      elif ($file | test("/usr/local/lib/node_modules/|^/usr/lib/|^/lib/")) then "container"
+      elif ($file | test("node_modules|package(-lock)?\\.json|yarn\\.lock|pnpm-lock")) then "codebase"
+      elif ($ver | test("-r[0-9]+$")) then "container"
+      else "codebase" end;
+  def fixed:
+    (.patched_versions // .fixed_version // .patched_version // .fix_version // .fixed_in // null)
+    | if type == "array" then (if length == 0 then null else join(", ") end)
+      elif . == "" then null else . end;
   [ .[]
     | { package: (.affected_package // .package // .package_name // .name // "unknown"),
         id: (.cve_id // .cve // .vulnerability_id // .aikido_id // .rule_id // (.id | tostring)),
         severity: ((.severity // "unknown") | tostring | ascii_downcase),
-        version: (.installed_version // .version // null) }
+        version: (.installed_version // .version // null),
+        type: classify,
+        fixed_version: fixed,
+        group_id: (.group_id // null),
+        issue_url: null, ticket_url: null, ticket_key: null }
     | select(.id != null) ]
   | unique_by([.package, .id])'
 
@@ -83,6 +197,31 @@ case "${rc}" in
   *) echo "Failed to fetch baseline issues" >&2; exit 2 ;;
 esac
 BASELINE="$(jq "${NORMALISE}" <<<"${BASELINE_RAW}")"
+
+# --- link enrichment (baseline only; best effort, never fails the job) ---
+# Aikido issue link from a URL template; Jira link from the issue group's tasks.
+BASELINE="$(jq --arg t "${ISSUE_URL_TEMPLATE}" '
+  map(. as $r | (($r.group_id // "") | tostring) as $g
+      | if ($g | test("^[0-9A-Za-z_-]+$")) and ($t | startswith("https://"))
+        then .issue_url = ($t | gsub("\\{group_id\\}"; $g)) else . end)' <<<"${BASELINE}" 2>/dev/null || echo "${BASELINE}")"
+TASKS="{}"
+lookups=0
+while read -r gid; do
+  [[ "${gid}" =~ ^[0-9A-Za-z_-]+$ ]] || continue
+  if (( lookups >= MAX_TASK_LOOKUPS )); then
+    echo "note: Jira lookup cap (${MAX_TASK_LOOKUPS}) reached; remaining groups have no ticket link" >&2
+    break
+  fi
+  lookups=$((lookups + 1))
+  task="$(api_get "${API}/public/v1/issues/groups/${gid}/tasks" 2>/dev/null \
+    | jq -c '(if type == "array" then . else (.tasks // []) end)
+        | map(select((.url // "") | startswith("https://"))) | first // empty
+        | {url: .url, key: ((.url | capture("(?<k>[A-Z][A-Z0-9]+-[0-9]+)") | .k) // null)}' 2>/dev/null)" || task=""
+  [[ -z "${task}" ]] || TASKS="$(jq -c --arg g "${gid}" --argjson t "${task}" '.[$g] = $t' <<<"${TASKS}")"
+done < <(jq -r '[.[].group_id | select(. != null) | tostring] | unique | .[]' <<<"${BASELINE}")
+BASELINE="$(jq --argjson m "${TASKS}" '
+  map(if .group_id != null and $m[.group_id | tostring] != null
+      then .ticket_url = $m[.group_id | tostring].url | .ticket_key = $m[.group_id | tostring].key else . end)' <<<"${BASELINE}")"
 
 # --- candidate: ephemeral scanner output only (nothing is persisted in Aikido) ---
 CANDIDATE="[]"
@@ -99,35 +238,21 @@ jq -n --argjson b "${BASELINE}" --argjson c "${CANDIDATE}" \
   def key: [.package, .id] | @json;
   ($b | map({(key): .}) | add // {}) as $bm |
   ($c | map({(key): .}) | add // {}) as $cm |
+  ($c | group_by(.package) | map({(.[0].package): (map(.version) | map(select(. != null)) | sort | .[0])}) | add // {}) as $cv |
   { baseline: $bn, has_baseline: $hb, candidate_source: $src,
-    resolved:  [$b[] | select($cm[key] == null)],
-    remaining: [$c[] | select($bm[key] != null)],
+    resolved:  [$b[] | select($cm[key] == null)
+                | . as $r | $r + {candidate_version: $cv[$r.package], package_removed: ($cv | has($r.package) | not)}],
+    # remaining: candidate record plus the baseline issue/ticket links
+    remaining: [$c[] | select($bm[key] != null) | . as $r | $bm[key] as $o
+                | $r + {group_id: $o.group_id, issue_url: $o.issue_url, ticket_url: $o.ticket_url,
+                        ticket_key: $o.ticket_key, fixed_version: ($r.fixed_version // $o.fixed_version)}],
     new:       (if $hb then [$c[] | select($bm[key] == null)] else [] end),
     findings_no_baseline: (if $hb then [] else $c end) }
   | .counts = (with_entries(select(.value | type == "array")) | map_values(length))
 ' >"${OUT_DIR}/aikido-diff.json"
 
-# --- summary (markdown cells are escaped: values come from external data) ---
-{
-  echo "## Aikido SBOM diff"
-  echo
-  jq -r '
-    def esc: tostring | gsub("[|\\n\\r]"; " ");
-    def rows(st; arr): arr[] | "| \(st) | \(.package | esc) | \(.id | esc) | \(.severity | esc) | \(.version // "" | esc) |";
-    "Baseline: `\(.baseline | esc)` | Candidate: `\(.candidate_source | esc)`", "",
-    if .has_baseline then
-      "| Resolved | Remaining | New |", "|---|---|---|",
-      "| \(.counts.resolved) | \(.counts.remaining) | \(.counts.new) |", "",
-      (if (.counts.resolved + .counts.remaining + .counts.new) == 0 then "No findings."
-       else "| Status | Package | Id | Severity | Version |", "|---|---|---|---|---|",
-            rows("NEW"; .new), rows("REMAINING"; .remaining), rows("RESOLVED"; .resolved) end)
-    else
-      "**NO BASELINE**: findings are reported without gating.", "",
-      (if .counts.findings_no_baseline == 0 then "No findings."
-       else "| Package | Id | Severity | Version |", "|---|---|---|---|",
-            (.findings_no_baseline[] | "| \(.package | esc) | \(.id | esc) | \(.severity | esc) | \(.version // "" | esc) |") end)
-    end' "${OUT_DIR}/aikido-diff.json"
-} >>"${GITHUB_STEP_SUMMARY:-/dev/stdout}"
+# --- summary ---
+render_summary "${OUT_DIR}/aikido-diff.json" >>"${GITHUB_STEP_SUMMARY:-/dev/stdout}"
 
 BLOCKING="$(jq '[.new[] | select(.severity == "high" or .severity == "critical")] | length' "${OUT_DIR}/aikido-diff.json")"
 if [[ "${BLOCKING}" -gt 0 ]]; then

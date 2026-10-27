@@ -292,11 +292,18 @@ jobs:
             ephemeral-image-scan "$IMAGE" \
             --result-output /out/candidate.json \
             --fail-on low 2>&1 | tee out/scanner.log || true
-          # A missing result file means the scan failed; never diff against an empty set
+          # The scanner may write no (or an empty) result file for a clean image. Treat that
+          # as "no findings" only if the log confirms completion; otherwise the scan failed
+          # and we must not diff against an empty set.
           if [[ ! -s out/candidate.json ]]; then
-            echo "::error::Aikido ephemeral scan produced no result file"
-            tail -n 40 out/scanner.log
-            exit 1
+            if grep -q 'Scan completed' out/scanner.log; then
+              echo "::notice::Aikido scan completed with no result file; image is clean"
+              echo '[]' > out/candidate.json
+            else
+              echo "::error::Aikido ephemeral scan produced no result file"
+              tail -n 40 out/scanner.log
+              exit 1
+            fi
           fi
 
       - name: Diff Aikido findings against baseline

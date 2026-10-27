@@ -9,10 +9,7 @@
 #      AIKIDO_ISSUE_URL_TEMPLATE                Aikido issue link, {group_id} and {issue_id} are substituted
 #                                               (default https://app.aikido.dev/issues/{group_id}/detail?singleIssueFilter={issue_id}&status=open;
 #                                               empty disables links)
-#      AIKIDO_CODE_REPO_ID / AIKIDO_CODE_REPO   code repo for codebase dependency links: numeric id, else
-#                                               resolved by name (default Kong/insomnia-mockbin; must match
-#                                               exactly once, otherwise the code columns show —)
-#      AIKIDO_MAX_TASK_LOOKUPS                 max Jira task lookups (default 50)
+#      AIKIDO_MAX_TASK_LOOKUPS                  max Jira task lookups (default 50)
 #      AIKIDO_TASK_CONCURRENCY                  parallel task lookups (default 4; keep low, API rate-limits)
 #      AIKIDO_PREFETCH_ONLY=1                   fetch only the baseline into ${OUT_DIR}/baseline-prefetch.json
 #                                               and exit; a later full run reuses it (falls back to
@@ -34,7 +31,6 @@ ISSUE_URL_TEMPLATE='https://app.aikido.dev/issues/{group_id}/detail?singleIssueF
 ISSUE_URL_TEMPLATE="${AIKIDO_ISSUE_URL_TEMPLATE-${ISSUE_URL_TEMPLATE}}"
 MAX_TASK_LOOKUPS="${AIKIDO_MAX_TASK_LOOKUPS:-50}"
 TASK_CONCURRENCY="${AIKIDO_TASK_CONCURRENCY:-4}"
-CODE_REPO="${AIKIDO_CODE_REPO:-Kong/insomnia-mockbin}"
 CANDIDATE_FILE="${1:-${OUT_DIR}/candidate.json}"
 
 # --- summary renderer (GitHub-flavoured markdown; every external value is escaped) ---
@@ -59,7 +55,7 @@ SUMMARY_JQ='
        else .fixed_version end) as $to
     | if $v != null and $to != null then "`\($v | esc) → \($to | esc)`"
       elif $v != null then "`\($v | esc)`" else "—" end;
-  def jlinks(f): [ .[] | (f)[]
+  def jiralinks: [ .[] | (.tickets // (if .ticket_url then [{url: .ticket_url, key: .ticket_key}] else [] end))[]
       | select(.url | okurl) | {u: .url, l: ((.key // "link") | esc)} ]
     | unique | map("[\(.l)](\(.u))") | if length == 0 then "—" else join(", ") end;
   # one link per finding: label #<issue_id> (old JSON without issue_id: #<group_id>)
@@ -72,22 +68,11 @@ SUMMARY_JQ='
             sev: (map(.severity) | sort_by(sevrank) | .[0]),
             ids: (map(.id) | unique | map(esc) | join(", ")),
             aikido: links("issue_url"; "issue_id"; "group_id"),
-            jira: jlinks(.tickets // (if .ticket_url then [{url: .ticket_url, key: .ticket_key}] else [] end)),
-            aikido_code: links("code_issue_url"; "code_issue_id"; "code_group_id"),
-            jira_code: jlinks(.code_tickets // []) })
+            jira: jiralinks })
     | sort_by([(.type == "container" | not), (.sev | sevrank), .package]);
-  # Codebase rows get a second Aikido + Jira pair for the code repo (own issue, own ticket);
-  # OS packages exist only in the container repo, so their table keeps the single pair.
-  def table($rows; $t):
-    if $t == "container" then
-      "| Severity | Type | Package | Bump | Ids | Aikido | Jira |",
-      "|---|---|---|---|---|---|---|",
-      ($rows[] | "| \(.sev | esc) | \(.type | tlabel) | \(.package | esc) | \(.bump) | \(.ids) | \(.aikido) | \(.jira) |")
-    else
-      "| Severity | Type | Package | Bump | Ids | Aikido (container) | Jira (container) | Aikido (code) | Jira (code) |",
-      "|---|---|---|---|---|---|---|---|---|",
-      ($rows[] | "| \(.sev | esc) | \(.type | tlabel) | \(.package | esc) | \(.bump) | \(.ids) | \(.aikido) | \(.jira) | \(.aikido_code) | \(.jira_code) |")
-    end;
+  def table($rows): "| Severity | Type | Package | Bump | Ids | Aikido | Jira |",
+    "|---|---|---|---|---|---|---|",
+    ($rows[] | "| \(.sev | esc) | \(.type | tlabel) | \(.package | esc) | \(.bump) | \(.ids) | \(.aikido) | \(.jira) |");
   def section($title; $sec; $open):
     if length == 0 then empty else
       (prep($sec)) as $all | ($all[:100]) as $rows
@@ -95,7 +80,7 @@ SUMMARY_JQ='
         (("container", "codebase") as $t | ($rows | map(select(.type == $t))) as $g
           | if ($g | length) == 0 then empty else
               "**\(if $t == "container" then "Container: base image / OS packages" else "Codebase: application dependencies" end)**", "",
-              table($g; $t), "" end),
+              table($g), "" end),
         (if ($all | length) > 100 then "…and \($all | length - 100) more packages; see the `aikido-sbom-diff` artifact for the full JSON.", "" else empty end),
         "</details>", "" end;
   def banner:
@@ -113,7 +98,7 @@ SUMMARY_JQ='
       else
         "New: \(counts_line(.new))  ", "Remaining: \(counts_line(.remaining))  ", "Resolved: \(counts_line(.resolved))", "",
         (if .counts.new == 0 then "🆕 **No new findings.**", "" else (.new | section("🆕 New"; "new"; true)) end),
-        "> New findings come from the ephemeral scan and are not persisted in Aikido, so they have no issue or Jira links (shown as —). Code columns apply to codebase dependencies only (— when the code repo issue is not found).", "",
+        "> New findings come from the ephemeral scan and are not persisted in Aikido, so they have no issue or Jira links (shown as —).", "",
         (.remaining | section("➡️ Remaining"; "remaining"; true)),
         (.resolved | section("✅ Resolved"; "resolved"; false))
       end)
@@ -231,104 +216,40 @@ case "${rc}" in
 esac
 BASELINE="$(jq "${NORMALISE}" <<<"${BASELINE_RAW}")"
 
-# --- code repo (codebase dependency findings only; best effort, never fails the job) ---
-# A codebase dependency issue group spans the container repo (our baseline) and the code repo;
-# each location has its own issue id and its own Jira ticket. The code repo is resolved by
-# AIKIDO_CODE_REPO_ID, else by name (AIKIDO_CODE_REPO) via the code repositories list, and must
-# match exactly once. Any failure only leaves the code columns as —.
-resolve_code_repo_id() {
-  local ids
-  if [[ -n "${AIKIDO_CODE_REPO_ID:-}" ]]; then
-    [[ "${AIKIDO_CODE_REPO_ID}" =~ ^[0-9]+$ ]] || return 3
-    echo "${AIKIDO_CODE_REPO_ID}"
-    return 0
-  fi
-  # name is "<owner>/<repo>" or the bare repo name, compared case-insensitively
-  ids="$(api_get -G "${API}/public/v1/repositories/code" \
-      --data-urlencode "filter_name=${CODE_REPO##*/}" --data-urlencode "per_page=200" \
-    | jq -r --arg r "${CODE_REPO}" '
-        ($r | ascii_downcase) as $full | ($full | split("/") | last) as $base
-        | (if type == "array" then . else (.repositories // .items // []) end)
-        | map(select((.id | type == "number") and (.name | type == "string")
-                     and ((.name | ascii_downcase) as $n | $n == $full or $n == $base)))
-        | .[].id')" || return 2
-  if [[ "$(grep -c . <<<"${ids}")" != "1" ]]; then
-    echo "note: $(grep -c . <<<"${ids}") code repos match '${CODE_REPO}'; need exactly 1" >&2
-    return 3
-  fi
-  echo "${ids}"
-}
-
-# Open issues of the code repo (same export as the container repo, different filter)
-fetch_code_issues() { # $1 = code repo id
-  api_get -G "${API}/public/v1/issues/export" \
-    --data-urlencode "format=json" \
-    --data-urlencode "filter_code_repo_id=${1}" \
-    --data-urlencode "filter_status=open"
-}
-
 # --- link enrichment (baseline only; best effort, never fails the job) ---
-# Aikido per-finding link from a URL template; Jira links from the issue group's tasks.
-CODE_REPO_ID=""
-CODE_ISSUES="[]"
-if [[ "${HAS_BASELINE}" == "true" ]] && jq -e 'any(.[]; .type == "codebase")' <<<"${BASELINE}" >/dev/null 2>&1; then
-  rc=0
-  CODE_REPO_ID="$(resolve_code_repo_id)" || rc=$?
-  if [[ "${rc}" == "0" ]]; then
-    echo "note: code repo resolved to id ${CODE_REPO_ID}" >&2
-    CODE_RAW="$(fetch_code_issues "${CODE_REPO_ID}")" || CODE_RAW=""
-    CODE_ISSUES="$(jq "${NORMALISE}" <<<"${CODE_RAW}" 2>/dev/null)" || CODE_ISSUES=""
-    [[ -n "${CODE_ISSUES}" ]] || { CODE_ISSUES="[]"; echo "note: code repo issues unavailable; code columns will be empty" >&2; }
-  else
-    CODE_REPO_ID=""
-    echo "note: code repo not resolved (rc ${rc}); code columns will be empty" >&2
-  fi
-fi
-# Match baseline codebase findings to the code repo's own issue by (package, id)
-BASELINE="$(jq --argjson c "${CODE_ISSUES}" '
-  ($c | map(select(.issue_id != null and .group_id != null)
-            | {(([.package, .id] | @json)): {i: .issue_id, g: .group_id}}) | add // {}) as $cm
-  | map(. as $r | $cm[[$r.package, $r.id] | @json] as $m
-        | if $r.type == "codebase" and $m != null
-          then . + {code_issue_id: $m.i, code_group_id: $m.g} else . end)' <<<"${BASELINE}" 2>/dev/null || echo "${BASELINE}")"
-# {group_id}/{issue_id} are substituted only from [0-9A-Za-z_-]+ values over an https template
+# Aikido per-finding issue link from a URL template; Jira link from the issue group's tasks.
 BASELINE="$(jq --arg t "${ISSUE_URL_TEMPLATE}" '
-  def safe: tostring | test("^[0-9A-Za-z_-]+$");
-  def mkurl($g; $i):
-    if ($t | startswith("https://"))
-       and ((($t | contains("{group_id}")) and (($g // "") | safe | not)) | not)
-       and ((($t | contains("{issue_id}")) and (($i // "") | safe | not)) | not)
-    then ($t | gsub("\\{group_id\\}"; ($g // "" | tostring)) | gsub("\\{issue_id\\}"; ($i // "" | tostring)))
-    else null end;
-  map(.issue_url = mkurl(.group_id; .issue_id)
-      | if .code_issue_id != null then .code_issue_url = mkurl(.code_group_id; .code_issue_id) else . end)' \
-  <<<"${BASELINE}" 2>/dev/null || echo "${BASELINE}")"
+  map(. as $r | (($r.group_id // "") | tostring) as $g
+      | (($r.issue_id // "") | tostring) as $i
+      | if ($t | startswith("https://"))
+           and ((($t | contains("{group_id}")) and ($g | test("^[0-9A-Za-z_-]+$") | not)) | not)
+           and ((($t | contains("{issue_id}")) and ($i | test("^[0-9A-Za-z_-]+$") | not)) | not)
+        then .issue_url = ($t | gsub("\\{group_id\\}"; $g) | gsub("\\{issue_id\\}"; $i)) else . end)' <<<"${BASELINE}" 2>/dev/null || echo "${BASELINE}")"
 # Lookups run with bounded concurrency (rate-limit safe: api_get still retries 429). Each
 # worker writes its own file; results are merged afterwards so the output is deterministic.
 # A failed lookup leaves an empty file and only means no ticket link for that group.
-# One fetch per unique group id serves both repos: a group's tasks cover every scope, and each
-# task is filtered by its scope = {type, id} when merged below:
-#   container ticket: type container_repo (or container) with id == the finding's container repo
-#     id (string/int tolerant); a task with no scope at all falls back to its title ending in the
-#     baseline image path (titles embed "<registry>/<image>");
-#   code ticket: type code_repo with id == the resolved code repo id (no title fallback).
-# Anything else (foreign scope, no match) is not linked: never guess.
-lookup_task() { # $1 = group id, $2 = result file
+# Only tasks scoped to the baseline container repo are linked: an issue group spans several
+# repos and each linked task belongs to one of them. scope = {type, id}: type container_repo
+# (or container) with id == the baseline container repo id (string/int tolerant). A task with
+# no scope at all falls back to its title ending in the baseline image path (titles embed
+# "<registry>/<image>"). Anything else (foreign scope, no match) is not linked: never guess.
+lookup_task() { # $1 = group id, $2 = baseline container repo id (may be empty), $3 = result file
   api_get "${API}/public/v1/issues/groups/${1}/tasks" 2>/dev/null \
-    | jq -c --arg g "${1}" '
+    | jq -c --arg g "${1}" --arg repo "${2}" --arg img "${BASELINE_IMAGE}" '
+        def mine: if (.scope | type) == "object" then
+            ((.scope.type // "" | tostring) | test("^(container_repo|container)$"))
+            and $repo != "" and ((.scope.id // "" | tostring) == $repo)
+          else ((.title // "") | type == "string") and ((.title // "") | rtrimstr(" ") | endswith("/" + $img)) end;
         (if type == "array" then . else (.tasks // []) end)
-        | map(select(type == "object" and ((.url // "") | type == "string") and ((.url // "") | startswith("https://")))
-              | {url: .url, key: ((.url | capture("(?<k>[A-Z][A-Z0-9]+-[0-9]+)") | .k) // null),
-                 title: (.title // null | if type == "string" then . else null end),
-                 st: (if (.scope | type) == "object" then (.scope.type // "" | tostring) else null end),
-                 sid: (if (.scope | type) == "object" then (.scope.id // "" | tostring) else null end)})
-        | select(length > 0) | {g: $g, tasks: .}' \
-      >"$2" 2>/dev/null || : >"$2"
+        | map(select(type == "object" and mine and ((.url // "") | startswith("https://"))))
+        | map({url: .url, key: ((.url | capture("(?<k>[A-Z][A-Z0-9]+-[0-9]+)") | .k) // null)})
+        | unique_by(.url) | select(length > 0) | {g: $g, tickets: .}' \
+      >"$3" 2>/dev/null || : >"$3"
 }
 TASK_DIR="$(mktemp -d)"
 trap 'rm -rf "${TASK_DIR}"' EXIT
 lookups=0
-while read -r gid; do
+while read -r gid repo_id; do
   [[ "${gid}" =~ ^[0-9A-Za-z_-]+$ ]] || continue
   if (( lookups >= MAX_TASK_LOOKUPS )); then
     echo "note: Jira lookup cap (${MAX_TASK_LOOKUPS}) reached; remaining groups have no ticket link" >&2
@@ -337,25 +258,15 @@ while read -r gid; do
   lookups=$((lookups + 1))
   # Wait for a free slot (wait -n needs bash >= 4.3; otherwise wait for all running jobs)
   while (( $(jobs -rp | wc -l) >= TASK_CONCURRENCY )); do wait -n 2>/dev/null || wait; done
-  lookup_task "${gid}" "${TASK_DIR}/${gid}" &
-done < <(jq -r '([.[] | .group_id | select(. != null) | tostring] | unique)
-  + ([.[] | .code_group_id | select(. != null) | tostring] | unique) | .[]' <<<"${BASELINE}" | awk '!seen[$0]++')
+  lookup_task "${gid}" "${repo_id}" "${TASK_DIR}/${gid}" &
+done < <(jq -r '[.[] | select(.group_id != null) | {g: (.group_id | tostring), r: ((.container_repo_id // "") | tostring)}]
+  | group_by(.g) | .[] | "\(.[0].g) \(map(.r | select(. != "")) | .[0] // "")"' <<<"${BASELINE}")
 wait
-TASKS="$(cat "${TASK_DIR}"/* 2>/dev/null | jq -sc 'map({(.g): .tasks}) | add // {}' 2>/dev/null)" || TASKS=""
+TASKS="$(cat "${TASK_DIR}"/* 2>/dev/null | jq -sc 'map({(.g): .tickets}) | add // {}' 2>/dev/null)" || TASKS=""
 [[ -n "${TASKS}" ]] || TASKS="{}"
-BASELINE="$(jq --argjson m "${TASKS}" --arg img "${BASELINE_IMAGE}" --arg code "${CODE_REPO_ID}" '
-  # container repo per group: first container_repo_id seen in the group
-  (map(select(.group_id != null and .container_repo_id != null))
-   | group_by(.group_id | tostring)
-   | map({key: (.[0].group_id | tostring), value: (.[0].container_repo_id | tostring)}) | from_entries) as $repos
-  | def cmine($repo): if .st != null then
-        (.st | test("^(container_repo|container)$")) and $repo != "" and .sid == $repo
-      else (.title != null) and (.title | rtrimstr(" ") | endswith("/" + $img)) end;
-    def kmine: $code != "" and .st == "code_repo" and .sid == $code;
-    def tix: map({url: .url, key: .key}) | unique_by(.url);
-  map((((.group_id // "") | tostring) as $g | ((.code_group_id // "") | tostring) as $cg
-        | (if $g != "" and $m[$g] != null then .tickets = ($m[$g] | map(select(cmine($repos[$g] // ""))) | tix) else . end)
-        | (if $cg != "" and $m[$cg] != null then .code_tickets = ($m[$cg] | map(select(kmine)) | tix) else . end)))' <<<"${BASELINE}")"
+BASELINE="$(jq --argjson m "${TASKS}" '
+  map(if .group_id != null and $m[.group_id | tostring] != null
+      then .tickets = $m[.group_id | tostring] else . end)' <<<"${BASELINE}")"
 }
 
 PREFETCH_FILE="${OUT_DIR}/baseline-prefetch.json"
@@ -395,8 +306,6 @@ jq -n --argjson b "${BASELINE}" --argjson c "${CANDIDATE}" \
     # remaining: candidate record plus the baseline issue/ticket links
     remaining: [$c[] | select($bm[key] != null) | . as $r | $bm[key] as $o
                 | $r + {group_id: $o.group_id, issue_id: $o.issue_id, issue_url: $o.issue_url, tickets: $o.tickets,
-                        code_issue_id: $o.code_issue_id, code_group_id: $o.code_group_id,
-                        code_issue_url: $o.code_issue_url, code_tickets: ($o.code_tickets // []),
                         fixed_version: ($r.fixed_version // $o.fixed_version)}],
     new:       (if $hb then [$c[] | select($bm[key] == null)] else [] end),
     findings_no_baseline: (if $hb then [] else $c end) }

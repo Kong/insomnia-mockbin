@@ -35,11 +35,10 @@ CANDIDATE_FILE="${1:-${OUT_DIR}/candidate.json}"
 SUMMARY_JQ='
   def esc: tostring | gsub("[|\\n\\r]"; " ") | gsub("<"; "&lt;") | gsub(">"; "&gt;");
   def sevrank: ({"critical":0,"high":1,"medium":2,"low":3}[.] // 4);
-  def semoji: "🟡";
   def okurl: type == "string" and test("^https://[^\\s()<>\\[\\]]+$");
   def tlabel: if . == "container" then "container" else "codebase dependency" end;
   def counts_line($arr): ["critical","high","medium","low"]
-    | map(. as $s | "\(semoji) \($s) \($arr | map(select(.severity == $s)) | length)")
+    | map(. as $s | "\($s) \($arr | map(select(.severity == $s)) | length)")
     | join(" · ");
   # installed -> target: resolved shows the candidate version (or "removed"), else the fix version
   def bump($sec):
@@ -64,7 +63,7 @@ SUMMARY_JQ='
     | sort_by([(.type == "container" | not), (.sev | sevrank), .package]);
   def table($rows): "| Severity | Type | Package | Bump | Ids | Aikido | Jira |",
     "|---|---|---|---|---|---|---|",
-    ($rows[] | "| \(.sev | semoji) \(.sev | esc) | \(.type | tlabel) | \(.package | esc) | \(.bump) | \(.ids) | \(.aikido) | \(.jira) |");
+    ($rows[] | "| \(.sev | esc) | \(.type | tlabel) | \(.package | esc) | \(.bump) | \(.ids) | \(.aikido) | \(.jira) |");
   def section($title; $sec; $open):
     if length == 0 then empty else
       (prep($sec)) as $all | ($all[:100]) as $rows

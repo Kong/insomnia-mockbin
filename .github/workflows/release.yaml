@@ -216,6 +216,7 @@ jobs:
       # path segment ending in -<env>, resolved through the API at runtime
       BASELINE_IMAGE: kong/insomnia-mockbin
       BASELINE_ENV: production
+      SCANNER_IMAGE: aikidosecurity/local-scanner@sha256:243c3b9649ea6e72c089a390f94ed247c9d6799445e3a657a3e628e1bd4d2ede
     steps:
       - name: Harden Runner
         uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
@@ -263,8 +264,12 @@ jobs:
         id: load
         if: steps.creds.outputs.enabled == 'true'
         run: |
+          # Pull the scanner image (~390 MB compressed) while the tar loads
+          docker pull --quiet "${SCANNER_IMAGE}" >/dev/null &
+          pull_pid=$!
           out="$(docker load -i "${GITHUB_WORKSPACE}/${DOCKER_OCI_ARCHIVE}.tar")"
           echo "${out}"
+          wait "${pull_pid}" || echo "::notice::Scanner image pre-pull failed; docker run will pull it"
           # "Loaded image: <ref>" (take the first loaded image)
           image="$(echo "${out}" | sed -n 's/^Loaded image: //p' | head -n1)"
           if [[ -z "${image}" ]]; then
@@ -295,7 +300,7 @@ jobs:
             -v "$PWD/out:/out" \
             -e AIKIDO_API_KEY \
             -e AIKIDO_DISABLE_TELEMETRY=true \
-            aikidosecurity/local-scanner@sha256:243c3b9649ea6e72c089a390f94ed247c9d6799445e3a657a3e628e1bd4d2ede \
+            "${SCANNER_IMAGE}" \
             ephemeral-image-scan "$IMAGE" \
             --result-output /out/candidate.json \
             --fail-on low 2>&1 | tee out/scanner.log || true

@@ -295,7 +295,7 @@ jobs:
           prefetch_pid=$!
           # Ephemeral scan: findings are written locally and not persisted in the Aikido
           # dashboard (no self-reported container). Gated by the diff step below.
-          docker run --rm \
+          docker run --name aikido-probe \
             -v /var/run/docker.sock:/var/run/docker.sock \
             -v "$PWD/out:/out" \
             -e AIKIDO_API_KEY \
@@ -305,6 +305,23 @@ jobs:
             --result-output /out/candidate.json \
             --fail-on low 2>&1 | tee out/scanner.log || true
           wait "${prefetch_pid}" || echo "::notice::Aikido baseline prefetch failed; the diff step will fetch it again"
+          # TEMP PROBE (test PR only): where does the scanner write its grype DB?
+          {
+            echo "::group::probe: fs changes in scanner container"
+            docker diff aikido-probe | grep -iE 'grype|vulnerability|\.db|anchore|cache' | head -60 || true
+            echo "::endgroup::"
+            echo "::group::probe: scanner image env/volumes/user"
+            docker inspect aikido-probe --format 'env={{json .Config.Env}} vols={{json .Config.Volumes}} user={{.Config.User}} home-workdir={{.Config.WorkingDir}}' | sed 's/AIKIDO_API_KEY=[^"]*/AIKIDO_API_KEY=***/'
+            echo "::endgroup::"
+            echo "::group::probe: db dir sizes and metadata"
+            for d in $(docker diff aikido-probe | awk '$1=="A"{print $2}' | grep -iE 'grype/db|vulnerability-db|/db/' | sed -E 's#(.*(grype/db|vulnerability-db|/db)(/[^/]+)?).*#\1#' | sort -u | head -5); do
+              echo "dir: $d"
+              docker cp "aikido-probe:$d" - 2>/dev/null | tar -tvf - 2>/dev/null | head -15 || true
+            done
+            echo "::endgroup::"
+            grep -iE 'grype|database|db |download|update|built' out/scanner.log | head -20 || true
+          } 2>&1 || true
+          docker rm aikido-probe >/dev/null 2>&1 || true
           # The scanner may write no (or an empty) result file for a clean image. Treat that
           # as "no findings" only if the log confirms completion; otherwise the scan failed
           # and we must not diff against an empty set.

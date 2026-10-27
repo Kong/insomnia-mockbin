@@ -11,7 +11,10 @@
 #                                               empty disables links)
 #      AIKIDO_MAX_TASK_LOOKUPS                  max Jira task lookups (default 50)
 #      AIKIDO_TASK_CONCURRENCY                  parallel task lookups (default 4; keep low, API rate-limits)
-#      AIKIDO_RENDER_FROM                     render the summary from an existing
+#      AIKIDO_PREFETCH_ONLY=1                   fetch only the baseline into ${OUT_DIR}/baseline-prefetch.json
+#                                               and exit; a later full run reuses it (falls back to
+#                                               fetching inline if the file is missing or invalid)
+#      AIKIDO_RENDER_FROM                   render the summary from an existing
 #                                               aikido-diff.json and exit (offline, no API)
 #
 # Key = (package, CVE id). RESOLVED = baseline only, REMAINING = both, NEW = candidate only.
@@ -115,12 +118,14 @@ if [[ -z "${AIKIDO_CLIENT_ID:-}" || -z "${AIKIDO_CLIENT_SECRET:-}" ]]; then
 fi
 mkdir -p "${OUT_DIR}"
 
-# Credentials go to curl via a config on stdin/fd, never argv (visible in ps)
-TOKEN="$(printf 'user = "%s:%s"\n' "${AIKIDO_CLIENT_ID}" "${AIKIDO_CLIENT_SECRET}" \
-  | curl -fsS -K - -X POST "${API}/oauth/token" -H "Content-Type: application/json" \
-      -d '{"grant_type":"client_credentials"}' | jq -r '.access_token // empty')"
-[[ -n "${TOKEN}" ]] || { echo "Failed to obtain Aikido access token" >&2; exit 2; }
-[[ -z "${GITHUB_ACTIONS:-}" ]] || echo "::add-mask::${TOKEN}"
+get_token() {
+  # Credentials go to curl via a config on stdin/fd, never argv (visible in ps)
+  TOKEN="$(printf 'user = "%s:%s"\n' "${AIKIDO_CLIENT_ID}" "${AIKIDO_CLIENT_SECRET}" \
+    | curl -fsS -K - -X POST "${API}/oauth/token" -H "Content-Type: application/json" \
+        -d '{"grant_type":"client_credentials"}' | jq -r '.access_token // empty')"
+  [[ -n "${TOKEN}" ]] || { echo "Failed to obtain Aikido access token" >&2; exit 2; }
+  [[ -z "${GITHUB_ACTIONS:-}" ]] || echo "::add-mask::${TOKEN}"
+}
 
 # Aikido rate-limits the REST API (HTTP 429); curl retries 408/429/5xx with a fixed delay
 api_get() {
@@ -189,7 +194,11 @@ NORMALISE='
     | select(.id != null) ]
   | unique_by([.package, .id])'
 
-# --- baseline ---
+# --- baseline: needs only the Aikido API, not the candidate, so the workflow can prefetch it
+# (AIKIDO_PREFETCH_ONLY=1) in the background while the scanner runs. Sets BASELINE and
+# HAS_BASELINE; exits 2 if the baseline cannot be fetched.
+build_baseline() {
+get_token
 HAS_BASELINE=true
 rc=0
 BASELINE_RAW="$(fetch_container_issues "${BASELINE_IMAGE}" "${BASELINE_ENV}")" || rc=$?
@@ -237,6 +246,22 @@ TASKS="$(cat "${TASK_DIR}"/* 2>/dev/null | jq -sc 'map({(.g): {url: .url, key: .
 BASELINE="$(jq --argjson m "${TASKS}" '
   map(if .group_id != null and $m[.group_id | tostring] != null
       then .ticket_url = $m[.group_id | tostring].url | .ticket_key = $m[.group_id | tostring].key else . end)' <<<"${BASELINE}")"
+}
+
+PREFETCH_FILE="${OUT_DIR}/baseline-prefetch.json"
+if [[ "${AIKIDO_PREFETCH_ONLY:-}" != "1" ]] && [[ -s "${PREFETCH_FILE}" ]] \
+  && jq -e '(.has_baseline | type == "boolean") and (.baseline | type == "array")' "${PREFETCH_FILE}" >/dev/null 2>&1; then
+  echo "note: using prefetched baseline" >&2
+  HAS_BASELINE="$(jq -r '.has_baseline' "${PREFETCH_FILE}")"
+  BASELINE="$(jq -c '.baseline' "${PREFETCH_FILE}")"
+else
+  build_baseline
+fi
+if [[ "${AIKIDO_PREFETCH_ONLY:-}" == "1" ]]; then
+  jq -n --argjson b "${BASELINE}" --argjson hb "${HAS_BASELINE}" '{has_baseline: $hb, baseline: $b}' \
+    >"${PREFETCH_FILE}.tmp" && mv "${PREFETCH_FILE}.tmp" "${PREFETCH_FILE}"
+  exit 0
+fi
 
 # --- candidate: ephemeral scanner output only (nothing is persisted in Aikido) ---
 CANDIDATE="[]"

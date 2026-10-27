@@ -278,9 +278,16 @@ jobs:
         env:
           IMAGE: ${{ steps.load.outputs.image }}
           AIKIDO_API_KEY: ${{ secrets.AIKIDO_API_KEY }}
+          AIKIDO_CLIENT_ID: ${{ secrets.AIKIDO_REST_CLIENT_ID }}
+          AIKIDO_CLIENT_SECRET: ${{ secrets.AIKIDO_REST_CLIENT_SECRET }}
         run: |
           mkdir -p out
           chmod 777 out
+          # The baseline only needs the Aikido API, not the scan result: fetch it in the
+          # background while the scanner runs. The diff step reuses it, or fetches inline
+          # (and fails properly) if this prefetch did not succeed.
+          AIKIDO_PREFETCH_ONLY=1 .github/scripts/aikido-sbom-diff.sh out/candidate.json &
+          prefetch_pid=$!
           # Ephemeral scan: findings are written locally and not persisted in the Aikido
           # dashboard (no self-reported container). Gated by the diff step below.
           docker run --rm \
@@ -292,6 +299,7 @@ jobs:
             ephemeral-image-scan "$IMAGE" \
             --result-output /out/candidate.json \
             --fail-on low 2>&1 | tee out/scanner.log || true
+          wait "${prefetch_pid}" || echo "::notice::Aikido baseline prefetch failed; the diff step will fetch it again"
           # The scanner may write no (or an empty) result file for a clean image. Treat that
           # as "no findings" only if the log confirms completion; otherwise the scan failed
           # and we must not diff against an empty set.

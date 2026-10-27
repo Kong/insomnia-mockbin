@@ -55,6 +55,9 @@ SUMMARY_JQ='
        else .fixed_version end) as $to
     | if $v != null and $to != null then "`\($v | esc) → \($to | esc)`"
       elif $v != null then "`\($v | esc)`" else "—" end;
+  def jiralinks: [ .[] | (.tickets // (if .ticket_url then [{url: .ticket_url, key: .ticket_key}] else [] end))[]
+      | select(.url | okurl) | {u: .url, l: ((.key // "link") | esc)} ]
+    | unique | map("[\(.l)](\(.u))") | if length == 0 then "—" else join(", ") end;
   def links($u; $l; $p): [ .[] | select(.[$u] | okurl) | {u: .[$u], l: ($p + ((.[$l] // "link") | esc))} ]
     | unique | map("[\(.l)](\(.u))") | if length == 0 then "—" else join(", ") end;
   def prep($sec):
@@ -64,7 +67,7 @@ SUMMARY_JQ='
             sev: (map(.severity) | sort_by(sevrank) | .[0]),
             ids: (map(.id) | unique | map(esc) | join(", ")),
             aikido: links("issue_url"; "group_id"; "#"),
-            jira: links("ticket_url"; "ticket_key"; "") })
+            jira: jiralinks })
     | sort_by([(.type == "container" | not), (.sev | sevrank), .package]);
   def table($rows): "| Severity | Type | Package | Bump | Ids | Aikido | Jira |",
     "|---|---|---|---|---|---|---|",
@@ -190,7 +193,8 @@ NORMALISE='
         type: classify,
         fixed_version: fixed,
         group_id: (.group_id // null),
-        issue_url: null, ticket_url: null, ticket_key: null }
+        container_repo_id: (.container_repo_id // null),
+        issue_url: null, tickets: [] }
     | select(.id != null) ]
   | unique_by([.package, .id])'
 
@@ -219,17 +223,28 @@ BASELINE="$(jq --arg t "${ISSUE_URL_TEMPLATE}" '
 # Lookups run with bounded concurrency (rate-limit safe: api_get still retries 429). Each
 # worker writes its own file; results are merged afterwards so the output is deterministic.
 # A failed lookup leaves an empty file and only means no ticket link for that group.
-lookup_task() { # $1 = group id, $2 = result file
+# Only tasks scoped to the baseline container repo are linked: an issue group spans several
+# repos and each linked task belongs to one of them. scope = {type, id}: type container_repo
+# (or container) with id == the baseline container repo id (string/int tolerant). A task with
+# no scope at all falls back to its title ending in the baseline image path (titles embed
+# "<registry>/<image>"). Anything else (foreign scope, no match) is not linked: never guess.
+lookup_task() { # $1 = group id, $2 = baseline container repo id (may be empty), $3 = result file
   api_get "${API}/public/v1/issues/groups/${1}/tasks" 2>/dev/null \
-    | jq -c --arg g "${1}" '(if type == "array" then . else (.tasks // []) end)
-        | map(select((.url // "") | startswith("https://"))) | first // empty
-        | {g: $g, url: .url, key: ((.url | capture("(?<k>[A-Z][A-Z0-9]+-[0-9]+)") | .k) // null)}' \
-      >"$2" 2>/dev/null || : >"$2"
+    | jq -c --arg g "${1}" --arg repo "${2}" --arg img "${BASELINE_IMAGE}" '
+        def mine: if (.scope | type) == "object" then
+            ((.scope.type // "" | tostring) | test("^(container_repo|container)$"))
+            and $repo != "" and ((.scope.id // "" | tostring) == $repo)
+          else ((.title // "") | type == "string") and ((.title // "") | rtrimstr(" ") | endswith("/" + $img)) end;
+        (if type == "array" then . else (.tasks // []) end)
+        | map(select(type == "object" and mine and ((.url // "") | startswith("https://"))))
+        | map({url: .url, key: ((.url | capture("(?<k>[A-Z][A-Z0-9]+-[0-9]+)") | .k) // null)})
+        | unique_by(.url) | select(length > 0) | {g: $g, tickets: .}' \
+      >"$3" 2>/dev/null || : >"$3"
 }
 TASK_DIR="$(mktemp -d)"
 trap 'rm -rf "${TASK_DIR}"' EXIT
 lookups=0
-while read -r gid; do
+while read -r gid repo_id; do
   [[ "${gid}" =~ ^[0-9A-Za-z_-]+$ ]] || continue
   if (( lookups >= MAX_TASK_LOOKUPS )); then
     echo "note: Jira lookup cap (${MAX_TASK_LOOKUPS}) reached; remaining groups have no ticket link" >&2
@@ -238,14 +253,15 @@ while read -r gid; do
   lookups=$((lookups + 1))
   # Wait for a free slot (wait -n needs bash >= 4.3; otherwise wait for all running jobs)
   while (( $(jobs -rp | wc -l) >= TASK_CONCURRENCY )); do wait -n 2>/dev/null || wait; done
-  lookup_task "${gid}" "${TASK_DIR}/${gid}" &
-done < <(jq -r '[.[].group_id | select(. != null) | tostring] | unique | .[]' <<<"${BASELINE}")
+  lookup_task "${gid}" "${repo_id}" "${TASK_DIR}/${gid}" &
+done < <(jq -r '[.[] | select(.group_id != null) | {g: (.group_id | tostring), r: ((.container_repo_id // "") | tostring)}]
+  | group_by(.g) | .[] | "\(.[0].g) \(map(.r | select(. != "")) | .[0] // "")"' <<<"${BASELINE}")
 wait
-TASKS="$(cat "${TASK_DIR}"/* 2>/dev/null | jq -sc 'map({(.g): {url: .url, key: .key}}) | add // {}' 2>/dev/null)" || TASKS=""
+TASKS="$(cat "${TASK_DIR}"/* 2>/dev/null | jq -sc 'map({(.g): .tickets}) | add // {}' 2>/dev/null)" || TASKS=""
 [[ -n "${TASKS}" ]] || TASKS="{}"
 BASELINE="$(jq --argjson m "${TASKS}" '
   map(if .group_id != null and $m[.group_id | tostring] != null
-      then .ticket_url = $m[.group_id | tostring].url | .ticket_key = $m[.group_id | tostring].key else . end)' <<<"${BASELINE}")"
+      then .tickets = $m[.group_id | tostring] else . end)' <<<"${BASELINE}")"
 }
 
 PREFETCH_FILE="${OUT_DIR}/baseline-prefetch.json"
@@ -284,8 +300,8 @@ jq -n --argjson b "${BASELINE}" --argjson c "${CANDIDATE}" \
                 | . as $r | $r + {candidate_version: $cv[$r.package], package_removed: ($cv | has($r.package) | not)}],
     # remaining: candidate record plus the baseline issue/ticket links
     remaining: [$c[] | select($bm[key] != null) | . as $r | $bm[key] as $o
-                | $r + {group_id: $o.group_id, issue_url: $o.issue_url, ticket_url: $o.ticket_url,
-                        ticket_key: $o.ticket_key, fixed_version: ($r.fixed_version // $o.fixed_version)}],
+                | $r + {group_id: $o.group_id, issue_url: $o.issue_url, tickets: $o.tickets,
+                        fixed_version: ($r.fixed_version // $o.fixed_version)}],
     new:       (if $hb then [$c[] | select($bm[key] == null)] else [] end),
     findings_no_baseline: (if $hb then [] else $c end) }
   | .counts = (with_entries(select(.value | type == "array")) | map_values(length))

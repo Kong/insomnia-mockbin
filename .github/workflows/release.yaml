@@ -233,6 +233,9 @@ jobs:
             production.cloudfront.docker.com:443
             registry-1.docker.io:443
             toolbox-data.anchore.io:443
+            results-receiver.actions.githubusercontent.com:443
+            *.actions.githubusercontent.com:443
+            *.blob.core.windows.net:443
 
       - name: Checkout repository
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
@@ -278,6 +281,17 @@ jobs:
           fi
           echo "image=${image}" >> "$GITHUB_OUTPUT"
 
+      - name: Grype DB cache key (probe)
+        id: dbkey
+        run: echo "day=$(date -u +%Y-%m-%d)" >> "$GITHUB_OUTPUT"
+
+      - name: Restore Aikido grype DB cache (probe)
+        if: steps.creds.outputs.enabled == 'true'
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ${{ github.workspace }}/grypedb
+          key: aikido-grype-db-${{ steps.dbkey.outputs.day }}
+
       - name: Aikido local scanner
         if: steps.creds.outputs.enabled == 'true'
         env:
@@ -286,8 +300,9 @@ jobs:
           AIKIDO_CLIENT_ID: ${{ secrets.AIKIDO_REST_CLIENT_ID }}
           AIKIDO_CLIENT_SECRET: ${{ secrets.AIKIDO_REST_CLIENT_SECRET }}
         run: |
-          mkdir -p out
-          chmod 777 out
+          mkdir -p out grypedb
+          chmod 777 out grypedb
+          echo "probe: cache dir before scan:"; ls -la grypedb/6 2>/dev/null | head; t0=$(date +%s)
           # The baseline only needs the Aikido API, not the scan result: fetch it in the
           # background while the scanner runs. The diff step reuses it, or fetches inline
           # (and fails properly) if this prefetch did not succeed.
@@ -298,6 +313,7 @@ jobs:
           docker run --name aikido-probe \
             -v /var/run/docker.sock:/var/run/docker.sock \
             -v "$PWD/out:/out" \
+            -v "$PWD/grypedb:/root/.local/share/aikido-grype-db" \
             -e AIKIDO_API_KEY \
             -e AIKIDO_DISABLE_TELEMETRY=true \
             "${SCANNER_IMAGE}" \
@@ -305,6 +321,8 @@ jobs:
             --result-output /out/candidate.json \
             --fail-on low 2>&1 | tee out/scanner.log || true
           wait "${prefetch_pid}" || echo "::notice::Aikido baseline prefetch failed; the diff step will fetch it again"
+          echo "probe: scan wall time $(( $(date +%s) - t0 ))s"
+          ls -la grypedb/6 2>/dev/null; cat grypedb/6/import.json 2>/dev/null | head -c 600; echo; cat grypedb/6/last_update_check 2>/dev/null | head -c 200; echo; du -sh grypedb
           # TEMP PROBE (test PR only): where does the scanner write its grype DB?
           {
             echo "::group::probe: fs changes in scanner container"

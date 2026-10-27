@@ -217,7 +217,7 @@ jobs:
       BASELINE_IMAGE: kong/insomnia-mockbin
       BASELINE_ENV: production
       # Aikido code repo for kong/insomnia-mockbin (codebase dependency issues live here);
-      # set explicitly: the by-name lookup via the code repositories list failed in CI
+      # set explicitly because the code repositories list lookup is not available to the REST client
       AIKIDO_CODE_REPO_ID: "1266270"
       SCANNER_IMAGE: aikidosecurity/local-scanner@sha256:243c3b9649ea6e72c089a390f94ed247c9d6799445e3a657a3e628e1bd4d2ede
     steps:

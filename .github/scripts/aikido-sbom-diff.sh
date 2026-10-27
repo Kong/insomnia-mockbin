@@ -10,7 +10,8 @@
 #                                               (default https://app.aikido.dev/issues/{group_id}/detail;
 #                                               empty disables links)
 #      AIKIDO_MAX_TASK_LOOKUPS                  max Jira task lookups (default 50)
-#      AIKIDO_RENDER_FROM                       render the summary from an existing
+#      AIKIDO_TASK_CONCURRENCY                  parallel task lookups (default 4; keep low, API rate-limits)
+#      AIKIDO_RENDER_FROM                     render the summary from an existing
 #                                               aikido-diff.json and exit (offline, no API)
 #
 # Key = (package, CVE id). RESOLVED = baseline only, REMAINING = both, NEW = candidate only.
@@ -26,6 +27,7 @@ OUT_DIR="${OUT_DIR:-out}"
 ISSUE_URL_TEMPLATE='https://app.aikido.dev/issues/{group_id}/detail'
 ISSUE_URL_TEMPLATE="${AIKIDO_ISSUE_URL_TEMPLATE-${ISSUE_URL_TEMPLATE}}"
 MAX_TASK_LOOKUPS="${AIKIDO_MAX_TASK_LOOKUPS:-50}"
+TASK_CONCURRENCY="${AIKIDO_TASK_CONCURRENCY:-4}"
 CANDIDATE_FILE="${1:-${OUT_DIR}/candidate.json}"
 
 # --- summary renderer (GitHub-flavoured markdown; every external value is escaped) ---
@@ -205,7 +207,18 @@ BASELINE="$(jq --arg t "${ISSUE_URL_TEMPLATE}" '
   map(. as $r | (($r.group_id // "") | tostring) as $g
       | if ($g | test("^[0-9A-Za-z_-]+$")) and ($t | startswith("https://"))
         then .issue_url = ($t | gsub("\\{group_id\\}"; $g)) else . end)' <<<"${BASELINE}" 2>/dev/null || echo "${BASELINE}")"
-TASKS="{}"
+# Lookups run with bounded concurrency (rate-limit safe: api_get still retries 429). Each
+# worker writes its own file; results are merged afterwards so the output is deterministic.
+# A failed lookup leaves an empty file and only means no ticket link for that group.
+lookup_task() { # $1 = group id, $2 = result file
+  api_get "${API}/public/v1/issues/groups/${1}/tasks" 2>/dev/null \
+    | jq -c --arg g "${1}" '(if type == "array" then . else (.tasks // []) end)
+        | map(select((.url // "") | startswith("https://"))) | first // empty
+        | {g: $g, url: .url, key: ((.url | capture("(?<k>[A-Z][A-Z0-9]+-[0-9]+)") | .k) // null)}' \
+      >"$2" 2>/dev/null || : >"$2"
+}
+TASK_DIR="$(mktemp -d)"
+trap 'rm -rf "${TASK_DIR}"' EXIT
 lookups=0
 while read -r gid; do
   [[ "${gid}" =~ ^[0-9A-Za-z_-]+$ ]] || continue
@@ -214,12 +227,13 @@ while read -r gid; do
     break
   fi
   lookups=$((lookups + 1))
-  task="$(api_get "${API}/public/v1/issues/groups/${gid}/tasks" 2>/dev/null \
-    | jq -c '(if type == "array" then . else (.tasks // []) end)
-        | map(select((.url // "") | startswith("https://"))) | first // empty
-        | {url: .url, key: ((.url | capture("(?<k>[A-Z][A-Z0-9]+-[0-9]+)") | .k) // null)}' 2>/dev/null)" || task=""
-  [[ -z "${task}" ]] || TASKS="$(jq -c --arg g "${gid}" --argjson t "${task}" '.[$g] = $t' <<<"${TASKS}")"
+  # Wait for a free slot (wait -n needs bash >= 4.3; otherwise wait for all running jobs)
+  while (( $(jobs -rp | wc -l) >= TASK_CONCURRENCY )); do wait -n 2>/dev/null || wait; done
+  lookup_task "${gid}" "${TASK_DIR}/${gid}" &
 done < <(jq -r '[.[].group_id | select(. != null) | tostring] | unique | .[]' <<<"${BASELINE}")
+wait
+TASKS="$(cat "${TASK_DIR}"/* 2>/dev/null | jq -sc 'map({(.g): {url: .url, key: .key}}) | add // {}' 2>/dev/null)" || TASKS=""
+[[ -n "${TASKS}" ]] || TASKS="{}"
 BASELINE="$(jq --argjson m "${TASKS}" '
   map(if .group_id != null and $m[.group_id | tostring] != null
       then .ticket_url = $m[.group_id | tostring].url | .ticket_key = $m[.group_id | tostring].key else . end)' <<<"${BASELINE}")"

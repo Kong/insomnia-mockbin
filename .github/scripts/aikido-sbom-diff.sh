@@ -6,8 +6,8 @@
 #      BASELINE_IMAGE / BASELINE_ENV            baseline container repo, matched by
 #                                               name suffix and env path segment
 #      OUT_DIR                                  output dir (default out)
-#      AIKIDO_ISSUE_URL_TEMPLATE                Aikido issue link, {group_id} is substituted
-#                                               (default https://app.aikido.dev/issues/{group_id}/detail;
+#      AIKIDO_ISSUE_URL_TEMPLATE                Aikido issue link, {group_id} and {issue_id} are substituted
+#                                               (default https://app.aikido.dev/issues/{group_id}/detail?singleIssueFilter={issue_id}&status=open;
 #                                               empty disables links)
 #      AIKIDO_MAX_TASK_LOOKUPS                  max Jira task lookups (default 50)
 #      AIKIDO_TASK_CONCURRENCY                  parallel task lookups (default 4; keep low, API rate-limits)
@@ -27,7 +27,7 @@ BASELINE_ENV="${BASELINE_ENV:-production}"
 BASELINE_LABEL="${BASELINE_IMAGE} (${BASELINE_ENV})"
 OUT_DIR="${OUT_DIR:-out}"
 # Not inlined as a ${VAR-default}: the "}" in {group_id} would end the expansion early
-ISSUE_URL_TEMPLATE='https://app.aikido.dev/issues/{group_id}/detail'
+ISSUE_URL_TEMPLATE='https://app.aikido.dev/issues/{group_id}/detail?singleIssueFilter={issue_id}&status=open'
 ISSUE_URL_TEMPLATE="${AIKIDO_ISSUE_URL_TEMPLATE-${ISSUE_URL_TEMPLATE}}"
 MAX_TASK_LOOKUPS="${AIKIDO_MAX_TASK_LOOKUPS:-50}"
 TASK_CONCURRENCY="${AIKIDO_TASK_CONCURRENCY:-4}"
@@ -58,7 +58,8 @@ SUMMARY_JQ='
   def jiralinks: [ .[] | (.tickets // (if .ticket_url then [{url: .ticket_url, key: .ticket_key}] else [] end))[]
       | select(.url | okurl) | {u: .url, l: ((.key // "link") | esc)} ]
     | unique | map("[\(.l)](\(.u))") | if length == 0 then "—" else join(", ") end;
-  def links($u; $l; $p): [ .[] | select(.[$u] | okurl) | {u: .[$u], l: ($p + ((.[$l] // "link") | esc))} ]
+  # one link per finding: label #<issue_id> (old JSON without issue_id: #<group_id>)
+  def links($u; $i; $g): [ .[] | select(.[$u] | okurl) | {u: .[$u], l: ("#" + ((.[$i] // .[$g] // "link") | esc))} ]
     | unique | map("[\(.l)](\(.u))") | if length == 0 then "—" else join(", ") end;
   def prep($sec):
     map(. + {bump: bump($sec)})
@@ -66,7 +67,7 @@ SUMMARY_JQ='
     | map({ type: .[0].type, package: .[0].package, bump: .[0].bump,
             sev: (map(.severity) | sort_by(sevrank) | .[0]),
             ids: (map(.id) | unique | map(esc) | join(", ")),
-            aikido: links("issue_url"; "group_id"; "#"),
+            aikido: links("issue_url"; "issue_id"; "group_id"),
             jira: jiralinks })
     | sort_by([(.type == "container" | not), (.sev | sevrank), .package]);
   def table($rows): "| Severity | Type | Package | Bump | Ids | Aikido | Jira |",
@@ -193,6 +194,7 @@ NORMALISE='
         type: classify,
         fixed_version: fixed,
         group_id: (.group_id // null),
+        issue_id: (.id // null | if . == null then null else tostring end),
         container_repo_id: (.container_repo_id // null),
         issue_url: null, tickets: [] }
     | select(.id != null) ]
@@ -215,11 +217,14 @@ esac
 BASELINE="$(jq "${NORMALISE}" <<<"${BASELINE_RAW}")"
 
 # --- link enrichment (baseline only; best effort, never fails the job) ---
-# Aikido issue link from a URL template; Jira link from the issue group's tasks.
+# Aikido per-finding issue link from a URL template; Jira link from the issue group's tasks.
 BASELINE="$(jq --arg t "${ISSUE_URL_TEMPLATE}" '
   map(. as $r | (($r.group_id // "") | tostring) as $g
-      | if ($g | test("^[0-9A-Za-z_-]+$")) and ($t | startswith("https://"))
-        then .issue_url = ($t | gsub("\\{group_id\\}"; $g)) else . end)' <<<"${BASELINE}" 2>/dev/null || echo "${BASELINE}")"
+      | (($r.issue_id // "") | tostring) as $i
+      | if ($t | startswith("https://"))
+           and ((($t | contains("{group_id}")) and ($g | test("^[0-9A-Za-z_-]+$") | not)) | not)
+           and ((($t | contains("{issue_id}")) and ($i | test("^[0-9A-Za-z_-]+$") | not)) | not)
+        then .issue_url = ($t | gsub("\\{group_id\\}"; $g) | gsub("\\{issue_id\\}"; $i)) else . end)' <<<"${BASELINE}" 2>/dev/null || echo "${BASELINE}")"
 # Lookups run with bounded concurrency (rate-limit safe: api_get still retries 429). Each
 # worker writes its own file; results are merged afterwards so the output is deterministic.
 # A failed lookup leaves an empty file and only means no ticket link for that group.
@@ -285,7 +290,7 @@ CANDIDATE_SOURCE="scanner-output"
 if [[ -s "${CANDIDATE_FILE}" ]]; then
   CANDIDATE="$(jq '[ .. | objects
       | select(has("cve_id") or has("cve") or has("vulnerability_id") or has("aikido_id")) ]' \
-    "${CANDIDATE_FILE}" 2>/dev/null | jq "${NORMALISE}" 2>/dev/null || echo "[]")"
+    "${CANDIDATE_FILE}" 2>/dev/null | jq "${NORMALISE}" 2>/dev/null | jq 'map(.issue_id = null)' 2>/dev/null || echo "[]")"
 fi
 
 # --- diff ---
@@ -300,7 +305,7 @@ jq -n --argjson b "${BASELINE}" --argjson c "${CANDIDATE}" \
                 | . as $r | $r + {candidate_version: $cv[$r.package], package_removed: ($cv | has($r.package) | not)}],
     # remaining: candidate record plus the baseline issue/ticket links
     remaining: [$c[] | select($bm[key] != null) | . as $r | $bm[key] as $o
-                | $r + {group_id: $o.group_id, issue_url: $o.issue_url, tickets: $o.tickets,
+                | $r + {group_id: $o.group_id, issue_id: $o.issue_id, issue_url: $o.issue_url, tickets: $o.tickets,
                         fixed_version: ($r.fixed_version // $o.fixed_version)}],
     new:       (if $hb then [$c[] | select($bm[key] == null)] else [] end),
     findings_no_baseline: (if $hb then [] else $c end) }

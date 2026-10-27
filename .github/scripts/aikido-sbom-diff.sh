@@ -35,7 +35,7 @@ CANDIDATE_FILE="${1:-${OUT_DIR}/candidate.json}"
 SUMMARY_JQ='
   def esc: tostring | gsub("[|\\n\\r]"; " ") | gsub("<"; "&lt;") | gsub(">"; "&gt;");
   def sevrank: ({"critical":0,"high":1,"medium":2,"low":3}[.] // 4);
-  def semoji: ({"critical":"🔴","high":"🟠","medium":"🟡","low":"🟢"}[.] // "⚪");
+  def semoji: "🟡";
   def okurl: type == "string" and test("^https://[^\\s()<>\\[\\]]+$");
   def tlabel: if . == "container" then "container" else "codebase dependency" end;
   def counts_line($arr): ["critical","high","medium","low"]

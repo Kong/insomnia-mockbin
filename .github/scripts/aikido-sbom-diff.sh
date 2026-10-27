@@ -173,7 +173,7 @@ NORMALISE='
       elif ($ver | test("-r[0-9]+$")) then "container"
       else "codebase" end;
   def fixed:
-    (.patched_versions // .fixed_version // .patched_version // .fix_version // .fixed_in // null)
+    (.patched_versions // .fix_versions // .fixed_version // .patched_version // .fix_version // .fixed_in // null)
     | if type == "array" then (if length == 0 then null else join(", ") end)
       elif . == "" then null else . end;
   [ .[]

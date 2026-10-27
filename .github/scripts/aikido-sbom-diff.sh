@@ -121,8 +121,10 @@ TOKEN="$(printf 'user = "%s:%s"\n' "${AIKIDO_CLIENT_ID}" "${AIKIDO_CLIENT_SECRET
 [[ -n "${TOKEN}" ]] || { echo "Failed to obtain Aikido access token" >&2; exit 2; }
 [[ -z "${GITHUB_ACTIONS:-}" ]] || echo "::add-mask::${TOKEN}"
 
+# Aikido rate-limits the REST API (HTTP 429); curl retries 408/429/5xx with a fixed delay
 api_get() {
-  curl -fsS -K <(printf 'header = "Authorization: Bearer %s"\n' "${TOKEN}") "$@"
+  curl -fsS --retry 6 --retry-delay 20 --retry-max-time 240 \
+    -K <(printf 'header = "Authorization: Bearer %s"\n' "${TOKEN}") "$@"
 }
 
 # Match a container repo by image (exact, or name ending in "/<image>") and optional

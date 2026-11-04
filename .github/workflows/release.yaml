@@ -228,8 +228,10 @@ jobs:
             app.aikido.dev:443
             auth.docker.io:443
             github.com:443
+            grype.anchore.io:443
             production.cloudfront.docker.com:443
             registry-1.docker.io:443
+            toolbox-data.anchore.io:443
 
       - name: Checkout repository
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
@@ -279,25 +281,23 @@ jobs:
         run: |
           mkdir -p out
           chmod 777 out
-          # Findings are gated by the diff step below, not by the scanner exit code
+          # Ephemeral scan: findings are written locally and not persisted in the Aikido
+          # dashboard (no self-reported container). Gated by the diff step below.
           docker run --rm \
             -v /var/run/docker.sock:/var/run/docker.sock \
             -v "$PWD/out:/out" \
             -e AIKIDO_API_KEY \
-            aikidosecurity/local-scanner@sha256:90c164eadb56557c668cf052fcb115e2ff8927668a9b116949a58935d533f542 \
-            image-scan "$IMAGE" \
-            --image-name insomnia-mockbin-ci \
-            --tag "$GITHUB_SHA" \
-            --apikey "$AIKIDO_API_KEY" \
-            --fail-on low \
-            --gating-result-output /out/candidate.json 2>&1 | tee out/scanner.log || true
-          # The scanner writes no result file when it finds nothing, so use its log
-          # to tell a clean scan apart from a failed one (e.g. a rejected key)
-          if ! grep -q '^Scan completed' out/scanner.log; then
-            echo "::error::Aikido local scanner did not complete; check AIKIDO_API_KEY"
+            -e AIKIDO_DISABLE_TELEMETRY=true \
+            aikidosecurity/local-scanner@sha256:243c3b9649ea6e72c089a390f94ed247c9d6799445e3a657a3e628e1bd4d2ede \
+            ephemeral-image-scan "$IMAGE" \
+            --result-output /out/candidate.json \
+            --fail-on low 2>&1 | tee out/scanner.log || true
+          # A missing result file means the scan failed; never diff against an empty set
+          if [[ ! -s out/candidate.json ]]; then
+            echo "::error::Aikido ephemeral scan produced no result file"
+            tail -n 40 out/scanner.log
             exit 1
           fi
-          [[ -s out/candidate.json ]] || echo '[]' > out/candidate.json
 
       - name: Diff Aikido findings against baseline
         if: steps.creds.outputs.enabled == 'true'

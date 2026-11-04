@@ -5,7 +5,6 @@
 # Env: AIKIDO_CLIENT_ID / AIKIDO_CLIENT_SECRET  REST credentials (read-only)
 #      BASELINE_IMAGE / BASELINE_ENV            baseline container repo, matched by
 #                                               name suffix and env path segment
-#      CANDIDATE_CONTAINER_NAME                 CI container repo (default insomnia-mockbin-ci)
 #      OUT_DIR                                  output dir (default out)
 #
 # Key = (package, CVE id). RESOLVED = baseline only, REMAINING = both, NEW = candidate only.
@@ -16,7 +15,6 @@ API="https://app.aikido.dev/api"
 BASELINE_IMAGE="${BASELINE_IMAGE:-kong/insomnia-mockbin}"
 BASELINE_ENV="${BASELINE_ENV:-production}"
 BASELINE_LABEL="${BASELINE_IMAGE} (${BASELINE_ENV})"
-CANDIDATE_CONTAINER_NAME="${CANDIDATE_CONTAINER_NAME:-insomnia-mockbin-ci}"
 OUT_DIR="${OUT_DIR:-out}"
 CANDIDATE_FILE="${1:-${OUT_DIR}/candidate.json}"
 
@@ -86,17 +84,13 @@ case "${rc}" in
 esac
 BASELINE="$(jq "${NORMALISE}" <<<"${BASELINE_RAW}")"
 
-# --- candidate: scanner output, else the CI container repo's open issues ---
+# --- candidate: ephemeral scanner output only (nothing is persisted in Aikido) ---
 CANDIDATE="[]"
 CANDIDATE_SOURCE="scanner-output"
 if [[ -s "${CANDIDATE_FILE}" ]]; then
   CANDIDATE="$(jq '[ .. | objects
       | select(has("cve_id") or has("cve") or has("vulnerability_id") or has("aikido_id")) ]' \
     "${CANDIDATE_FILE}" 2>/dev/null | jq "${NORMALISE}" 2>/dev/null || echo "[]")"
-fi
-if [[ "$(jq length <<<"${CANDIDATE}")" == "0" ]]; then
-  CANDIDATE_SOURCE="api:${CANDIDATE_CONTAINER_NAME}"
-  CANDIDATE="$(jq "${NORMALISE}" <<<"$(fetch_container_issues "${CANDIDATE_CONTAINER_NAME}" || echo '[]')")"
 fi
 
 # --- diff ---

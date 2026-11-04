@@ -1,4 +1,5 @@
 const app = require("./src");
+const bodyParser = require("./lib/middleware/body-parser");
 const dotenv = require("dotenv");
 
 dotenv.config();
@@ -10,6 +11,9 @@ const options = {
 	redisExpiry: process.env.MOCKBIN_REDIS_EXPIRE_SECONDS,
 	isCloudMock: process.env.MOCKBIN_IS_CLOUD_MOCK === "true",
 	cloudRestrictedHeaders: process.env.MOCKBIN_CLOUD_RESTRICTED_HEADERS,
+	maxBodyBytes: bodyParser.resolveMaxBodyBytes(
+		process.env.MOCKBIN_MAX_BODY_BYTES,
+	),
 	nodeEnv: process.env.NODE_ENV,
 };
 

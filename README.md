@@ -88,6 +88,21 @@ git push origin tag <tag_name>
 
 Read the full API documentation, please review the [API Docs](https://github.com/Kong/mockbin/tree/master/docs).
 
+### Request body size limit and compression
+
+Mockbin reads each request body into memory, so a request with a body larger than the limit is refused with `413 Payload Too Large`. The default limit is 5 MiB (5242880 bytes), sized for the cloud-hosted mock service. Earlier versions did not limit the request body.
+
+A request body compressed with `Content-Encoding: gzip` or `deflate` is decompressed before it is parsed, so the limit applies to the decompressed size, and templates can read its fields. Any other `Content-Encoding` (for example `br` or `zstd`) is refused with `415`, and a body that is not valid compressed data with `400`. Earlier versions did not decompress request bodies and accepted any `Content-Encoding`.
+
+If you host Mockbin yourself and need larger bodies, set `MOCKBIN_MAX_BODY_BYTES` to the limit in bytes. `0` removes the limit, including the limit on the decompressed size.
+
+```shell
+# accept request bodies up to 20 MiB
+MOCKBIN_MAX_BODY_BYTES=20971520
+```
+
+The response body of a mock (`content.text`) has its own, fixed limit: 1,000,000 characters, the longest body Mockbin can serve.
+
 ### Deployment
 
 See [https://developer.konghq.com/insomnia/mock-servers/](https://developer.konghq.com/insomnia/mock-servers/) for the available options for deploying mockbin.
